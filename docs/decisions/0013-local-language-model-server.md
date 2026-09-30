@@ -1,6 +1,6 @@
-# 0013 — llama.cpp server runs the local language and embedding models
+# 0013 — Local language model server
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `INF-01`, `INF-02`, `INF-07`, `PIPE-01`, `PIPE-12`, `NFR-01`, `NFR-05`, `NFR-15`, `OWN-03`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `INF-01`, `INF-02`, `INF-07`, `PIPE-01`, `PIPE-12`, `NFR-01`, `NFR-05`, `NFR-15`, `OWN-03`
 
 ## Context
 
@@ -8,9 +8,9 @@ The `local` profile ([0010](0010-deployment.md)) must run a language model and a
 
 Operators are mostly hobbyists: installing and updating models must be simple, and GPUs from more than one vendor should work.
 
-## Decision
+## Recommendation
 
-**The `local` profile runs llama.cpp's HTTP server, as two services: one for the language model and one for the embedding model.**
+**Recommended, not decided:** Run llama.cpp's HTTP server in the `local` profile, as two services: one for the language model and one for the embedding model. The points below describe what adopting it would mean.
 
 - **Why this server:**
   - MIT-licensed and very actively maintained.
@@ -28,17 +28,21 @@ Operators are mostly hobbyists: installing and updating models must be simple, a
   - **Ollama**, for its easier model management. Its context size must be set explicitly, because its default is far smaller than our extraction windows.
   - **vLLM**, for operators with larger GPUs serving several campaigns at once.
 
-## Consequences
+## Consequences if adopted
 
 - One server covers every GPU vendor and the CPU-only profile, so the local path behaves the same everywhere and is tested once.
 - Model management is ours to provide: named models, checksums, download, and upgrade. That is extra work, but it keeps the download sources and sizes documented, as [0001](0001-default-inference-configuration.md) requires.
 - Throughput with many simultaneous requests is lower than a datacenter-oriented server's. A single table's pipeline does not need more.
 - Schema enforcement has edge cases with some models' chat templates. The conformance test and the application's own validation catch them.
 
-## Alternatives considered
+## Options considered
 
 - **Ollama as the default.** The easiest model management for hobbyists, with good Apple and AMD support. Not the default because schema enforcement through its chat-completions endpoint has been unreliable in reports, and its small default context silently truncates transcript windows unless changed. Kept as a documented alternative.
-- **vLLM.** The best throughput and strong schema enforcement. Rejected as the default: large images, fragile on a 16 GB consumer card, and weak on CPU and Apple hardware. Kept as a documented alternative for larger installs.
+- **vLLM.** The best throughput and strong schema enforcement. Not recommended as the default: large images, fragile on a 16 GB consumer card, and weak on CPU and Apple hardware. Kept as a documented alternative for larger installs.
 - **Datacenter-oriented servers.** Excellent throughput with no realistic CPU-only path.
 - **All-in-one local model platforms.** Broad API coverage, but more moving parts, with the same underlying engine for our use.
 - **Proprietary desktop model runners.** Cannot be redistributed in an open container composition.
+
+## To decide
+
+llama.cpp server as the bundled default, with Ollama and vLLM documented, or a different default? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

@@ -6,6 +6,7 @@ Each file here records one decision: what was decided, why, what else was consid
 
 - **One decision per file**, numbered in the order it was written: `NNNN-short-title.md`. Numbers are never reused.
 - **Status** is one of:
+  - **Open:** the options and a recommendation are written up, but no one has decided.
   - **Proposed:** written and waiting for a maintainer's approval.
   - **Accepted:** approved; the work follows it.
   - **Superseded by NNNN:** replaced by a later record, and kept for history.
@@ -28,10 +29,10 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0008](0008-inference-backend-interface.md) | One interface per model capability, with adapters behind it | Proposed | — | 0a |
 | [0009](0009-pipeline-execution.md) | Pipeline stages are durable, idempotent jobs | Proposed | — | 0a |
 | [0010](0010-deployment.md) | One container composition, started with one command | Proposed | — | 0a |
-| [0011](0011-http-framework.md) | Hono for the HTTP server, with schema-driven validation and OpenAPI | Proposed | — | 0a |
-| [0012](0012-web-interface.md) | The web interface is a React single-page app, served by the API server | Proposed | — | 0a |
-| [0013](0013-local-language-model-server.md) | llama.cpp server runs the local language and embedding models | Proposed | — | 0a |
-| [0014](0014-local-speech-server.md) | A small speech server of our own, built on faster-whisper and pyannote | Proposed | — | 0a |
+| [0011](0011-http-framework.md) | HTTP framework (recommendation: Hono) | Open | — | 0a |
+| [0012](0012-web-interface.md) | Web interface framework (recommendation: React single-page app) | Open | — | 0a |
+| [0013](0013-local-language-model-server.md) | Local language model server (recommendation: llama.cpp server) | Open | — | 0a |
+| [0014](0014-local-speech-server.md) | Local speech server (recommendation: our own, on faster-whisper and pyannote) | Open | — | 0a |
 
 ## Not yet decided
 

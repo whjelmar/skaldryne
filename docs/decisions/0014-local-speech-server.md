@@ -1,6 +1,6 @@
-# 0014 — A small speech server of our own, built on faster-whisper and pyannote
+# 0014 — Local speech server
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `CAP-01`, `CAP-05`, `CAP-06`, `CAP-28`, `CAP-31`, `SAFE-03`, `INF-01`, `INF-02`, `NFR-05`, `NFR-15`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `CAP-01`, `CAP-05`, `CAP-06`, `CAP-28`, `CAP-31`, `SAFE-03`, `INF-01`, `INF-02`, `NFR-05`, `NFR-15`
 
 ## Context
 
@@ -13,9 +13,9 @@ Sessions are three to four hours long, with three to seven speakers, often on on
 
 It must run on the reference machine ([0003](0003-local-reference-hardware.md)) and complete on CPU alone. No shared API exists for speech servers, so [0008](0008-inference-backend-interface.md) already expects a small server contract of our own.
 
-## Decision
+## Recommendation
 
-**The `speech` service is a small Python HTTP server, maintained in this repository, that implements our speech contract by composing three pieces:**
+**Recommended, not decided:** Build the `speech` service as a small Python HTTP server, maintained in this repository, that implements our speech contract by composing three pieces: The points below describe what adopting it would mean.
 
 1. **Transcription:** faster-whisper, running the default multilingual speech model named in configuration (MIT-licensed weights). Audio is first split by voice-activity detection, and each chunk is transcribed without conditioning on the previous chunk's text, to limit repeated or invented text over long recordings.
 2. **Word alignment:** forced alignment of the transcript to the audio, for accurate word timings where an alignment model exists for the language. Where none exists, the transcriber's own word timings are used and marked as less precise.
@@ -30,7 +30,7 @@ Around those pieces:
 - **Every component and model is pinned** to an exact version and checksum. The diarization weights are gated behind an account on their hosting site but licensed CC-BY-4.0, so they are bundled with attribution and install needs no account.
 - **The contract is ours**, so any piece can be replaced by a better model without touching the application.
 
-## Consequences
+## Consequences if adopted
 
 - Every requirement above is met by open components under permissive licences.
 - We own a small Python service: its dependencies, its image, and its updates. This is the one place [0004](0004-language-runtime-and-repository.md) allows another language.
@@ -38,9 +38,13 @@ Around those pieces:
 - Overlapping speech on a single microphone remains the weakest case. The evaluation fixtures include it ([0002](0002-evaluation-fixture-sources.md)), and multitrack capture is the documented remedy.
 - Diarization on CPU is slow for four-hour sessions. The CPU-only profile will be measured in hours.
 
-## Alternatives considered
+## Options considered
 
-- **An all-in-one transcription, alignment, and diarization package.** Quicker to start, and built from the same pieces. Rejected as a dependency: we would inherit its choices and its release pace, and its own documentation notes weak handling of overlapping speech. We compose the pieces directly instead.
+- **An all-in-one transcription, alignment, and diarization package.** Quicker to start, and built from the same pieces. Not recommended as a dependency: we would inherit its choices and its release pace, and its own documentation notes weak handling of overlapping speech. We compose the pieces directly instead.
 - **A CPU-first C++ speech engine.** Excellent on CPU and actively released, but its diarization is experimental and limited to two speakers. It remains a candidate for the transcription step of the CPU-only profile.
-- **Transducer-based speech models with a streaming diarizer.** Fast and accurate for English and some European languages, with good vocabulary boosting. Rejected: the diarizer is capped at four speakers, the toolkit is heavy and effectively tied to one GPU vendor, and CPU performance is poor.
+- **Transducer-based speech models with a streaming diarizer.** Fast and accurate for English and some European languages, with good vocabulary boosting. Not recommended: the diarizer is capped at four speakers, the toolkit is heavy and effectively tied to one GPU vendor, and CPU performance is poor.
 - **Newer language-model-decoder speech models.** At or near the top of public leaderboards, but slower, and their timestamps and speaker labels cover only a handful of languages, or are absent. To be benchmarked on real sessions through the same contract before any switch.
+
+## To decide
+
+Our own speech server composed from these pieces, or an all-in-one package? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

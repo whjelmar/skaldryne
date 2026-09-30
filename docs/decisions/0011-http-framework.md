@@ -1,6 +1,6 @@
-# 0011 — Hono for the HTTP server, with schema-driven validation and OpenAPI
+# 0011 — HTTP framework
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `INT-01`, `INT-03`, `INT-08`, `INT-11`, `INT-12`, `MODEL-13`, `NFR-04`, `NFR-10`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `INT-01`, `INT-03`, `INT-08`, `INT-11`, `INT-12`, `MODEL-13`, `NFR-04`, `NFR-10`
 
 ## Context
 
@@ -8,9 +8,9 @@ The server ([0004](0004-language-runtime-and-repository.md)) serves the web inte
 
 The server spends its time waiting on the database and on model servers, so raw request throughput does not decide this.
 
-## Decision
+## Recommendation
 
-**The HTTP server is built on Hono, running on Node.js through its Node adapter.**
+**Recommended, not decided:** Build the HTTP server on Hono, running on Node.js through its Node adapter. The points below describe what adopting it would mean.
 
 - **Web-standard handlers.** Hono is written against `Request` and `Response`, which matches 0004's rule that application code prefers web-standard APIs. Handlers can be tested by calling them with a `Request`, with no server running.
 - **One schema per boundary.** Request and response shapes are defined once as schemas, using Zod through the Standard Schema interface, so the validator could be replaced without rewriting routes. The same schemas are shared with the worker, the bot, and the plugin interface.
@@ -20,7 +20,7 @@ The server spends its time waiting on the database and on model servers, so raw 
 - **The server also serves the web interface** as static files ([0012](0012-web-interface.md)), so there is one process to run.
 - **The chat bot and plugin interface** call the same REST API, or the same internal services under the same audience rules. They never get a separate path to the database (`INT-11`).
 
-## Consequences
+## Consequences if adopted
 
 - Handlers, validation, and API documentation cannot drift apart, because they come from one set of schemas.
 - Visibility enforcement is structural: a route that forgets the audience middleware has no database connection.
@@ -28,9 +28,13 @@ The server spends its time waiting on the database and on model servers, so raw 
 - The OpenAPI generator is a community package rather than part of Hono's core. It is pinned, and generated output is checked in CI.
 - Hono on Node runs through an adapter and is slower than a framework built directly on Node's HTTP server. At this workload the difference is not measurable against database and model time.
 
-## Alternatives considered
+## Options considered
 
-- **Fastify.** Mature, well governed, with the largest plugin ecosystem and native JSON Schema validation, and faster on Node. A strong choice and the closest alternative. Not chosen because it is built on Node's own request objects rather than web-standard ones, which ties handlers to Node and works against the portability 0004 asks for.
+- **Fastify.** Mature, well governed, with the largest plugin ecosystem and native JSON Schema validation, and faster on Node. A strong choice and the closest alternative. Not recommended because it is built on Node's own request objects rather than web-standard ones, which ties handlers to Node and works against the portability 0004 asks for.
 - **Express.** Universally known, but its middleware model and error handling are dated, and typed validation and OpenAPI are all add-ons.
 - **Full-stack frameworks with their own data layer and dependency injection.** Heavier than a small team needs, and their data layers work against the row-level security design in [0007](0007-visibility-enforcement.md).
 - **A typed RPC layer as the whole API.** Good for the web interface, but third-party plugins and bots need plain REST with OpenAPI. A typed RPC layer can be added on top of Hono later for the web interface alone, if hand-written client calls become a burden.
+
+## To decide
+
+Hono or Fastify for the HTTP server? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

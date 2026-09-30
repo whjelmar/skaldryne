@@ -5,7 +5,7 @@
 - **Node.js on its current Active LTS line, with pnpm.** This overrides any global preference for Bun: do not use `bun`, `bunx`, or Bun-only APIs, and do not commit Bun lockfiles. See [decision 0004](docs/decisions/0004-language-runtime-and-repository.md).
 - Use `pnpm` / `pnpm dlx` for packages and one-off tools, the TypeScript compiler for type checking, and Vitest for tests.
 - Application code is TypeScript and prefers web-standard APIs (`fetch`, `Request`, `Response`, Web Streams, Web Crypto) over runtime-specific ones.
-- Python is allowed only inside model servers behind the inference interface (for example the local speech server, [decision 0014](docs/decisions/0014-local-speech-server.md)).
+- Python is allowed only inside model servers behind the inference interface (for example a local speech server).
 
 ## Documents
 
