@@ -26,16 +26,18 @@ These are load-bearing. Requirements throughout this document trace back to them
 | **The data is the user's** | A campaign record is a multi-year artifact. The group must be able to read, edit, and export it in full, at any time, without asking. |
 | **The models are swappable** | No single inference provider is a dependency. A table that wants everything processed on its own hardware can have that. |
 | **Nothing becomes canon unreviewed** | Machine output is a proposal. A human accepts it. |
+| **Opinionated, but never locked** | Every choice ships with a strong default and the reasoning behind it, so a new table gets good results without configuring anything. Every default is a setting, template, or plugin the group can change. Customization is bounded only by the other principles: no setting can switch off provenance, visibility, consent, or review. |
 
 ### 1.4 Non-goals
 
 Stated plainly so scope arguments have a reference point.
 
-- **Not a virtual tabletop.** No maps-with-tokens play surface, no initiative tracker, no dice. Skaldryne integrates with VTTs (§10) rather than replacing them.
+- **Not a virtual tabletop.** No maps-with-tokens play surface, no live initiative tracker, no dice. Combat is recorded (`MODEL-28`), not run. Skaldryne integrates with VTTs (§10) rather than replacing them.
 - **Not an AI game master.** Skaldryne does not run games, play NPCs, or generate plot for the table to follow.
-- **Not a rules engine.** No character-sheet math, no rules adjudication, no system-specific mechanical resolution.
+- **Not a rules engine in core.** Core tracks state and records outcomes — character sheets, encounters, party resources (§3.8) — but never computes or adjudicates rules. Rules-aware behaviour, such as a system's sheet layout or its action economy, comes from game-system plugins (`INT-08`) and is advisory only.
 - **Not a solo-play generator.** Skaldryne records play between people. It is not a single-player narrative experience.
 - **Not a content marketplace.** No selling or hosting of published adventure material.
+- **Not a chat or community platform.** Skaldryne delivers messages through the channels a group already uses (§9.1) and configures its own presence on them (`INT-10`). It does not host conversation or moderate a community.
 - **Not a video editor.** Skaldryne can cut a clip at a cited moment (`OUT-11`); it does not edit, grade, or produce video.
 - **Not a biometric identification system.** No persistent face templates in any phase (`SAFE-04`). Voice profiles exist only with consent and only within their own instance (`SAFE-03`).
 
@@ -51,6 +53,8 @@ Runs one ongoing campaign for a regular group. Owns the continuity problem.
 - **Job:** look up a detail mid-session without breaking the scene. *Done when* a query returns the answer in seconds, with the session it came from.
 - **Job:** find the threads left open. *Done when* unresolved commitments and dangling hooks are listed without being hand-tracked.
 - **Job:** share a recap with players without leaking prep. *Done when* a player-safe version exists without manual redaction.
+- **Job:** walk into the next session prepared. *Done when* a prep brief built from open threads, likely NPCs, and character knowledge is ready without assembling it by hand.
+- **Job:** tell one player a secret, at the table or between sessions. *Done when* it reaches only that player, through the channel they prefer, and enters the record with that player's visibility.
 
 ### 2.2 Multi-table GM
 
@@ -66,6 +70,7 @@ Attends sessions, may miss some, cares about their own character's arc.
 - **Job:** catch up after missing a session. *Done when* a spoiler-free summary is readable without an account.
 - **Job:** remember their own character's history and relationships. *Done when* a character view shows arc and connections over time.
 - **Job:** correct the record about their own character. *Done when* they can edit their character's entry without GM mediation.
+- **Job:** get better at playing their character, if they want to. *Done when* private, opt-in suggestions about their own play are available, and nobody else sees them.
 
 ### 2.4 Club or shared-world admin
 
@@ -126,6 +131,7 @@ This is the decision the rest of the document depends on. The alternative — st
 - **`MODEL-06` (P1) — Moments:** highlights, quotes, and awards, attachable to sessions and characters.
 - **`MODEL-07` (P0) — Journals:** free-form documents typed as GM prep, world lore, player log, or reference, each with independent visibility.
 - **`MODEL-08` (P1) — Relationship edges** between any two entities, typed (ally, rival, parent, member-of, located-in, owes) and stamped with the session that established them. *Acceptance:* the same pair can hold different relationships at different points in the timeline.
+- **`MODEL-23` (P0) — Aliases and entity resolution.** Every entity holds a canonical name alongside alternative spellings, nicknames, titles, and epithets ("the old wizard", "Grandmother"). Extraction resolves each mention to an existing entity before proposing a new one. Review supports merging duplicates and splitting a wrongly merged entity, and every claim follows its entity. *Rationale:* the structured diff (`PIPE-04`) is only as good as its matching. A record that grows a new NPC every time a name is misheard or a character is called by a title fragments quietly and becomes unsearchable. *Acceptance:* in a fixture campaign where one NPC is referred to by three names and one misspelling, extraction proposes a single entity, and a merge performed in review rewrites no evidence spans.
 
 ### 3.4 Provenance
 
@@ -144,6 +150,7 @@ This is the decision the rest of the document depends on. The alternative — st
 - **`MODEL-12` (P0) — Every record carries a visibility level:** GM-private, player-visible, or public.
 - **`MODEL-13` (P0) — Visibility is enforced at query time, including inside AI retrieval.** A secret that leaks through the chat interface is still leaked; filtering rendered output is not sufficient, because the generation itself must never see out-of-scope material. *Acceptance:* an adversarial prompt to the campaign assistant, issued by a player, cannot surface GM-private content.
 - **`MODEL-14` (P1) — Visibility can be scoped to named players.** A secret backstory, a private vision, or a handout passed to one character is visible to the GM and that player only. Three levels are not enough; the most important secrets at a table are usually between the GM and one person. *Acceptance:* a record scoped to one player is absent from every other player's search, chat, and rendered output.
+- **`MODEL-24` (P1) — More than one GM.** Co-GMs, and rotating GMs in a shared world, each hold their own GM-private material. GM-private visibility can be scoped to named GMs, and a GM can share prep with another GM without making it player-visible. *Acceptance:* in a two-GM campaign, a secret held by one GM is absent from the other's search, chat, and outputs until it is shared.
 
 ### 3.6 Canon & continuity
 
@@ -157,6 +164,21 @@ What was said at the table, what is true in the world, and what each character k
 - **`MODEL-20` (P1) — In-world time is separate from real time.** Beats can carry in-world dates on user-defined calendars. Play can be non-linear: flashbacks, dreams, time travel, parallel groups. *Acceptance:* the timeline (`NAV-01`) can order the same beats by session order or by in-world chronology.
 - **`MODEL-21` (P1) — Canon can be shared across campaigns.** Campaigns in a shared world or a club reference common entities without duplicating them, and each campaign may diverge locally. *Acceptance:* an update to a shared entity is visible in every campaign that references it, while a campaign-local divergence is not overwritten by it.
 - **`MODEL-22` (P2) — Campaigns can branch.** A spin-off, a one-shot set in the same world, or an alternative timeline starts from a snapshot of existing canon. *Acceptance:* a branch evolves independently without changing its parent.
+
+### 3.7 Sessions & participants
+
+Who was at the table, and what kind of game it is, changes what the record may say.
+
+- **`MODEL-25` (P0) — Attendance is recorded per session.** Each session records which people attended and which characters they played, including guests, drop-ins, and a character run by a stand-in. Attendance is proposed from diarization and identity links (`CAP-05`, `SHARE-07`) and confirmed in review. It drives catch-up briefs (`OUT-03`), character knowledge (`MODEL-18`), consent checks (`CAP-03`), and notifications (`MSG-01`). *Acceptance:* a player marked absent receives a catch-up brief for that session, and their character is not recorded as knowing its revelations.
+- **`MODEL-26` (P1) — Campaign lifecycle.** A session-zero record captures expectations, tone, and safety tools (`SAFE-02`) as the campaign's first entry. One-shots, short arcs, and open-ended campaigns are distinct kinds, each with suitable defaults. A finished campaign can be concluded and archived read-only, and stays searchable and exportable. *Acceptance:* an archived campaign accepts no new sessions, remains readable by its members, and can be reopened by its owner.
+
+### 3.8 Play state
+
+Tables care about the concrete state of play: who holds the cursed sword, what the party owes the guild, what level a character reached, how a fight went. Skaldryne tracks that state and records how it changed, with evidence, like any other claim. Core does not calculate it (§1.4): a hit-point total is recorded as stated at the table or synced from a sheet, never computed from a damage roll.
+
+- **`MODEL-27` (P1) — Character sheets are versioned state.** A PC's sheet — level, attributes, abilities, conditions, inventory, and any system-specific field — is stored as a sequence of snapshots tied to sessions, not as a single current value. Snapshots come from VTT sync (`INT-04`), photographed sheets (`CAP-16`), player edits (`SHARE-02`), or claims accepted in review. Sheet structure comes from the game-system plugin (`INT-08`); without one, a sheet is a set of user-defined fields (`MODEL-04`). *Acceptance:* the record answers "what did this character have at the start of session twelve", and a sheet change made at the table cites the moment it happened.
+- **`MODEL-28` (P1) — Encounters are recorded.** A fight, chase, or other structured scene is recorded as an encounter: participants, the sequence of rounds or turns where known, notable actions, and the outcome, each with evidence. Encounters are proposed from the transcript; VTT combat and dice logs (`CAP-17`) add precision when present but are not required. *Acceptance:* an encounter proposed from audio alone lists its participants and outcome with citations, and one with an attached combat log also lists its turn order.
+- **`MODEL-29` (P1) — Party resources have custody and a ledger.** Items record who holds them and when custody changed. Money, debts, favours, and shared treasure are tracked as ledger entries with evidence. Splitting loot is recorded, not calculated. *Acceptance:* the custody history of an item and the balance of a debt both trace to the sessions that changed them.
 
 ---
 
@@ -175,6 +197,8 @@ Groups play in different places with different equipment. Capture cannot assume 
 - **`CAP-07` (P0) — Audio and transcript retention are governed separately.** For raw audio the operator chooses, per campaign, among three options: **delete** after successful processing, **retain** a copy in Skaldryne's storage, or **link** to a copy held elsewhere (§4.5). Delete is the default, and the choice is presented when the campaign is created, with its consequence stated: only retain and link allow playback of the moment behind a claim (`CAP-22`). The transcript is retained by default, because evidence spans (`MODEL-09`) resolve against it.
   *The trade-off must be stated to the operator in plain language:* deleting the transcript degrades the record from auditable to merely asserted. Transcript deletion is offered as an explicit choice with its consequence documented, not as a silent default in either direction.
   *Acceptance:* retention policy for audio and for transcript are independently configurable, and the interface states what is lost by deleting each.
+- **`CAP-28` (P0) — The campaign glossary feeds transcription.** Entity names, aliases (`MODEL-23`), and system terminology from plugins (`INT-08`) are supplied to speech recognition as vocabulary hints where the backend supports them, and used to correct recognised text where it does not. The glossary grows with the record, and users can add entries directly, with pronunciations. *Rationale:* invented names are exactly the words speech recognition gets wrong, and they are the words the record depends on most. *Acceptance:* on a fixture session, glossary-assisted transcription measurably reduces misspelled entity names compared with transcription without it.
+- **`CAP-29` (P1) — Backlog import.** An existing campaign can be brought in whole: past recordings, notes, and documents are queued as a batch, with a cost and time estimate shown before anything runs (`INF-05`). Sessions process in chronological order, so each is diffed against the canon of the sessions before it, and review can be batched or delegated. *Acceptance:* a fifty-session backlog shows its estimate first, can be paused and resumed, and produces a record in which later sessions build on earlier canon.
 
 ### 4.2 Video
 
@@ -255,6 +279,7 @@ ingest ─┬─ audio:  transcribe → diarize → segment ─┐
 - **`PIPE-10` (P1) — Visual and audio evidence merge into one set of claims.** The visual branch produces claims with frame citations. Where both branches support the same claim, they corroborate it rather than duplicating it. Cite-then-check (`PIPE-02`) applies to visual citations as well. *Acceptance:* a name spoken aloud and shown on screen produces one claim with two evidence spans, not two claims.
 
 - **`PIPE-11` (P1) — Planned material is never committed as played.** GM prep ingested as a journal (`MODEL-07`) is marked as planned. The pipeline can match what happened against what was planned, but prep never enters canon as though it occurred. *Acceptance:* a prepared encounter the party skipped does not appear in any recap.
+- **`PIPE-12` (P0) — Extraction quality is measured, not assumed.** Skaldryne ships an evaluation suite: fixture sessions annotated by hand with the expected claims, entities, and planted secrets. It reports claim precision and recall, citation accuracy, entity-resolution accuracy (`MODEL-23`), and player-safe leak rate (`OUT-09`). The suite runs in continuous integration against the default templates as a regression gate, and operators can run it against their own configuration (`INF-07`). *Rationale:* extraction quality is the dominant product risk (§18.1), and a risk that is not measured cannot be managed. *Acceptance:* a change to a default template that drops any reported score below its threshold fails the build.
 
 ---
 
@@ -282,6 +307,10 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`OUT-12` (P2) — Campaign chronicle.** An entire campaign or arc is compiled into a long-form, book-like document for print or e-reader, with chapters, an index of entities, and optional illustrations from the record. *Rationale:* a campaign that ran for three years deserves an artifact the group can keep on a shelf.
 - **`OUT-13` (P2) — Per-reader language.** Outputs render in each reader's chosen language, independently of the language the session was played in.
 - **`OUT-14` (P1) — Visual evidence in outputs.** Recaps and compendium entries may embed cited keyframes, handouts, and photographed artifacts, subject to the same visibility rules as the text around them.
+- **`OUT-15` (P1) — Next-session prep brief.** Built from the record for the GM before each session: open threads and dangling hooks (`QRY-05`), NPCs and locations likely to reappear with how they were last portrayed, what each character knows (`MODEL-18`), unused prep worth reusing (`QRY-07`), and a read-aloud "previously on" with a player-safe variant. Its sections are a template (`TPL-07`). *Acceptance:* the brief is ready once a session is accepted, and every item in it links to its evidence.
+- **`OUT-16` (P1) — Session awards.** After a session, the record nominates moments for awards — best line, MVP, clutch play, best roleplay — from moments, bookmarks, and quotes (`MODEL-06`, `CAP-20`). The table votes in the web interface or through the chat bot (`INT-10`), and winners are stored as moments with their evidence. Categories, voting rules, and whether awards exist at all are campaign settings. The default set is small and celebratory, and there are no negative awards. *Acceptance:* an award plays back its moment (`CAP-22`), and a campaign can switch awards off entirely.
+- **`OUT-17` (P2) — Audio recap.** A session or arc recap is rendered as a narrated audio episode through a text-to-speech backend (`INF-01`), optionally interleaved with clips of the actual moments (`OUT-11`). Narration never imitates a participant's voice without that participant's explicit consent, governed like a voice profile (`SAFE-03`). A player-safe variant is produced alongside (`OUT-09`). *Acceptance:* the audio recap can be published as a podcast episode, and every interleaved clip respects consent and redaction.
+- **`OUT-18` (P2) — Arc infographics.** A session, arc, or campaign renders as a one-page visual summary: route through locations, key beats, faction standings, quest outcomes, and the characters involved. The layout is generated deterministically from the record, not drawn by a model; generated illustration is optional and labelled. Layouts are templates. *Acceptance:* every element in an infographic traces to a claim, and its player-safe variant omits GM-private content.
 
 ---
 
@@ -296,6 +325,7 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`QRY-07` (P1) — Planned versus played.** The GM's prep is compared against what actually happened (`PIPE-11`). Prep that was never used is surfaced for reuse, and plans the table diverged from are highlighted. *Rationale:* unused prep is one of a GM's largest sunk costs, and knowing where the table went off-script is useful when planning the next session.
 - **`QRY-08` (P2) — Visual queries.** "Show me the map when we entered the vault" returns the cited frames. *Acceptance:* a query about a visually established fact returns the frame, not only the text claim.
 - **`QRY-09` (P1) — "As of" browsing.** The record, search, and chat can be scoped to their state as of any session or episode, so someone catching up is never spoiled by what comes later. *Acceptance:* a query scoped to session five returns nothing established in session six or later.
+- **`QRY-10` (P1) — At-table lookup.** During play, a GM-only lookup answers names, facts, and "what did they promise" questions from the record and from the live transcript of the session in progress (`CAP-02`, `CAP-21`). The answer and its source appear on a phone or second screen within the latency target (`NFR-05`). *Acceptance:* asking for the name of an NPC introduced an hour earlier in the same session returns it with its moment, before the session has been processed.
 
 ---
 
@@ -306,14 +336,21 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`NAV-03` (P1) — Bidirectional wiki linking** with `[[bracket]]` syntax, hover previews, and link integrity maintained through renames and aliasing. *Acceptance:* renaming an entity does not orphan existing links.
 - **`NAV-04` (P1) — Character arc view:** one character's history, relationships, and turning points over time.
 - **`NAV-05` (P2) — Interactive maps** with nested zoom, region shapes, routes, and party position.
+- **`NAV-08` (P1) — Quest board.** The current state of every objective (`MODEL-05`), filterable by status, giver, faction, and character, with each objective's history and the sessions that changed it. Players see the board through their visibility scope. *Acceptance:* a quest's lifecycle, from the session it was given to the session it ended, is readable in one view.
+- **`NAV-09` (P1) — Roster.** Every character, PC and NPC, with appearance count, first and last session seen, who voiced them, relationships (`NAV-02`), and dormancy — NPCs not seen for a configurable number of sessions. Each session also has its own roster of who appeared. *Rationale:* a GM's NPC cast grows without limit, and the NPCs players care about are often the ones the GM has forgotten. *Acceptance:* the roster sorts NPCs by last appearance, and each entry opens that character's arc (`NAV-04`).
+- **`NAV-10` (P1) — World history.** The GM authors the setting's history — eras, wars, foundings, prophecies — on the same in-world calendars as played beats (`MODEL-20`). The timeline (`NAV-01`) shows authored history and played events together or separately. Authored history carries visibility like any record and is marked as authored rather than played. *Acceptance:* the timeline shows a five-hundred-year authored history with the campaign's played beats at their in-world positions, and a player sees only the parts visible to them.
 
-### 8.1 Table dynamics
+### 8.1 Table dynamics & analytics
 
 - **`NAV-06` (P2) — Table-dynamics analytics** — speaking-time share, spotlight balance, pacing, sentiment trend, engagement over time — presented as a facilitation aid for the GM.
 
 - **`NAV-07` (P2) — The product states a position on quantifying players, in the interface and in the documentation.** At minimum: which metrics are deliberately *not* computed, who can see per-person figures, and whether per-person metrics can be disabled entirely.
   *Rationale:* these numbers describe the GM's friends. "The quiet player spoke 6% of the time" is useful for noticing someone has been sidelined and corrosive as a scoreboard, and which one it becomes depends on framing and audience. Shipping per-person scores without taking a position is still a position — taken by omission, and by default the less careful one.
   *Acceptance:* per-person metrics have a documented default audience and an off switch.
+- **`NAV-11` (P2) — Opt-in play coaching for players.** A player can ask for private suggestions about their own play: abilities they often forget, options they have never used, spotlight openings they passed up. Rules-aware suggestions ("you have not used your bonus action in four encounters") need a game-system plugin that defines those rules (`INT-08`), plus sheets and encounters (`MODEL-27`, `MODEL-28`); without one, suggestions are limited to narrative patterns. Coaching is off by default, is enabled only by the player it concerns, is visible only to that player unless they share it, and never reaches the GM as a ranking (`NAV-07`). *Acceptance:* no one but the player can see their coaching, including the campaign owner, and switching it off deletes it.
+- **`NAV-12` (P2) — GM self-review.** For the GM only: prep used versus prepared (`QRY-07`), threads opened versus paid off, NPC introduction and reuse, and the balance of combat, exploration, and roleplay against plan. Framed as reflection, not a score. *Acceptance:* GM analytics are visible only to the GM they describe.
+- **`NAV-13` (P2) — Trends across sessions.** Any per-session measure can be viewed as a trend over the campaign: pacing, open-thread count, rate of new entities, spotlight balance. *Acceptance:* each point on a trend opens the session behind it.
+- **`NAV-14` (P2) — Across campaigns.** A GM running several campaigns sees their own patterns across them — pacing, prep usage, thread resolution — and can reuse their own authored material (NPCs, locations, prep) in another campaign by explicit copy. Only aggregates cross campaign boundaries on their own; content never does (§2.2). *Acceptance:* no query, output, or suggestion in one campaign surfaces content from another unless it was deliberately copied.
 
 ---
 
@@ -323,35 +360,48 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`SHARE-02` (P0) — Players edit their own character** without GM mediation.
 - **`SHARE-03` (P1) — Public read-only campaign pages** requiring no account from the reader. Raw transcripts are never public.
 - **`SHARE-04` (P2) — Printable session handouts** with selectable sections and visual themes.
-- **`SHARE-05` (P2) — Shareable entity cards** as images.
+- **`SHARE-05` (P2) — Trading cards.** Characters, NPCs, items, locations, and moments render as collectible cards — art, a line of flavour, and fields chosen from the record — shareable as images, printable as sheets, and collected into a campaign set. Card layouts are templates, and fields can come from sheets (`MODEL-27`) or user-defined types (`MODEL-04`). Awards (`OUT-16`) can unlock cards. *Acceptance:* a card respects its viewer's visibility, and a card for a GM-private NPC cannot be generated for a player.
 
 - **`SHARE-06` (P0) — Complete data export.** Two formats: a full-fidelity structured export that round-trips into a fresh instance without loss, and a Markdown-plus-wikilink bundle that opens directly in a plain-text notes vault.
   Export is a stated project principle, not a feature: a campaign record is a multi-year artifact, and the group must be able to leave with all of it whenever they choose.
   *Acceptance:* a full export re-imported into an empty instance reproduces the original record, including provenance and correction history.
+- **`SHARE-07` (P0) — Accounts, invitations, and identity links.** The GM invites players by link. People sign in with local accounts or through a single sign-on provider the operator configures, and read-only guests need no account. Each person's identity links their chat-platform account, voice profile (`SAFE-03`), character or characters (`MODEL-16`), and delivery preferences (`MSG-02`). *Rationale:* consent, biometric ownership, per-player visibility, and whispers are only enforceable if the product knows which person a voice, a chat account, and a character belong to. *Acceptance:* a player joins from an invite link, links their chat account, and is attributed correctly in the next session without the GM mapping them.
+
+### 9.1 Messaging, whispers & notifications
+
+The group already has places where it talks: a chat server, text messages, email, a workplace chat. Skaldryne sends through those rather than asking people to check another inbox.
+
+- **`MSG-01` (P1) — Notifications.** People are told when something needs them or concerns them: review is waiting, processing finished or failed, a recap is ready, a consent request is pending, a whisper arrived, or linked media broke (`CAP-25`). Each person can switch each notification type off. *Acceptance:* each event in this list notifies the right people and no one else.
+- **`MSG-02` (P1) — Each person chooses their channel.** Delivery goes where each person prefers: a direct message on the campaign's chat platform by default, with email, SMS, and other messaging services available through delivery plugins. *Acceptance:* two players in one campaign receive the same notification on different channels, each by their own choice.
+- **`MSG-03` (P1) — Whispers.** The GM can send a private message to one player or a subset of the table, and players can whisper to the GM, from the web interface, a bot command, or a phone, during play or between sessions. Delivery follows each recipient's channel choice (`MSG-02`). *Acceptance:* a whisper sent at the table reaches its recipient within seconds and is visible to no other player in any channel.
+- **`MSG-04` (P1) — Whispers are part of the record.** A whisper enters the record scoped to its sender and recipients (`MODEL-14`), is available as between-session material for extraction (`CAP-18`), and can carry a handout. Replies arriving by any channel are threaded back to their whisper. The sender can choose to keep a whisper out of the record. *Acceptance:* a whisper and its reply by text message appear as one thread in the record, visible only to the GM and that player.
 
 ---
 
 ## 10. Integrations & Extensibility
 
 - **`INT-01` (P1) — Read/write REST API** with scoped, revocable tokens.
-- **`INT-02` (P1) — MCP server** exposing campaign read and write, so any compatible AI client can serve as a front end. Write access requires an explicit scope grant.
+- **`INT-02` (P1) — MCP server** exposing campaign read and write, so any compatible AI client can serve as a front end. Write access requires an explicit scope grant. Automations (`INT-09`) are exposed as tools, so an AI client can run them.
 - **`INT-03` (P1) — Chat-platform bot beyond capture:** post recaps, answer questions in-channel.
 - **`INT-04` (P1) — Bidirectional VTT sync** for journals, actors, and compendium entries. Initial target: Foundry. Subsequent: Roll20.
 - **`INT-05` (P2) — Plain-text notes-vault sync**, consistent with the export format in `SHARE-06`.
 - **`INT-06` (P2) — Outbound webhooks** on session completion and record change.
 - **`INT-07` (P2) — Import from common hosted campaign-wiki export formats.**
 - **`INT-08` (P1) — Plugin architecture for game-system behaviour.** System-specific extraction hints, entity types, and terminology live in packages, not in core. *Rationale:* the number of systems is unbounded and core cannot absorb them. *Acceptance:* a new system's support can be added without modifying core.
+- **`INT-09` (P1) — Automations.** Users define workflows as a trigger, optional conditions, and actions — for example, "when a session is accepted, post the player-safe recap to the recaps channel and send each absent player their catch-up brief". Triggers include record events, schedules, and chat commands. Actions include rendering outputs, delivering messages (§9.1), calling webhooks (`INT-06`), and invoking MCP tools (`INT-02`). Skaldryne ships a small library of starter automations, and automations are portable like templates (`TPL-10`). An automation runs with the permissions of the person who created it and cannot commit to canon without review (`PIPE-05`). *Acceptance:* the example above runs end to end from a starter automation, and an automation that attempts to accept a diff is refused.
+- **`INT-10` (P1) — Discord server integration.** Beyond voice capture (`CAP-02`) and posting (`INT-03`), Skaldryne maps server roles to campaign roles (`SHARE-01`), can create a campaign's channels and threads (one thread per session by default), and offers commands for lookup, bookmarks, consent, whispers, and award voting. Discord is the initial target; other chat platforms follow through the same interface. Skaldryne configures its own channels and roles but does not moderate the server (§1.4). *Acceptance:* a GM adds the bot to a server and links a campaign, and players holding the mapped role gain campaign access without separate invitations.
 
 ---
 
 ## 11. Pluggable Inference
 
-- **`INF-01` (P0) — A single provider interface with independently swappable language-model, speech-recognition, and vision backends.** Changing any of them is configuration, not code.
+- **`INF-01` (P0) — A single provider interface with independently swappable language-model, speech-recognition, vision, text-to-speech, and image-generation backends.** Changing any of them is configuration, not code.
 - **`INF-02` (P0) — Locally hosted models are first-class, not a degraded fallback.** A table processing sensitive — or simply private — conversation must be able to keep everything on its own hardware. *Acceptance:* a documented configuration completes the full pipeline with no outbound network calls.
 - **`INF-03` (P1) — Per-stage model routing.** A cheaper model can verify citations or render prose while a stronger model extracts claims.
 - **`INF-04` (P0) — Prompts are versioned, inspectable, user-overridable templates**, not strings buried in source. *Rationale:* an operator who cannot read the prompt cannot audit the output, and extraction quality is the product's dominant variable (§18.1).
 - **`INF-05` (P0) — Cost and token accounting surfaced per session, per stage, and per backend**, in each backend's own unit — money, tokens, quota, or processing time — including the overhead added by citation-bearing extraction (`PIPE-01`). The self-hoster pays this directly and should see it.
 - **`INF-06` (P0) — Graceful degradation with actionable failure messages** when a provider is unavailable, rate-limited, or misconfigured. A stalled pipeline must say why.
+- **`INF-07` (P0) — Backend qualification.** An operator can run the evaluation suite (`PIPE-12`) against their configured backends and compare the scores with reference results before trusting a backend with a real campaign. Backends below a documented floor are flagged, not blocked. *Rationale:* local models are first-class (`INF-02`), but their quality floor is unproven (§18.3), and the operator needs to know what their own hardware produces. *Acceptance:* qualification reports scores per stage, and a backend below the floor is labelled wherever it can be selected.
 
 ---
 
@@ -370,6 +420,16 @@ Templates are how a group fits the product to its table: the prompts that extrac
 - **`TPL-09` (P1) — Template edits are audited and revertible.** Each edit records who changed what and when, following the model of `MODEL-11`. *Acceptance:* any template can be reverted to any previous version in one action.
 - **`TPL-10` (P1) — Templates are portable.** Templates export and import individually or as packs, are included in full data export (`SHARE-06`), and can ship inside plugins (`INT-08`). Imported extraction templates go through validation (`TPL-03`) like any other edit. *Acceptance:* a template pack exported from one instance imports into another and passes validation there.
 - **`TPL-11` (P2) — Starter packs.** Game-system and genre plugins can bundle entity types, extraction hints, output structures, and themes as a starting configuration for a new campaign.
+- **`TPL-12` (P1) — Style guides.** A campaign style guide is a template that governs every rendered output: voice and person, tense, reading level, spelling and capitalisation of names, in-world terminology, words to avoid, and example passages. Tone presets (`OUT-08`) apply on top of it. A club can define a house style shared by its campaigns (`TPL-02`). *Acceptance:* changing how the style guide spells a name changes it in every output on the next render.
+
+### 12.1 Guides & onboarding
+
+Opinionated software should explain its opinions. The guides are the product's defaults written out, and like every other default they can be changed.
+
+- **`GUIDE-01` (P1) — First-run onboarding.** A new campaign is guided from setup to its first reviewed session: the retention choice (`CAP-07`), consent (`CAP-03`), inviting players (`SHARE-07`), recording setup suited to the table, and the first review. *Acceptance:* a GM who has never used the product reaches an accepted first session without reading separate documentation.
+- **`GUIDE-02` (P1) — GM guide.** Best practices for recording at the table, reviewing efficiently, keeping secrets with visibility, running a session zero that covers recording, and using the record in prep and play. *Acceptance:* each recommendation links to the settings that implement it.
+- **`GUIDE-03` (P1) — Player guide.** What is recorded, who can see what, how to use off-the-record, bookmarks, whispers, and corrections, and what rights a player has over their voice and data (§13). *Acceptance:* the player guide is reachable from the invitation a player receives.
+- **`GUIDE-04` (P1) — Guides are editable.** Guides ship as versioned documents that a club or GM can edit, extend, or replace, like any template (`TPL-01`). *Acceptance:* a club's edited player guide is the one its invited players see.
 
 ---
 
@@ -404,6 +464,7 @@ Commitments that follow from being self-hosted, written as testable requirements
 - **`OWN-08` (P1)** — Behaviour is extensible by plugin (`INT-08`).
 - **`OWN-09` (P0)** — Data handling is documented, and defaults favour deletion of raw material (`CAP-07`, `CAP-15`). Retaining or linking media is an explicit, per-campaign choice with its playback consequence stated, and it can be changed later.
 - **`OWN-10` (P0)** — Ownership extends to participants, not only operators: each person controls their own voice profile and can redact their own words (§13).
+- **`OWN-11` (P1)** — Third-party material is marked. Published adventures, sourcebooks, and other material the group does not own can be marked third-party when ingested as prep or reference. It is usable privately within the campaign, but excluded from public pages (`SHARE-03`), public outputs, and exports shared outside the group, and the operator is warned before publishing anything derived from it. *Acceptance:* an adventure ingested as GM prep never appears on a public page, even after it has been played through.
 
 ---
 
@@ -413,13 +474,19 @@ Commitments that follow from being self-hosted, written as testable requirements
 - **`NFR-02` (P0) — Cost transparency** (`INF-05`), including citation overhead.
 - **`NFR-03` (P0) — Retention defaults favour deletion of audio**, with transcript governed separately and its trade-off documented (`CAP-07`).
 - **`NFR-04` (P0) — Security posture** consistent with [SECURITY.md](SECURITY.md): secret handling for provider keys, an authenticated API surface, no credentials in logs.
-- **`NFR-05` (P0) — Documented performance targets:** maximum session duration, processing latency budget relative to session length, video resolution and duration ceilings, live-caption latency, and campaign size ceiling. Every limit is a stated decision rather than an emergent surprise.
+- **`NFR-05` (P0) — Documented performance targets:** maximum session duration, processing latency budget relative to session length, video resolution and duration ceilings, live-caption latency, at-table lookup latency (`QRY-10`), and campaign size ceiling (`NFR-14`). Every limit is a stated decision rather than an emergent surprise.
 - **`NFR-06` (P1) — Observability:** per-stage timing, failure rates, and token spend queryable by the operator.
 - **`NFR-07` (P1) — Accessibility.** WCAG 2.2 AA as the interface target. Transcript and caption availability are treated as accessibility features in their own right (§2.7).
 - **`NFR-08` (P1) — Backup and restore** covering the record and its provenance, verifiable by test restore.
 - **`NFR-09` (P2) — Internationalization** of the interface, independent of transcription language support (`CAP-06`).
 - **`NFR-10` (P0) — Licensing and contribution** consistent with [LICENSING.md](LICENSING.md), [CLA.md](CLA.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 - **`NFR-11` (P1) — Storage footprint is documented and bounded.** Video multiplies storage needs by orders of magnitude over audio. Expected storage per hour for each media type and retention setting is documented, and the operator is warned before a retention setting would exceed available storage.
+- **`NFR-12` (P1) — Usable on a phone.** Every reader and player flow — recaps, search, chat, bookmarks, whispers, award voting, at-table lookup — works on a phone; review works on a tablet. *Acceptance:* these flows complete on a phone-sized viewport without horizontal scrolling.
+- **`NFR-13` (P2) — Offline reading.** The compendium, recaps, and a player's own character can be read without a connection, and sync when it returns. *Acceptance:* a device synced beforehand reads the compendium with the network disconnected.
+- **`NFR-14` (P1) — Performance at campaign scale.** Targets hold for long campaigns, not only long sessions: the diff for a new session retrieves the relevant canon rather than the whole record, and search and chat stay within their latency targets as the campaign grows. Reference scale: 200 sessions and 5,000 entities. *Acceptance:* per-session processing time and cost at reference scale stay within documented bounds of a new campaign's.
+- **`NFR-15` (P0) — No telemetry by default.** The software sends nothing to the project or any third party unless the operator enables it. Any opt-in telemetry is documented field by field, and inference traffic goes only to the backends the operator configured. *Acceptance:* a default install makes no outbound connection except to configured providers and integrations.
+- **`NFR-16` (P1) — Ready for hosting later.** Self-hosting comes first, but nothing may foreclose a hosted offering. Every record belongs to an explicit tenant boundary, provider keys and storage are scoped per tenant, and no feature assumes a single trusted operator. *Acceptance:* two tenants on one instance cannot read each other's data through any interface, verified by test.
+- **`NFR-17` (P2) — Moderation of public content.** Public pages (`SHARE-03`) have a reporting path and a takedown workflow for the operator, including for content about real people. *Acceptance:* the operator can take down a reported public page without deleting the underlying campaign.
 
 ---
 
@@ -429,21 +496,21 @@ Commitments that follow from being self-hosted, written as testable requirements
 
 **Goal:** one capture surface end to end, with the provenance guarantees intact. Audio upload leads because it is the cheapest path to a complete pipeline and it covers in-person tables, which voice-channel capture does not.
 
-Scope: `CAP-01`, `CAP-05`, `CAP-07` · the full `PIPE-*` P0 set including cite-then-check · `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-13` · `OUT-01`–`OUT-05`, `OUT-08`–`OUT-10` · `QRY-01`–`QRY-04` · `SHARE-01`, `SHARE-02`, `SHARE-06` · `INF-01`–`INF-02`, `INF-04`–`INF-06` · `TPL-01`–`TPL-04` · `SAFE-01`, `SAFE-03` · `NFR-01`–`NFR-05`.
+Scope: `CAP-01`, `CAP-05`, `CAP-07` · the full `PIPE-*` P0 set including cite-then-check · `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-13` · `OUT-01`–`OUT-05`, `OUT-08`–`OUT-10` · `QRY-01`–`QRY-04` · `SHARE-01`, `SHARE-02`, `SHARE-06` · `INF-01`–`INF-02`, `INF-04`–`INF-06` · `TPL-01`–`TPL-04` · `SAFE-01`, `SAFE-03` · `NFR-01`–`NFR-05` · entity resolution and glossary (`MODEL-23`, `CAP-28`) · attendance (`MODEL-25`) · accounts and identity (`SHARE-07`) · evaluation and backend qualification (`PIPE-12`, `INF-07`) · no telemetry (`NFR-15`).
 
-Templates and redaction are in Phase 0 on purpose. Editable prompts without validation (`TPL-03`) would ship a way to defeat provenance in the first release, and a recording product with no way to remove something said at the table should not be shipped at all.
+Entity resolution, attendance, identity, and evaluation are in Phase 0 because the exit criteria depend on them: a clean diff needs matching, a scoped catch-up brief needs attendance, sharing needs identity, and the extraction quality the product rests on needs measuring. Templates and redaction are in Phase 0 on purpose. Editable prompts without validation (`TPL-03`) would ship a way to defeat provenance in the first release, and a recording product with no way to remove something said at the table should not be shipped at all.
 
 **Exit criteria:** a GM uploads a recording, reviews a structured diff, accepts it, reads a recap, shares a player-safe variant, searches prior sessions, corrects a wrong fact and sees the recap update, and exports everything — deployed by someone who is not a maintainer, following only the documentation.
 
 ### Phase 1 — v1
 
-Remaining audio and text surfaces (`CAP-02`–`CAP-04`, `CAP-06`) · playback from the record to the moment, with retained or linked media (`CAP-22`–`CAP-26`) · video from calls and screen recordings with visual evidence (`CAP-08`–`CAP-10`, `CAP-14`, `CAP-15`, `PIPE-10`, `OUT-14`) · photographed artifacts and between-session material (`CAP-16`, `CAP-18`) · off-the-record and live bookmarks (`CAP-19`, `CAP-20`) · per-player secrets and canon & continuity (`MODEL-14`–`MODEL-21`) · planned versus played and "as of" browsing (`PIPE-11`, `QRY-07`, `QRY-09`) · clips (`OUT-11`) · the rest of templates (`TPL-05`–`TPL-10`) · the rest of participant rights (`SAFE-02`, `SAFE-04`–`SAFE-07`) · storage bounds (`NFR-11`) · relationship edges and moments · timeline, graph, wiki links, character arcs (`NAV-01`–`NAV-04`) · open-thread surfacing · public pages · API, MCP, chat bot, first VTT integration, plugin architecture · per-stage routing · observability, accessibility, backup.
+Remaining audio and text surfaces (`CAP-02`–`CAP-04`, `CAP-06`) · playback from the record to the moment, with retained or linked media (`CAP-22`–`CAP-26`) · video from calls and screen recordings with visual evidence (`CAP-08`–`CAP-10`, `CAP-14`, `CAP-15`, `PIPE-10`, `OUT-14`) · photographed artifacts and between-session material (`CAP-16`, `CAP-18`) · off-the-record and live bookmarks (`CAP-19`, `CAP-20`) · per-player secrets and canon & continuity (`MODEL-14`–`MODEL-21`) · planned versus played and "as of" browsing (`PIPE-11`, `QRY-07`, `QRY-09`) · clips (`OUT-11`) · the rest of templates (`TPL-05`–`TPL-10`) · the rest of participant rights (`SAFE-02`, `SAFE-04`–`SAFE-07`) · storage bounds (`NFR-11`) · relationship edges and moments · timeline, graph, wiki links, character arcs (`NAV-01`–`NAV-04`) · open-thread surfacing · public pages · API, MCP, chat bot, first VTT integration, plugin architecture · per-stage routing · observability, accessibility, backup · multiple GMs and campaign lifecycle (`MODEL-24`, `MODEL-26`) · sheets, encounters, and party resources (`MODEL-27`–`MODEL-29`) · backlog import (`CAP-29`) · prep brief and session awards (`OUT-15`, `OUT-16`) · at-table lookup (`QRY-10`) · quest board, roster, and world history (`NAV-08`–`NAV-10`) · notifications and whispers (`MSG-01`–`MSG-04`) · automations and Discord server integration (`INT-09`, `INT-10`) · style guides and guides (`TPL-12`, `GUIDE-01`–`GUIDE-04`) · third-party material (`OWN-11`) · phone use, campaign scale, tenant boundaries (`NFR-12`, `NFR-14`, `NFR-16`).
 
 **Exit criteria:** a campaign can be run entirely through Skaldryne without touching the filesystem; an external tool can read and write the record through a documented interface; and a recorded video call produces claims whose only evidence is on screen.
 
 ### Phase 2 — v2+
 
-Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physical table cameras, visual speaker cues, and produced episodes (`CAP-11`–`CAP-13`) · event logs and live captions (`CAP-17`, `CAP-21`) · campaign branching (`MODEL-22`) · ingest by reference from an external link (`CAP-27`) · campaign chronicle and per-reader language (`OUT-12`, `OUT-13`) · visual queries (`QRY-08`) · starter packs (`TPL-11`) · maps · handouts and cards · flavour artifacts · notes-vault sync, webhooks, wiki import · assistant persona · internationalization · and a managed-hosting track, out of scope for this document beyond the requirement that nothing in Phases 0–1 forecloses it.
+Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physical table cameras, visual speaker cues, and produced episodes (`CAP-11`–`CAP-13`) · event logs and live captions (`CAP-17`, `CAP-21`) · campaign branching (`MODEL-22`) · ingest by reference from an external link (`CAP-27`) · campaign chronicle and per-reader language (`OUT-12`, `OUT-13`) · visual queries (`QRY-08`) · starter packs (`TPL-11`) · maps · handouts and cards · flavour artifacts · notes-vault sync, webhooks, wiki import · assistant persona · internationalization · audio recaps and arc infographics (`OUT-17`, `OUT-18`) · coaching and analytics across sessions and campaigns (`NAV-11`–`NAV-14`) · offline reading and public-content moderation (`NFR-13`, `NFR-17`) · and a managed-hosting track, out of scope for this document beyond the requirement that nothing in Phases 0–1 forecloses it.
 
 ---
 
@@ -460,6 +527,9 @@ Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physic
 | **Template validation failure rate** | Shows whether `TPL-03` is catching regressions, and whether its tolerance is set too tight to be usable. |
 | **Contradictions flagged per session** | Measures whether `MODEL-19` is surfacing continuity problems or staying silent. |
 | **Contributor count and external plugins** | Health of the open-source premise. |
+| **Evaluation suite scores per release** | The output of `PIPE-12`: whether extraction is getting better or worse across versions and backends. |
+| **Entity merges per session** | Rising merges mean resolution (`MODEL-23`) is fragmenting the record. |
+| **Opt-in rate for coaching and analytics** | Whether the framing in `NAV-07` and `NAV-11` earns players' trust. |
 
 ---
 
@@ -490,3 +560,9 @@ Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physic
 **18.12 Modelling knowledge and in-world truth is hard.** Distinguishing a lie from a fact, or knowing which character learned what (`MODEL-17`, `MODEL-18`), depends on context that extraction will often miss. These claims must be conservative by default and always go through review. The risk is a review burden that makes the features cost more effort than they save.
 
 **18.13 External media platforms vary and change.** Support for seeking to a time offset, access control, and programmatic access differ by platform and change without notice, and some platforms' terms restrict automated fetching (`CAP-27`). Linked playback (`CAP-22`–`CAP-26`) must degrade to transcript and keyframes rather than break, and each location's plugin owns its own compliance with that platform's terms.
+
+**18.14 The rules boundary will be pushed.** Sheets, encounters, and coaching (§3.8, `NAV-11`) sit one step from a rules engine, and every system's community will ask for that step. The line holds by keeping rules in plugins and suggestions advisory. The risk is plugins becoming the product's real surface while core cannot vouch for their correctness.
+
+**18.15 Coaching and analytics can feel like surveillance.** Even opt-in, private suggestions describe a person's play, and a table can come to feel watched. The defaults in `NAV-07` and `NAV-11` mitigate this, but the risk is social, not technical, and it is measured only by whether people opt in.
+
+**18.16 Messaging channels cost money and carry rules.** SMS is charged per message and needs recipient consent under messaging regulations in many jurisdictions, and chat platforms rate-limit bots and change their APIs. Delivery plugins own their compliance, and the default stays on the chat platform the group already uses.
