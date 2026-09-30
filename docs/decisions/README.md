@@ -19,7 +19,7 @@ Each file here records one decision: what was decided, why, what else was consid
 
 | # | Decision | Status | Answers | Needed by |
 | --- | --- | --- | --- | --- |
-| [0001](0001-default-inference-configuration.md) | Default inference configuration | Open | Open decision 1 | 0a |
+| [0001](0001-default-inference-configuration.md) | Local models by default, with setup suggesting a hosted provider on weak hardware | Proposed | Open decision 1 | 0a |
 | [0002](0002-evaluation-fixture-sources.md) | Evaluation fixture sources | Open | Open decision 3 | 0a |
 | [0003](0003-local-reference-hardware.md) | Local reference hardware | Open | Open decision 4 | 0a |
 | [0004](0004-language-runtime-and-repository.md) | TypeScript on Node.js, in one repository | Proposed | — | 0a |
