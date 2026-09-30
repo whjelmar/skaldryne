@@ -1,6 +1,6 @@
 # Skaldryne — Product Requirements Document
 
-**Status:** Draft v0.1 · **Last updated:** 2026-09-30 · **Owner:** project maintainers
+**Status:** Draft v0.2 · **Last updated:** 2026-09-30 · **Owner:** project maintainers
 
 ---
 
@@ -80,6 +80,8 @@ Manages many tables in one setting, often with overlapping canon and rotating GM
 
 - **Job:** maintain shared canon across tables. *Done when* multiple campaigns can reference common entities without duplicating them.
 - **Job:** control who sees what. *Done when* per-entity and per-journal visibility is enforceable.
+- **Job:** bring members in and out cleanly. *Done when* joining is an invite link, chat-server roles map to campaign roles, and removing someone revokes their access everywhere at once.
+- **Job:** trust what the club installs. *Done when* every plugin shows what it can reach, and nothing reaches data it was not granted.
 
 ### 2.5 Actual-play creator
 
@@ -89,6 +91,8 @@ Records for an audience. Needs publishable output and accurate attribution.
 - **Job:** keep per-speaker audio intact for production. *Done when* multi-track capture survives the pipeline unmixed.
 - **Job:** turn a produced video episode into a record without discarding what was shown on screen. *Done when* maps, handouts, and on-screen text that appeared in the episode are citable evidence, not lost when the audio track is extracted.
 - **Job:** find and publish highlight clips. *Done when* a moment in the record exports as a clip bounded by its evidence span.
+- **Job:** show the game's world to a live audience. *Done when* the current scene, NPC names, and quests appear on the broadcast without exposing anything GM-private.
+- **Job:** keep guests and crew who did not sign up out of the record. *Done when* anyone recorded without consent stays unattributed and out of published output.
 
 ### 2.6 Fan chronicler
 
@@ -106,6 +110,16 @@ This is a primary driver, not an edge case. Several of the jobs above are materi
 - Transcripts and captions are an accessibility feature, not only a processing artifact (`NFR-07`).
 - Nothing in the product may assume the user remembers prior context. Catch-up output (`OUT-03`) and surfaced open threads (`QRY-05`) exist for this reason.
 - Deaf and hard-of-hearing players benefit during play, not only afterwards. Live captions (`CAP-21`) exist for this reason.
+
+### 2.8 Instance operator
+
+Runs the software for a group: often the GM, sometimes the one technical person in a club. Not necessarily an engineer, and accountable for other people's data.
+
+- **Job:** install, upgrade, and restore without specialist help. *Done when* deployment is one command, upgrades are documented, and a backup restores cleanly.
+- **Job:** know what it costs and keep it within budget. *Done when* cost is shown before and after each session, per stage and per backend, and budgets are enforced.
+- **Job:** choose models with confidence. *Done when* the operator can measure whether their backends are good enough before trusting them with a real campaign.
+- **Job:** keep keys, data, and plugins safe. *Done when* secrets never appear in logs or exports, and plugins reach only what they were granted.
+- **Job:** answer a privacy request. *Done when* a request from anyone who was recorded, member or not, is fulfilled in one workflow with a record that it was done.
 
 ---
 
@@ -192,7 +206,7 @@ Groups play in different places with different equipment. Capture cannot assume 
 
 - **`CAP-01` (P0) — Audio file upload.** Mixed or multi-track, from any source (phone, laptop, conference mic, streaming software, VTT recording). Long sessions supported with a documented ceiling on duration and file size. *Acceptance:* a four-hour in-person recording from a single phone processes end to end.
 - **`CAP-02` (P1) — Voice-channel capture.** A bot joins a group's voice channel on command, records **per-speaker tracks** rather than a single mix, and produces in-progress chapter summaries during play. Initial target: Discord. *Acceptance:* per-speaker tracks survive to diarization unmixed.
-- **`CAP-03` (P1) — Recording consent is explicit and revocable per participant.** Consent state is recorded, visible to participants, and withdrawable; withdrawal is honoured for future capture and triggers a documented path for handling prior material. *Rationale:* recording people speaking in character still records people speaking, and consent law varies by jurisdiction (§18.5).
+- **`CAP-03` (P0) — Recording consent is explicit and revocable per participant.** Consent state is recorded, visible to participants, and withdrawable; withdrawal is honoured for future capture and triggers a documented path for handling prior material. *Rationale:* recording people speaking in character still records people speaking, and consent law varies by jurisdiction (§18.5).
 - **`CAP-04` (P1) — Text ingest.** Pasted raw notes, uploaded transcript files (`.txt`, `.md`, `.docx`), and imported chat message ranges for play-by-post campaigns. *Acceptance:* a play-by-post campaign with no audio at all can use the full pipeline.
 - **`CAP-05` (P0) — Speaker diarization with persistent voice profiles.** Speaker-to-player-to-character mapping is learned once and reused across sessions. *Acceptance:* session two requires no re-mapping of returning speakers.
 - **`CAP-06` (P1) — Multilingual transcription, including mixed-language sessions.** A table that plays in one language and jokes in another is a single recording, not two. *Acceptance:* language switches mid-session do not truncate or garble the transcript.
@@ -202,6 +216,7 @@ Groups play in different places with different equipment. Capture cannot assume 
 - **`CAP-28` (P0) — The campaign glossary feeds transcription.** Entity names, aliases (`MODEL-23`), and system terminology from plugins (`INT-08`) are supplied to speech recognition as vocabulary hints where the backend supports them, and used to correct recognised text where it does not. The glossary grows with the record, and users can add entries directly, with pronunciations. *Rationale:* invented names are exactly the words speech recognition gets wrong, and they are the words the record depends on most. *Acceptance:* on a fixture session, glossary-assisted transcription measurably reduces misspelled entity names compared with transcription without it.
 - **`CAP-29` (P1) — Backlog import.** An existing campaign can be brought in whole: past recordings, notes, and documents are queued as a batch, with a cost and time estimate shown before anything runs (`INF-05`). Sessions process in chronological order, so each is diffed against the canon of the sessions before it, and review can be batched or delegated. *Acceptance:* a fifty-session backlog shows its estimate first, can be paused and resumed, and produces a record in which later sessions build on earlier canon.
 - **`CAP-30` (P1) — Split party: simultaneous scenes in one session.** When the party splits across rooms, voice channels, or tables, each scene is captured as its own stream belonging to the same session, with its own attendance (`MODEL-25`). Claims from a scene default to the visibility of the people present in it, so a character does not know what happened in a scene they were absent from (`MODEL-18`). The timeline and recap interleave the scenes in play order, and review shows them side by side. *Acceptance:* in a session split into two concurrent scenes, a player's catch-up brief and their character's knowledge include only their own scene until the table shares the other.
+- **`CAP-31` (P1) — Multiple and imperfect recordings.** A session can have several recordings: two phones on one table, a recorder that died and was restarted, a voice channel plus a room microphone. Overlapping recordings are aligned and merged into one transcript, using the clearer source for each span, and each evidence span records which source it came from. Gaps are recorded as gaps: a recap never bridges missing time as though it were continuous, and the GM can fill a gap with notes (`CAP-04`), marked as notes rather than transcript. *Acceptance:* two overlapping phone recordings of one session produce a single transcript with no duplicated speech, and a twenty-minute gap appears as missing in the timeline and the GM-private recap.
 
 ### 4.2 Video
 
@@ -271,7 +286,7 @@ ingest ─┬─ audio:  transcribe → diarize → segment ─┐
 
 - **`PIPE-05` (P0) — Human review gate.** Nothing reaches the campaign record without a human accepting it. Review supports merge, split, edit, and reject per proposed change. *Acceptance:* an unreviewed session's claims are absent from search, chat retrieval, and all rendered output.
 
-- **`PIPE-06` (P0) — Extraction verbosity is configurable** across at least three levels (essential / balanced / exhaustive), trading recall against review burden.
+- **`PIPE-06` (P1) — Extraction verbosity is configurable** across at least three levels (essential / balanced / exhaustive), trading recall against review burden.
 
 - **`PIPE-07` (P0) — Reprocessing is idempotent.** Re-running a session does not duplicate entities or beats, and does not silently discard accepted human corrections. *Acceptance:* reprocessing a reviewed session preserves corrections and reports what changed.
 
@@ -292,14 +307,14 @@ ingest ─┬─ audio:  transcribe → diarize → segment ─┐
 Every output here is a **rendering of the record** (`MODEL-01`), never independently stored prose.
 
 - **`OUT-01` (P0) — Narrative recap** in prose, suitable for reading aloud or sharing.
-- **`OUT-02` (P0) — Structured outline** of the session: beats, participants, locations, outcomes.
+- **`OUT-02` (P1) — Structured outline** of the session: beats, participants, locations, outcomes.
 - **`OUT-03` (P0) — Catch-up brief** for a player returning after absence, scoped to what they can know.
 - **`OUT-04` (P0) — Compendium entries** for entities, updated as sessions accumulate rather than rewritten.
 - **`OUT-05` (P0) — Quest-log delta:** what changed in objective state this session.
 - **`OUT-06` (P1) — Per-player character journal**, written in that character's voice.
-- **`OUT-07` (P1) — In-world flavour artifacts**, such as a newspaper or chronicle framing of recent events.
+- **`OUT-07` (P2) — In-world flavour artifacts**, such as a newspaper or chronicle framing of recent events.
 
-- **`OUT-08` (P0) — Tone and length are configurable** via presets and freeform instruction, per campaign, changeable at any time without reprocessing.
+- **`OUT-08` (P1) — Tone and length are configurable** via presets and freeform instruction, per campaign, changeable at any time without reprocessing.
 
 - **`OUT-09` (P0) — Every output renders in both a GM-private and a player-safe variant, generated together.** The GM must never hand-redact a recap before sharing it. *Acceptance:* the player-safe variant of any output contains no content marked GM-private, verified against a fixture campaign containing planted secrets.
 
@@ -331,7 +346,7 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`QRY-07` (P1) — Planned versus played.** The GM's prep is compared against what actually happened (`PIPE-11`). Prep that was never used is surfaced for reuse, and plans the table diverged from are highlighted. *Rationale:* unused prep is one of a GM's largest sunk costs, and knowing where the table went off-script is useful when planning the next session.
 - **`QRY-08` (P2) — Visual queries.** "Show me the map when we entered the vault" returns the cited frames. *Acceptance:* a query about a visually established fact returns the frame, not only the text claim.
 - **`QRY-09` (P1) — "As of" browsing.** The record, search, and chat can be scoped to their state as of any session or episode, so someone catching up is never spoiled by what comes later. *Acceptance:* a query scoped to session five returns nothing established in session six or later.
-- **`QRY-10` (P1) — At-table lookup.** During play, a GM-only lookup answers names, facts, and "what did they promise" questions from the record and from the live transcript of the session in progress (`CAP-02`, `CAP-21`). The answer and its source appear on a phone or second screen within the latency target (`NFR-05`). *Acceptance:* asking for the name of an NPC introduced an hour earlier in the same session returns it with its moment, before the session has been processed.
+- **`QRY-10` (P1) — At-table lookup.** During play, a GM-only lookup answers names, facts, and "what did they promise" questions from the record and, once live captions exist (`CAP-21`), from the live transcript of the session in progress. The answer and its source appear on a phone or second screen within the latency target (`NFR-05`). *Acceptance:* a fact from any processed session is returned with its source within the target; with live captions enabled, an NPC introduced an hour earlier in the same session is found before the session has been processed.
 
 ---
 
@@ -397,7 +412,7 @@ The group already has places where it talks: a chat server, text messages, email
 - **`INT-08` (P1) — Plugin architecture for game-system behaviour.** System-specific extraction hints, entity types, and terminology live in packages, not in core. *Rationale:* the number of systems is unbounded and core cannot absorb them. *Acceptance:* a new system's support can be added without modifying core.
 - **`INT-09` (P1) — Automations.** Users define workflows as a trigger, optional conditions, and actions — for example, "when a session is accepted, post the player-safe recap to the recaps channel and send each absent player their catch-up brief". Triggers include record events, schedules, and chat commands. Actions include rendering outputs, delivering messages (§9.1), calling webhooks (`INT-06`), and invoking MCP tools (`INT-02`). Skaldryne ships a small library of starter automations, and automations are portable like templates (`TPL-10`). An automation runs with the permissions of the person who created it and cannot commit to canon without review (`PIPE-05`). *Acceptance:* the example above runs end to end from a starter automation, and an automation that attempts to accept a diff is refused.
 - **`INT-10` (P1) — Discord server integration.** Beyond voice capture (`CAP-02`) and posting (`INT-03`), Skaldryne maps server roles to campaign roles (`SHARE-01`), can create a campaign's channels and threads (one thread per session by default), and offers commands for lookup, bookmarks, consent, whispers, and award voting. Discord is the initial target; other chat platforms follow through the same interface. Skaldryne configures its own channels and roles but does not moderate the server (§1.4). *Acceptance:* a GM adds the bot to a server and links a campaign, and players holding the mapped role gain campaign access without separate invitations.
-- **`INT-11` (P0) — Plugins run with declared, granted permissions.** Every plugin declares what it needs — which record data, which visibility scopes, network access, and which external services — and the operator grants it at install. A plugin never receives GM-private or per-player content unless that scope was granted, and is isolated from core and from other plugins. Plugins carry a trust level: bundled, signed by a known publisher, or unsigned, and installing an unsigned plugin requires an explicit choice. *Rationale:* rules, delivery, media locations, and automations all run as plugins, so the plugin boundary is where secrets and participants' data would leak. *Acceptance:* a plugin that attempts to read a scope it did not declare is refused and the attempt is logged.
+- **`INT-11` (P1) — Plugins run with declared, granted permissions.** Every plugin declares what it needs — which record data, which visibility scopes, network access, and which external services — and the operator grants it at install. A plugin never receives GM-private or per-player content unless that scope was granted, and is isolated from core and from other plugins. Plugins carry a trust level: bundled, signed by a known publisher, or unsigned, and installing an unsigned plugin requires an explicit choice. *Rationale:* rules, delivery, media locations, and automations all run as plugins, so the plugin boundary is where secrets and participants' data would leak. It ships with the plugin architecture (`INT-08`), never after it. *Acceptance:* a plugin that attempts to read a scope it did not declare is refused and the attempt is logged.
 - **`INT-12` (P1) — A versioned plugin interface, with data migrations.** The plugin interface is versioned, with documented compatibility and deprecation periods. When a plugin's schema changes — a game system publishes a revised edition, or a plugin is retired — the plugin supplies a migration for sheets, entity types, and fields, previewed and applied through review. Data from a removed plugin remains readable as user-defined fields (`MODEL-04`). *Acceptance:* upgrading a game-system plugin to a new edition migrates existing sheets with a reviewable diff, and uninstalling it loses no data.
 
 ---
@@ -456,8 +471,10 @@ The people being recorded are not all the people running the software. A player'
 - **`SAFE-05` (P1) — Participants can leave with what is theirs.** A departing player can export their own character's record and their own journals, delete their voice profile, and request redaction of their out-of-character speech. Campaign canon their character took part in remains with the group. *Acceptance:* the departure flow distinguishes personal content from shared canon and handles each as documented.
 - **`SAFE-06` (P1) — Campaigns with minors have stricter defaults.** A campaign can be marked as including minors — schools, libraries, family tables. Guardian consent is recorded through the `CAP-03` flow. Stricter defaults apply: no public pages, immediate deletion of raw audio and video, and per-person analytics (`NAV-06`) off. *Acceptance:* marking a campaign as including minors applies every stricter default at once, and relaxing any of them is an explicit, logged choice.
 - **`SAFE-07` (P1) — Shared outputs carry content warnings.** Player-facing and public outputs can carry content warnings derived from session content and the campaign's lines and veils.
-- **`SAFE-08` (P0) — Blocking, muting, and reporting between participants.** Whispers, direct messages, award nominations, and card sharing give participants private ways to reach each other. Any participant can block another from contacting them through Skaldryne, and can report a message or behaviour to the GM, or, when the GM is the subject, to the campaign owner or instance operator. Blocking is silent to the blocked person. *Acceptance:* a blocked participant's whispers, nominations, and shares do not reach the person who blocked them through any channel, and a report about the GM does not route to that GM.
+- **`SAFE-08` (P1) — Blocking, muting, and reporting between participants.** Whispers, direct messages, award nominations, and card sharing give participants private ways to reach each other. Any participant can block another from contacting them through Skaldryne, and can report a message or behaviour to the GM, or, when the GM is the subject, to the campaign owner or instance operator. Blocking is silent to the blocked person. It ships with whispers (`MSG-03`), the first private channel between participants. *Acceptance:* a blocked participant's whispers, nominations, and shares do not reach the person who blocked them through any channel, and a report about the GM does not route to that GM.
 - **`SAFE-09` (P1) — Post-session check-in.** After each session, participants can answer a short, optional check-in — what worked, what did not, anything the table should adjust — anonymously if the campaign allows it. Answers go to the GM, never into the record or any output, and can prompt a review of lines and veils (`SAFE-02`). The GM's own summary of responses can feed their self-review (`NAV-12`). *Acceptance:* check-in answers never appear in search, chat, exports shared with players, or outputs, and an anonymous answer cannot be attributed by anyone, including the operator.
+- **`SAFE-10` (P0) — People who are not members.** Anyone recorded who is not a campaign member — a housemate passing through, a child in the background, a guest who never made an account — is an unidentified speaker. Their speech is never attributed to a member or given a voice profile, is excluded from outputs by default, and can be deleted on request without their needing an account (`SAFE-11`). The GM can mark a guest who has consented as a participant for that session (`MODEL-25`). *Acceptance:* in a fixture session with an unconsented background speaker, no output quotes or attributes their speech, and one action removes it everywhere (`SAFE-01`).
+- **`SAFE-11` (P1) — Privacy requests handled by the operator.** Any person — member, former member, or someone recorded who never joined — can ask the operator to see or delete the data held about them. Operator tooling finds that person's speech, voice profile, and attributed claims across the instance's campaigns, then exports or redacts them (`SAFE-01`), and logs that the request was fulfilled without logging its content. *Acceptance:* a request from a non-member identified by the GM in two sessions is fulfilled in one workflow, and the completion record contains none of the redacted content.
 
 ---
 
@@ -505,25 +522,63 @@ Commitments that follow from being self-hosted, written as testable requirements
 
 ## 16. Phased Roadmap
 
+**Priorities.** P0 is required to meet Phase 0's exit criteria. P1 is scheduled in Phase 1, and P2 in Phase 2 or later. A requirement's priority and its phase always agree, so changing one means changing the other. Every requirement below is placed by ID, in exactly one milestone.
+
+**Invariants.** The ownership commitments (`OWN-01`–`OWN-07`, `OWN-09`, `OWN-10`) and licensing (`NFR-10`) are not scheduled. They hold from the first release, and every milestone must preserve them.
+
 ### Phase 0 — MVP
 
-**Goal:** one capture surface end to end, with the provenance guarantees intact. Audio upload leads because it is the cheapest path to a complete pipeline and it covers in-person tables, which voice-channel capture does not.
+**Goal:** one capture surface end to end, with the provenance guarantees intact. Audio upload leads because it is the cheapest path to a complete pipeline, and it covers in-person tables, which voice-channel capture does not.
 
-Scope: `CAP-01`, `CAP-05`, `CAP-07` · the full `PIPE-*` P0 set including cite-then-check · `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-13` · `OUT-01`–`OUT-05`, `OUT-08`–`OUT-10` · `QRY-01`–`QRY-04` · `SHARE-01`, `SHARE-02`, `SHARE-06` · `INF-01`–`INF-02`, `INF-04`–`INF-06` · `TPL-01`–`TPL-04` · `SAFE-01`, `SAFE-03` · `NFR-01`–`NFR-05` · entity resolution and glossary (`MODEL-23`, `CAP-28`) · attendance (`MODEL-25`) · accounts and identity (`SHARE-07`) · evaluation and backend qualification (`PIPE-12`, `INF-07`) · no telemetry (`NFR-15`) · security baseline: injection resistance, plugin permissions, member removal, blocking, encryption and secrets (`PIPE-13`, `INT-11`, `OWN-12`, `SAFE-08`, `NFR-18`).
+Phase 0 is split so the pipeline is proven before anyone else is recorded. Milestone 0a is internal and ships to no one: it establishes extraction quality, provenance, and injection resistance on fixtures, because nothing downstream is worth building if extraction is poor (§18.1). Milestone 0b is the first release. Consent, redaction, voice-profile ownership, and the handling of non-members are in it, because a product that records other people must not ship without them. Accounts, attendance, and member removal are in it because sharing with players is part of its exit criteria. Template validation is in Phase 0 because editable prompts without it (`TPL-03`) would ship a way to defeat provenance in the first release.
 
-Entity resolution, attendance, identity, and evaluation are in Phase 0 because the exit criteria depend on them: a clean diff needs matching, a scoped catch-up brief needs attendance, sharing needs identity, and the extraction quality the product rests on needs measuring. The security baseline is in Phase 0 because it cannot be retrofitted: the plugin permission model ships before the first plugin, and injection resistance before the first player-facing output. Templates and redaction are in Phase 0 on purpose. Editable prompts without validation (`TPL-03`) would ship a way to defeat provenance in the first release, and a recording product with no way to remove something said at the table should not be shipped at all.
+#### 0a — A trustworthy record (internal)
 
-**Exit criteria:** a GM uploads a recording, reviews a structured diff, accepts it, reads a recap, shares a player-safe variant, searches prior sessions, corrects a wrong fact and sees the recap update, and exports everything — deployed by someone who is not a maintainer, following only the documentation.
+Scope: `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-12`, `MODEL-23` · `CAP-01`, `CAP-05`, `CAP-07`, `CAP-28` · `PIPE-01`–`PIPE-05`, `PIPE-07`, `PIPE-08`, `PIPE-12`, `PIPE-13` · `OUT-01`, `OUT-04`, `OUT-05`, `OUT-10` · `QRY-01`–`QRY-03` · `SHARE-06` · `INF-01`, `INF-02`, `INF-04`–`INF-07` · `TPL-01`–`TPL-04` · `NFR-01`–`NFR-05`, `NFR-15`, `NFR-18`.
+
+Until voice-profile consent exists (0b), speakers are labelled per session and no persistent profile is created.
+
+**Exit criteria:** on the evaluation fixtures, including the injection fixtures, the default pipeline meets its quality thresholds (§18, open decision 2); and a maintainer uploads a recording, reviews a structured diff, accepts it, reads a recap, searches prior sessions, corrects a wrong fact and sees the recap update, and exports everything.
+
+#### 0b — Players join safely (first release)
+
+Scope: `CAP-03` · `MODEL-13`, `MODEL-25` · `OUT-03`, `OUT-09` · `QRY-04` · `SHARE-01`, `SHARE-02`, `SHARE-07` · `SAFE-01`, `SAFE-03`, `SAFE-10` · `OWN-12`.
+
+**Exit criteria:** a GM invites their players, who consent before anything they said is processed; the GM uploads a recording, reviews and accepts the diff, and shares a player-safe recap; each player sees only what their visibility allows and receives a catch-up brief for a session they missed; a player redacts something they said and it is gone everywhere; a removed player loses access at once; and a background voice that never consented appears in no output. All of it is deployed by someone who is not a maintainer, following only the documentation.
 
 ### Phase 1 — v1
 
-Remaining audio and text surfaces (`CAP-02`–`CAP-04`, `CAP-06`) · playback from the record to the moment, with retained or linked media (`CAP-22`–`CAP-26`) · video from calls and screen recordings with visual evidence (`CAP-08`–`CAP-10`, `CAP-14`, `CAP-15`, `PIPE-10`, `OUT-14`) · photographed artifacts and between-session material (`CAP-16`, `CAP-18`) · off-the-record and live bookmarks (`CAP-19`, `CAP-20`) · per-player secrets and canon & continuity (`MODEL-14`–`MODEL-21`) · planned versus played and "as of" browsing (`PIPE-11`, `QRY-07`, `QRY-09`) · clips (`OUT-11`) · the rest of templates (`TPL-05`–`TPL-10`) · the rest of participant rights (`SAFE-02`, `SAFE-04`–`SAFE-07`) · storage bounds (`NFR-11`) · relationship edges and moments · timeline, graph, wiki links, character arcs (`NAV-01`–`NAV-04`) · open-thread surfacing · public pages · API, MCP, chat bot, first VTT integration, plugin architecture · per-stage routing · observability, accessibility, backup · multiple GMs and campaign lifecycle (`MODEL-24`, `MODEL-26`) · sheets, encounters, and party resources (`MODEL-27`–`MODEL-29`) · backlog import (`CAP-29`) · prep brief and session awards (`OUT-15`, `OUT-16`) · at-table lookup (`QRY-10`) · quest board, roster, and world history (`NAV-08`–`NAV-10`) · notifications and whispers (`MSG-01`–`MSG-04`) · automations and Discord server integration (`INT-09`, `INT-10`) · style guides and guides (`TPL-12`, `GUIDE-01`–`GUIDE-04`) · third-party material (`OWN-11`) · phone use, campaign scale, tenant boundaries (`NFR-12`, `NFR-14`, `NFR-16`) · split-party capture (`CAP-30`) · output flags (`OUT-19`) · scheduling (`MSG-05`) · plugin versioning and migrations (`INT-12`) · post-session check-in (`SAFE-09`).
+Milestone 1a comes first, because every later milestone assumes the players are present. Milestones 1b, 1c, and 1d depend only on 1a and can proceed in parallel.
 
-**Exit criteria:** a campaign can be run entirely through Skaldryne without touching the filesystem; an external tool can read and write the record through a documented interface; and a recorded video call produces claims whose only evidence is on screen.
+#### 1a — The table joins in
+
+Scope: `CAP-02`, `CAP-04`, `CAP-06`, `CAP-19`, `CAP-20`, `CAP-31` · `MODEL-14`, `MODEL-16`, `MODEL-17`, `MODEL-24`, `MODEL-26` · `PIPE-09` · `OUT-08`, `OUT-19` · `QRY-10` · `MSG-01`–`MSG-05` · `INT-03`, `INT-10` · `SAFE-02`, `SAFE-05`–`SAFE-09` · `GUIDE-01`–`GUIDE-04` · `NFR-12`.
+
+**Exit criteria:** a group plays over a voice channel with the bot recording, takes something off the record, and bookmarks moments; the GM whispers one player through that player's chosen channel; the next session is scheduled from a poll; a new player joins from an invite and completes onboarding without the GM's help; and a player can block another participant, and can leave with what is theirs.
+
+#### 1b — A deeper record
+
+Scope: `MODEL-06`, `MODEL-08`, `MODEL-15`, `MODEL-18`–`MODEL-21`, `MODEL-27`–`MODEL-29` · `CAP-16`, `CAP-18`, `CAP-29`, `CAP-30` · `PIPE-11` · `OUT-02`, `OUT-06`, `OUT-15` · `QRY-05`, `QRY-07`, `QRY-09` · `NAV-01`–`NAV-04`, `NAV-08`–`NAV-10` · `SHARE-03` · `INT-04` · `OWN-11` · `NFR-14`.
+
+**Exit criteria:** a fifty-session backlog imports, with later sessions diffed against earlier canon; the GM prepares the next session from the prep brief alone; the record answers what a character knew, held, and had on their sheet at any session; a contradiction and a retcon are each resolved in review; and the timeline, graph, quest board, and roster each open to their evidence.
+
+#### 1c — Video and the moment
+
+Scope: `CAP-08`–`CAP-10`, `CAP-14`, `CAP-15`, `CAP-22`–`CAP-26` · `PIPE-10` · `OUT-11`, `OUT-14`, `OUT-16` · `SAFE-04` · `NFR-11`.
+
+**Exit criteria:** a recorded video call produces claims whose only evidence is on screen; any claim plays back its moment from retained or linked media without widening access; a clip exports bounded by its evidence span; and a session award plays back the moment it celebrates.
+
+#### 1d — An open platform
+
+Scope: `INT-01`, `INT-02`, `INT-08`, `INT-09`, `INT-11`, `INT-12` · `OWN-08` · `INF-03` · `PIPE-06` · `TPL-05`–`TPL-10`, `TPL-12` · `SAFE-11` · `NFR-06`–`NFR-08`, `NFR-16`.
+
+**Exit criteria:** an external tool reads and writes the record through the documented API and MCP interfaces; a starter automation runs end to end; a game-system plugin installs with declared permissions and moves to a new edition through a reviewable migration; the instance is backed up and restored; and an operator fulfils a privacy request in one workflow.
 
 ### Phase 2 — v2+
 
-Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physical table cameras, visual speaker cues, and produced episodes (`CAP-11`–`CAP-13`) · event logs and live captions (`CAP-17`, `CAP-21`) · campaign branching (`MODEL-22`) · ingest by reference from an external link (`CAP-27`) · campaign chronicle and per-reader language (`OUT-12`, `OUT-13`) · visual queries (`QRY-08`) · starter packs (`TPL-11`) · maps · handouts and cards · flavour artifacts · notes-vault sync, webhooks, wiki import · assistant persona · internationalization · audio recaps and arc infographics (`OUT-17`, `OUT-18`) · coaching and analytics across sessions and campaigns (`NAV-11`–`NAV-14`) · offline reading and public-content moderation (`NFR-13`, `NFR-17`) · live-stream overlays (`OUT-20`) · and a managed-hosting track, out of scope for this document beyond the requirement that nothing in Phases 0–1 forecloses it.
+Scope: `MODEL-22` · `CAP-11`–`CAP-13`, `CAP-17`, `CAP-21`, `CAP-27` · `OUT-07`, `OUT-12`, `OUT-13`, `OUT-17`, `OUT-18`, `OUT-20` · `QRY-06`, `QRY-08` · `NAV-05`–`NAV-07`, `NAV-11`–`NAV-14` · `SHARE-04`, `SHARE-05` · `INT-05`–`INT-07` · `TPL-11` · `NFR-09`, `NFR-13`, `NFR-17`.
+
+Phase 2 is not a single release, and its order is set by what Phase 1 teaches. A managed-hosting track is out of scope for this document beyond the requirement that nothing in Phases 0–1 forecloses it (`NFR-16`, open decision 10).
 
 ---
 
@@ -547,7 +602,7 @@ Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physic
 
 ---
 
-## 18. Open Questions & Risks
+## 18. Risks & Open Decisions
 
 **18.1 Extraction quality is the dominant product risk.** Everything downstream renders from extracted claims. If extraction is mediocre, no amount of interface quality compensates, and the review gate turns from a safeguard into tedious manual data entry. Mitigation: a labelled fixture corpus from day one, precision and recall tracked per prompt and model version, and correction rate monitored as a regression signal.
 
@@ -582,3 +637,29 @@ Table-dynamics analytics with its stated position (`NAV-06`, `NAV-07`) · physic
 **18.16 Messaging channels cost money and carry rules.** SMS is charged per message and needs recipient consent under messaging regulations in many jurisdictions, and chat platforms rate-limit bots and change their APIs. Delivery plugins own their compliance, and the default stays on the chat platform the group already uses.
 
 **18.17 Everything ingested is untrusted input.** Players upload documents, speak freely, and send whispers, and any of it can carry instructions aimed at the model. `PIPE-13` and the injection fixtures in `PIPE-12` reduce the risk, but model behaviour under adversarial input is not fully predictable. Keeping GM-private content out of the context of player-facing renders is the control that does not depend on the model behaving.
+
+### Open decisions
+
+These need an answer before the milestone shown. Owners are roles until the project names maintainers for each area.
+
+| # | Decision | Why it matters | Owner | Needed by |
+|---|---|---|---|---|
+| 1 | Default inference configuration for a new install: local models, or a hosted provider using the operator's key | Sets first-run quality, cost, and whether anything leaves the machine (`INF-02`, `NFR-15`) | Inference | 0a |
+| 2 | Quality thresholds for the evaluation suite, and the backend qualification floor | `PIPE-12` can gate builds and `INF-07` can label backends only once the numbers exist; set them from a baseline run | Pipeline | 0a exit |
+| 3 | Where evaluation fixtures come from: real sessions released by every participant, scripted sessions, or both | Real sessions are representative but need everyone's release; scripted ones are safe but can flatter the pipeline | Pipeline | 0a |
+| 4 | Reference hardware for the fully local path | "Local is first-class" (`INF-02`, `OWN-03`) needs a named machine on which the `NFR-05` targets are promised | Inference | 0a |
+| 5 | Default retention window for raw audio and video | Deletion by default (`CAP-07`, `NFR-03`) against time to re-listen during review | Product | 0b |
+| 6 | Which delivery channels are bundled, and which chat platform follows Discord | SMS and email carry cost and compliance (§18.16); every platform is ongoing maintenance (`MSG-02`, `INT-10`) | Integrations | 1a |
+| 7 | Minimum group size for anonymous check-ins | At a table of three, anonymity is nominal (`SAFE-09`) | Product | 1a |
+| 8 | Who signs plugins, and whether the project runs a registry | The trust levels in `INT-11` mean nothing without a signing authority | Security | 1d |
+| 9 | Which game systems ship as bundled plugins | Sets what sheets, encounters, and coaching can do on day one (`INT-08`, `MODEL-27`, `TPL-11`) | Integrations | 1d |
+| 10 | Whether the project will offer managed hosting, and who would run it | Tenant boundaries (`NFR-16`) are built regardless; the answer sets Phase 2 priorities | Maintainers | Phase 2 |
+
+---
+
+## 19. Revision history
+
+| Version | Date | Changes |
+|---|---|---|
+| 0.1 | 2026-09-30 | Initial draft. |
+| 0.2 | 2026-09-30 | Added linked-media playback; play state (sheets, encounters, party resources); messaging, whispers, and scheduling; automations and Discord server integration; analytics and opt-in coaching; guides and style guides; the security baseline; and handling of non-members and privacy requests. Added the instance operator as a user. Scoped the roadmap: a strict priority definition, Phase 0 split into 0a and 0b, Phase 1 split into four milestones with their own exit criteria, and every requirement placed by ID. Added the open-decisions register. |
