@@ -28,6 +28,10 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0008](0008-inference-backend-interface.md) | One interface per model capability, with adapters behind it | Proposed | — | 0a |
 | [0009](0009-pipeline-execution.md) | Pipeline stages are durable, idempotent jobs | Proposed | — | 0a |
 | [0010](0010-deployment.md) | One container composition, started with one command | Proposed | — | 0a |
+| [0011](0011-http-framework.md) | Hono for the HTTP server, with schema-driven validation and OpenAPI | Proposed | — | 0a |
+| [0012](0012-web-interface.md) | The web interface is a React single-page app, served by the API server | Proposed | — | 0a |
+| [0013](0013-local-language-model-server.md) | llama.cpp server runs the local language and embedding models | Proposed | — | 0a |
+| [0014](0014-local-speech-server.md) | A small speech server of our own, built on faster-whisper and pyannote | Proposed | — | 0a |
 
 ## Not yet decided
 
@@ -36,7 +40,7 @@ These are needed later and are deliberately left open until then.
 | Question | Needed by | Notes |
 | --- | --- | --- |
 | Quality thresholds and the backend qualification floor (PRD open decision 2) | 0a exit | Set from a baseline run on the fixtures of [0002](0002-evaluation-fixture-sources.md), not guessed in advance. |
-| Web interface framework | 0a | The 0a interface is small (upload, review, read, search). Decide once the review screen is sketched. |
+| Database client and migration tooling | 0a | Must support per-transaction settings for row-level security ([0007](0007-visibility-enforcement.md)) and plain SQL migrations ([0005](0005-record-storage.md)). |
 | Authentication and single sign-on library | 0b | Needed for `SHARE-07`. |
 | Default retention window for raw audio (PRD open decision 5) | 0b | |
 | Object storage beyond the local disk | 1c | Video makes media storage large enough to matter (`NFR-11`). |
