@@ -1,14 +1,14 @@
-# 0003 — One named reference machine for the local path
+# 0003 — Local reference hardware
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
+**Status:** Open · **Date:** 2026-09-30 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
 
 ## Context
 
 "Local models are first-class" (`INF-02`) is only a promise if it names a machine. The performance targets (`NFR-05`) — session length, processing time, campaign size — mean nothing without the hardware they were measured on. Operators also need to know before they install whether their machine is good enough.
 
-## Decision
+## Recommendation
 
-**The project names one reference machine, measures every release on it, and states every local performance target against it.**
+**Recommended, not decided:** The project names one reference machine, measures every release on it, and states every local performance target against it.
 
 | Component | Reference |
 | --- | --- |
@@ -23,15 +23,19 @@
 - **A second, CPU-only profile** is documented but not promised: the pipeline must complete on it, and its processing time is published, not targeted.
 - **The specific card and processor used by the project's own measurement machine are listed in the documentation**, so results can be reproduced. Any machine meeting the table above counts as meeting the reference.
 
-## Consequences
+## Consequences if adopted
 
 - Operators can tell before installing whether their machine will meet the targets.
 - 16 GB of video memory sets a ceiling on local model size, which in turn caps local extraction quality. That ceiling is the honest version of "local is first-class".
 - The project needs access to a reference machine for every release, which is an ongoing cost.
 - Laptops and machines with shared memory are left out of the promise, though many will run the pipeline. Adding a second promised profile later is a new decision record.
 
-## Alternatives considered
+## Options considered
 
-- **No reference; publish results from whatever hardware contributors have.** Rejected: targets would drift with every contributor's machine.
+- **No reference; publish results from whatever hardware contributors have.** Not recommended: targets would drift with every contributor's machine.
 - **A higher reference, such as 24 GB of video memory.** Better local quality, but it excludes most home machines, so fewer people could use the local default.
 - **CPU-only as the reference.** Most inclusive, but too slow for a four-hour session to process in reasonable time with models good enough to pass the thresholds.
+
+## To decide
+
+Which machine is the reference: a 16 GB consumer GPU, a higher or lower tier, or CPU only? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

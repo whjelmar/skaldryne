@@ -1,14 +1,14 @@
-# 0010 — One container composition, started with one command
+# 0010 — Deployment
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `NFR-01`, `NFR-04`, `NFR-15`, `NFR-18`, `INF-02`, `OWN-03`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `NFR-01`, `NFR-04`, `NFR-15`, `NFR-18`, `INF-02`, `OWN-03`
 
 ## Context
 
 The PRD requires a one-command install with a documented upgrade path (`NFR-01`), a fully local option (`INF-02`, `OWN-03`), no outbound traffic by default (`NFR-15`), and secrets kept out of logs and exports (`NFR-18`). The decisions above add a database ([0005](0005-record-storage.md)), pipeline workers ([0009](0009-pipeline-execution.md)), and model servers ([0008](0008-inference-backend-interface.md)).
 
-## Decision
+## Recommendation
 
-**Skaldryne ships as a container composition that one command starts. Model servers are optional services in the same composition.**
+**Recommended, not decided:** Skaldryne ships as a container composition that one command starts. Model servers are optional services in the same composition.
 
 ### Services
 
@@ -32,15 +32,19 @@ The PRD requires a one-command install with a documented upgrade path (`NFR-01`)
 - **An upgrade pulls the new images and restarts.** The `server` applies migrations on start, after taking a database snapshot, and refuses to start if a migration fails, leaving the snapshot to restore.
 - **Every release is tested by upgrading a copy of the previous release** with campaign data in it (`NFR-01`).
 
-## Consequences
+## Consequences if adopted
 
 - An operator installs one container runtime and runs one command.
 - A machine without a capable GPU can still run the `local` profile slowly, or the `hosted` profile at full speed.
 - The composition targets a single machine. Clustered deployments are out of scope until hosting is decided (PRD open decision 10).
 - Model server images are large, and the `local` profile needs several gigabytes of disk for weights. Install states this before downloading.
 
-## Alternatives considered
+## Options considered
 
 - **A single all-in-one image.** Simplest to run, but the database, workers, and model servers would share one process lifecycle, and model servers could not be dropped for the hosted profile.
-- **Native installers per operating system.** Rejected for Phase 0: several packaging paths to maintain, and model servers vary too much across systems.
-- **A cluster orchestrator as the primary target.** Rejected: far more than a home or club operator needs, and it would make one-command install impossible.
+- **Native installers per operating system.** Not recommended for Phase 0: several packaging paths to maintain, and model servers vary too much across systems.
+- **A cluster orchestrator as the primary target.** Not recommended: far more than a home or club operator needs, and it would make one-command install impossible.
+
+## To decide
+
+One container composition with local and hosted profiles, a single image, or native installers? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

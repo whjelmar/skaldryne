@@ -1,6 +1,6 @@
-# 0007 — Visibility is enforced by the database, and model context is built by one audience-scoped reader
+# 0007 — Visibility enforcement
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `MODEL-12`, `MODEL-13`, `QRY-04`, `OUT-09`, `PIPE-05`, `PIPE-13`, `SHARE-01`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `MODEL-12`, `MODEL-13`, `QRY-04`, `OUT-09`, `PIPE-05`, `PIPE-13`, `SHARE-01`
 
 ## Context
 
@@ -8,9 +8,9 @@ Keeping the GM's secrets is the product's central promise. Every record carries 
 
 Checks written in application code are easy to miss in one query out of hundreds. Filtering a model's output afterwards is too late.
 
-## Decision
+## Recommendation
 
-**The database enforces visibility on every read, and all model context is assembled through one component that reads as the audience.**
+**Recommended, not decided:** The database enforces visibility on every read, and all model context is assembled through one component that reads as the audience.
 
 ### In the database
 
@@ -32,15 +32,19 @@ Checks written in application code are easy to miss in one query out of hundreds
 - **Every policy has tests that attempt forbidden reads** as each role.
 - **The evaluation suite's leak tests** ([0002](0002-evaluation-fixture-sources.md)) render every output for every audience and search each for the planted secrets.
 
-## Consequences
+## Consequences if adopted
 
 - A missing check in application code cannot leak a secret, because the database refuses the row.
 - A player-safe output cannot contain a secret even if a planted instruction asks the model to reveal one, because the secret was never in its context.
 - Every request pays the cost of setting its audience, and policies make some queries slower. Indexes on visibility and campaign columns keep that small.
 - Debugging becomes harder when a query silently returns fewer rows. Tooling that runs a query as a named audience is part of the developer setup.
 
-## Alternatives considered
+## Options considered
 
-- **Visibility checks in application code only.** Rejected: one forgotten filter is a leak, and there will be hundreds of queries.
-- **Filtering model output for secrets after rendering.** Rejected: a model can paraphrase a secret, and the PRD forbids relying on this.
+- **Visibility checks in application code only.** Not recommended: one forgotten filter is a leak, and there will be hundreds of queries.
+- **Filtering model output for secrets after rendering.** Not recommended: a model can paraphrase a secret, and the PRD forbids relying on this.
 - **Separate databases or schemas per audience.** Strong isolation, but every claim would be copied, and visibility changes would mean moving data between stores.
+
+## To decide
+
+Row-level security plus one audience-scoped reader, checks in application code, or separate stores per audience? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

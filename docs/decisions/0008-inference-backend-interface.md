@@ -1,14 +1,14 @@
-# 0008 — One interface per model capability, with adapters behind it
+# 0008 — Inference backend interface
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `INF-01`, `INF-02`, `INF-04`, `INF-05`, `INF-06`, `INF-07`, `NFR-04`, `NFR-15`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `INF-01`, `INF-02`, `INF-04`, `INF-05`, `INF-06`, `INF-07`, `NFR-04`, `NFR-15`
 
 ## Context
 
 The pipeline needs speech recognition, speaker separation, a language model, and embeddings, each swappable without code changes (`INF-01`), each working locally (`INF-02`), each accounting for its own cost (`INF-05`), and each failing with a message that says what to fix (`INF-06`). Providers differ in what they support: some return structured output that follows a schema, some take vocabulary hints, some bill in money and some in time.
 
-## Decision
+## Recommendation
 
-**The pipeline calls one interface per capability. Adapters implement those interfaces for specific backends, and configuration chooses the adapter.**
+**Recommended, not decided:** The pipeline calls one interface per capability. Adapters implement those interfaces for specific backends, and configuration chooses the adapter.
 
 ### Capabilities
 
@@ -37,15 +37,19 @@ The pipeline needs speech recognition, speaker separation, a language model, and
 - **Never logs keys or source content** (`NFR-04`, `NFR-18`).
 - **Connects only to the configured endpoint** (`NFR-15`).
 
-## Consequences
+## Consequences if adopted
 
 - Swapping a backend is a configuration change, as `INF-01` requires.
 - Backend qualification (`INF-07`) runs the evaluation suite through the same interfaces, so a qualified backend is measured exactly as it will be used.
 - The generic adapter covers many providers at once but uses only the features they share. Provider-specific features wait for a specific adapter.
 - Speech recognition and speaker separation have no widely shared API, so the project maintains a small server contract of its own for them.
 
-## Alternatives considered
+## Options considered
 
-- **Calling one provider's software development kit directly from the pipeline.** Rejected: it fixes the pipeline to that provider and breaks `INF-01`.
-- **A third-party library that abstracts many providers.** Considered; it can sit behind an adapter later. Rejected as the core interface, because the pipeline needs capability declarations, cost units, and failure classes that such libraries do not model.
-- **One interface for everything.** Rejected: transcription and generation share almost nothing, and one interface would hide real differences.
+- **Calling one provider's software development kit directly from the pipeline.** Not recommended: it fixes the pipeline to that provider and breaks `INF-01`.
+- **A third-party library that abstracts many providers.** Considered; it can sit behind an adapter later. Not recommended as the core interface, because the pipeline needs capability declarations, cost units, and failure classes that such libraries do not model.
+- **One interface for everything.** Not recommended: transcription and generation share almost nothing, and one interface would hide real differences.
+
+## To decide
+
+One interface per capability with our own adapters, or a third-party multi-provider library at the core? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

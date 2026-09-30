@@ -1,14 +1,14 @@
-# 0009 — Pipeline stages are durable, idempotent jobs
+# 0009 — Pipeline execution
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `PIPE-01`–`PIPE-05`, `PIPE-07`, `PIPE-08`, `INF-05`, `INF-06`, `CAP-07`, `NFR-05`
+**Status:** Open · **Date:** 2026-09-30 · **Serves:** `PIPE-01`–`PIPE-05`, `PIPE-07`, `PIPE-08`, `INF-05`, `INF-06`, `CAP-07`, `NFR-05`
 
 ## Context
 
 Processing a four-hour session takes hours and passes through several backends. Any stage can fail: a provider rate-limits, a model server restarts, the machine reboots. The PRD requires that a failed stage resume without re-uploading or redoing finished stages (`PIPE-08`), that reruns never duplicate or overwrite reviewed work (`PIPE-07`), and that raw audio be deleted only after processing succeeds (`CAP-07`).
 
-## Decision
+## Recommendation
 
-**Each session is processed as a chain of stages. Each stage is a durable job whose output is stored before the next stage starts.**
+**Recommended, not decided:** Each session is processed as a chain of stages. Each stage is a durable job whose output is stored before the next stage starts.
 
 ### Stages for 0a
 
@@ -37,15 +37,19 @@ Rendering outputs happens after review, on demand, and is not part of this chain
 
 Transcription and extraction work in overlapping windows, so memory stays bounded and a failure loses only one window. Extraction receives the running entity list so that names stay consistent across windows.
 
-## Consequences
+## Consequences if adopted
 
 - A failure never costs the upload or the finished stages.
 - Changing a template reruns only the stages downstream of it, which also serves re-extraction later (`PIPE-14`).
 - Stored intermediate outputs take disk space. They are kept until the session is accepted, then pruned to what evidence and provenance need.
 - Windowed extraction can miss facts that span a window boundary. The overlap is sized to make that rare, and the fixtures include a fact stated across a boundary.
 
-## Alternatives considered
+## Options considered
 
-- **One long-running process per session.** Simplest, but any failure restarts the whole session. Rejected by `PIPE-08`.
+- **One long-running process per session.** Simplest, but any failure restarts the whole session. Not recommended by `PIPE-08`.
 - **A workflow engine as a separate service.** Durable and well tested, but another service to install for a chain of eight steps.
-- **Sending the whole session to the model at once.** Rejected: context limits vary by backend, local models have small contexts, and one failure loses everything.
+- **Sending the whole session to the model at once.** Not recommended: context limits vary by backend, local models have small contexts, and one failure loses everything.
+
+## To decide
+
+Durable jobs on the database queue, a workflow engine, or one process per session? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

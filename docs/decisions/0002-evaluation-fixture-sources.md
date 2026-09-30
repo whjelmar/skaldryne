@@ -1,6 +1,6 @@
-# 0002 — Evaluation fixtures start scripted, and real sessions join later with a release
+# 0002 — Evaluation fixture sources
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 3 · **Serves:** `PIPE-12`, `PIPE-13`, `OUT-09`, `QRY-03`, `SAFE-10`, `INF-07`
+**Status:** Open · **Date:** 2026-09-30 · **Answers:** PRD open decision 3 · **Serves:** `PIPE-12`, `PIPE-13`, `OUT-09`, `QRY-03`, `SAFE-10`, `INF-07`
 
 ## Context
 
@@ -10,9 +10,9 @@ Fixtures can be real sessions, released by everyone in them, or scripted session
 
 Milestone 0a cannot exit without fixtures, and many Phase 0 story scenarios run against them ("(fixture)" in [the stories](../stories/phase-0.md)).
 
-## Decision
+## Recommendation
 
-**Start with scripted fixtures, add real sessions as they are released, and report the two sets separately.**
+**Recommended, not decided:** Start with scripted fixtures, add real sessions as they are released, and report the two sets separately.
 
 ### Scripted fixtures (0a)
 
@@ -31,20 +31,24 @@ Milestone 0a cannot exit without fixtures, and many Phase 0 story scenarios run 
 
 The suite reports scripted and real results side by side and never as one blended number, so a gap between them is visible. Thresholds (open decision 2) are set against the scripted set first and revisited once there are enough real sessions.
 
-## Consequences
+## Consequences if adopted
 
 - Fixtures can be written now, before any pipeline code, and the pipeline is built against them from its first commit.
 - Rare, high-stakes cases (leaks, injection, non-consenting voices) are covered deliberately rather than by luck.
 - Scripted sessions will be cleaner than real play, so early scores will be optimistic. Reporting the two sets separately is the guard against that.
 - Writing and performing good scripts is real work, and labelling takes longer than recording.
 
-## Alternatives considered
+## Options considered
 
-- **Real sessions only.** Rejected for 0a: releases take time, rare cases would be missing, and a leak test needs a secret we planted on purpose.
-- **Synthetic voices only.** Rejected: clean synthetic speech hides the transcription and speaker-labelling failures that dominate real tables.
-- **Public recordings of broadcast play.** Rejected: their rights belong to others, and publishing labelled derivatives would need their permission.
+- **Real sessions only.** Not recommended for 0a: releases take time, rare cases would be missing, and a leak test needs a secret we planted on purpose.
+- **Synthetic voices only.** Not recommended: clean synthetic speech hides the transcription and speaker-labelling failures that dominate real tables.
+- **Public recordings of broadcast play.** Not recommended: their rights belong to others, and publishing labelled derivatives would need their permission.
 
 ## Follow-up
 
 - Write the fixture label format as part of the first evaluation work.
 - Draft the participant release, including withdrawal, before collecting any real session.
+
+## To decide
+
+Scripted fixtures first with real sessions added later, or a different mix of sources? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.
