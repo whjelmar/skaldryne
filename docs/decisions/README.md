@@ -21,7 +21,7 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0001](0001-default-inference-configuration.md) | Local models are the default inference configuration | Proposed | Open decision 1 | 0a |
 | [0002](0002-evaluation-fixture-sources.md) | Evaluation fixtures start scripted, and real sessions join later with a release | Proposed | Open decision 3 | 0a |
 | [0003](0003-local-reference-hardware.md) | One named reference machine for the local path | Proposed | Open decision 4 | 0a |
-| [0004](0004-language-runtime-and-repository.md) | TypeScript on Bun, in one repository | Proposed | — | 0a |
+| [0004](0004-language-runtime-and-repository.md) | TypeScript on Node.js, in one repository | Proposed | — | 0a |
 | [0005](0005-record-storage.md) | PostgreSQL holds the record, the search indexes, and the job queue | Proposed | — | 0a |
 | [0006](0006-record-model.md) | Claims are append-only, and redaction is the one erasure | Proposed | — | 0a |
 | [0007](0007-visibility-enforcement.md) | Visibility is enforced by the database, and model context is built by one audience-scoped reader | Proposed | — | 0a |
