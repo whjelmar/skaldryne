@@ -1,14 +1,16 @@
-# 0003 — Local reference hardware
+# 0003 — One reference machine with a 16 GB GPU, and two unpromised profiles
 
-**Status:** Open · **Date:** 2026-09-30 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
+**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
 
 ## Context
 
-"Local models are first-class" (`INF-02`) is only a promise if it names a machine. The performance targets (`NFR-05`) — session length, processing time, campaign size — mean nothing without the hardware they were measured on. Operators also need to know before they install whether their machine is good enough.
+"Local models are first-class" (`INF-02`) is only a promise if it names a machine. The performance targets (`NFR-05`) — session length, processing time, campaign size — mean nothing without the hardware they were measured on. Operators also need to know before they install whether their machine is good enough, and first-run setup compares the machine with this reference to decide whether to suggest a hosted provider ([0001](0001-default-inference-configuration.md)).
 
-## Recommendation
+Graphics memory sets how large a local model can be, and so caps local extraction quality.
 
-**Recommended, not decided:** The project names one reference machine, measures every release on it, and states every local performance target against it.
+## Decision
+
+**The project names one reference machine, measures every release on it, and states every local performance target against it.**
 
 | Component | Reference |
 | --- | --- |
@@ -18,24 +20,31 @@
 | Storage | 1 TB solid-state drive |
 | Operating system | Linux, running the container composition of [0010](0010-deployment.md) |
 
-- **The initial processing target** is a four-hour session processed end to end in no more than four hours on the reference machine. This is a starting point for `NFR-05` and is confirmed or revised by the first baseline run.
+- **The initial processing target** is a four-hour session processed end to end in no more than four hours on the reference machine. This is a starting point for `NFR-05`, confirmed or revised by the first baseline run.
 - **The default local models** ([0001](0001-default-inference-configuration.md)) must fit on the reference machine at the same time, or be scheduled so they do not need to.
-- **A second, CPU-only profile** is documented but not promised: the pipeline must complete on it, and its processing time is published, not targeted.
 - **The specific card and processor used by the project's own measurement machine are listed in the documentation**, so results can be reproduced. Any machine meeting the table above counts as meeting the reference.
 
-## Consequences if adopted
+### Unpromised profiles
 
-- Operators can tell before installing whether their machine will meet the targets.
-- 16 GB of video memory sets a ceiling on local model size, which in turn caps local extraction quality. That ceiling is the honest version of "local is first-class".
-- The project needs access to a reference machine for every release, which is an ongoing cost.
-- Laptops and machines with shared memory are left out of the promise, though many will run the pipeline. Adding a second promised profile later is a new decision record.
+Two more profiles are documented and measured, but carry no performance promise. The pipeline must complete on them, and their processing times are published, not targeted.
 
-## Options considered
+- **CPU only**, on the same composition, with smaller or more heavily quantized models.
+- **Apple silicon Macs with 32 GB or more of unified memory.** Containers on macOS generally cannot use the Apple GPU, so the standard composition runs its model servers on the CPU there. Running the model servers natively, outside the containers, is documented as an advanced setup, not a supported install path.
 
-- **No reference; publish results from whatever hardware contributors have.** Not recommended: targets would drift with every contributor's machine.
-- **A higher reference, such as 24 GB of video memory.** Better local quality, but it excludes most home machines, so fewer people could use the local default.
-- **CPU-only as the reference.** Most inclusive, but too slow for a four-hour session to process in reasonable time with models good enough to pass the thresholds.
+Promoting either profile to a promised reference is a new decision record.
 
-## To decide
+## Consequences
 
-Which machine is the reference: a 16 GB consumer GPU, a higher or lower tier, or CPU only? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.
+- Operators can tell before installing whether their machine will meet the targets, and setup can tell them too.
+- 16 GB of video memory limits the local default to models of roughly 14 billion parameters at 4 to 5 bits. That ceiling is the honest version of "local is first-class".
+- Many existing gaming PCs have 8 to 12 GB of video memory. They fall below the reference and get setup's hosted-provider suggestion, though they may still run the pipeline locally.
+- Mac owners can run Skaldryne, but slowly by default. If many operators are on Macs, a native install path becomes the next decision.
+- The project needs access to a reference machine for every release, and measures the two unpromised profiles as well, which is an ongoing cost.
+
+## Alternatives considered
+
+- **A 12 GB reference.** Covers more home machines, but limits the default to models of about 8 billion parameters with shorter context windows, which extract and cite noticeably worse and may fail the quality thresholds.
+- **A 24 GB reference.** Clearly better local quality, but only high-end or workstation cards qualify, so most operators would fall below it.
+- **Apple silicon as a second promised reference.** Many GMs own Macs, and unified memory fits large models. Not chosen now, because promising it means a second, native install path alongside the container composition.
+- **CPU-only as the reference.** Most inclusive, but too slow for a four-hour session with models good enough to pass the thresholds.
+- **No reference; publish results from whatever hardware contributors have.** Targets would drift with every contributor's machine, and setup would have nothing to compare against.
