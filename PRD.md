@@ -1,6 +1,6 @@
 # Skaldryne — Product Requirements Document
 
-**Status:** Draft v0.4 · **Last updated:** 2026-09-30 · **Owner:** project maintainers
+**Status:** Draft v0.5 · **Last updated:** 2026-09-30 · **Owner:** project maintainers
 
 ---
 
@@ -41,7 +41,7 @@ Stated plainly so scope arguments have a reference point.
 - **Not a soundboard or ambience player.** Music and sound effects at the table are left to the tools groups already use. Skaldryne records what was played when it is audible or logged, but does not play it.
 - **Not a matchmaking service.** Skaldryne serves groups that already exist. It does not find players, list open games, or match strangers into tables.
 - **Not a video editor.** Skaldryne can cut a clip at a cited moment (`OUT-11`); it does not edit, grade, or produce video.
-- **Not a biometric identification system.** No persistent face templates in any phase (`SAFE-04`). Voice profiles exist only with consent and only within their own instance (`SAFE-03`).
+- **Not a biometric identification system.** No persistent face templates in any phase (`SAFE-04`). Voice profiles exist only with consent and only within their own tenant (`SAFE-03`, `MODEL-32`).
 - **Not a scoreboard for players.** Skaldryne celebrates what a table did together (§8.2), but never ranks, scores, or keeps streaks for the people at it (`NAV-07`).
 
 ---
@@ -65,6 +65,7 @@ Runs several campaigns, sometimes professionally. Context-switching is the core 
 
 - **Job:** re-enter the right campaign's headspace before a session. *Done when* a per-campaign catch-up brief is available on demand.
 - **Job:** keep campaigns strictly separated. *Done when* no query or generated output can leak across campaign boundaries.
+- **Job:** give a client's campaign its own environment. *Done when* a campaign can run in complete isolation, with its own keys, backups, and maintenance schedule (`MODEL-32`).
 
 ### 2.3 Player
 
@@ -80,6 +81,7 @@ Attends sessions, may miss some, cares about their own character's arc.
 Manages many tables in one setting, often with overlapping canon and rotating GMs.
 
 - **Job:** maintain shared canon across tables. *Done when* multiple campaigns can reference common entities without duplicating them.
+- **Job:** run a shared world as one place. *Done when* every campaign in the world, and every GM running one, works in the same tenant, so events in one campaign can change canon in the others (`MODEL-21`, `MODEL-32`).
 - **Job:** control who sees what. *Done when* per-entity and per-journal visibility is enforceable.
 - **Job:** bring members in and out cleanly. *Done when* joining is an invite link, chat-server roles map to campaign roles, and removing someone revokes their access everywhere at once.
 - **Job:** trust what the club installs. *Done when* every plugin shows what it can reach, and nothing reaches data it was not granted.
@@ -122,6 +124,15 @@ Runs the software for a group: often the GM, sometimes the one technical person 
 - **Job:** keep keys, data, and plugins safe. *Done when* secrets never appear in logs or exports, and plugins reach only what they were granted.
 - **Job:** answer a privacy request. *Done when* a request from anyone who was recorded, member or not, is fulfilled in one workflow with a record that it was done.
 
+### 2.9 Hosting operator
+
+Runs Skaldryne as a managed service for many unrelated groups, if one is offered (§18, open decision 10). Accountable to customers who have no reason to trust them with their content.
+
+- **Job:** keep customers from affecting each other. *Done when* one customer's load, failure, or restore never degrades another's service (`NFR-21`, `NFR-22`).
+- **Job:** upgrade a fleet safely. *Done when* every upgrade is tested before release, safe to retry, and applied to each customer within that customer's maintenance window (`NFR-23`, `NFR-24`).
+- **Job:** grow without re-architecting. *Done when* a customer can be moved onto dedicated resources, and reads can be scaled out, without changing anyone's data (`NFR-19`, `NFR-20`).
+- **Job:** stay unable to read customer content. *Done when* stored content and backups are unreadable without keys the customer controls, and any access the operator has is granted by the customer, logged where they can see it, and bounded as the threat model states (`NFR-26`, `NFR-27`).
+
 ---
 
 ## 3. Core Concepts & Data Model
@@ -139,11 +150,13 @@ This is the decision the rest of the document depends on. The alternative — st
 ### 3.2 Hierarchy
 
 - **`MODEL-02` (P0) — Campaign → Session → Beat.** Beats exist at three granularities: **step** (play-by-play), **minor beat** (a scene or sequence), **major beat** (a turning point). Beats are editable and reorderable; machine-proposed structure is a starting point, not a verdict. *Acceptance:* a GM can merge, split, retitle, and re-nest beats without data loss.
+- **`MODEL-32` (P0) — Tenant → Campaign. Every campaign belongs to exactly one tenant, the unit of isolation.** A tenant holds one campaign or many. Campaigns that share a world, canon (`MODEL-21`), or GMs (`MODEL-24`) belong to the same tenant, so a West Marches group with several GMs running campaigns in one universe is one tenant. Campaigns that must be kept completely apart, such as a professional GM's separate clients, each get their own tenant. Nothing crosses a tenant boundary: canon, characters, journals, voice profiles, search, storage, and keys all belong to one tenant. One person may belong to several tenants under a single sign-in. A campaign moves to another tenant only by export and import (`OWN-07`, `NFR-25`). *Acceptance:* a GM with campaigns in two tenants cannot see, search, link to, or generate from one tenant's content while working in the other; and a campaign exported from one tenant imports into another with its history and evidence intact.
 
 ### 3.3 Entities
 
 - **`MODEL-03` (P0) — Built-in entity types:** Character (PC or NPC), Location, Faction, Item. Characters support arc tracking across sessions. Locations support parent nesting (room → building → district → city → region).
 - **`MODEL-04` (P0) — User-definable entity types.** Operators define new types with their own fields. *Rationale:* no fixed taxonomy survives contact with homebrew — deities, ships, corporations, contracts, and house rules are all load-bearing in some campaign. *Acceptance:* a new entity type can be defined and populated without code changes or a migration.
+- **`MODEL-33` (P1) — Custom fields for a tenant or a single campaign.** A GM can add fields to any entity type, built-in or user-defined (`MODEL-04`), for every campaign in a tenant or for one campaign only. Custom fields carry evidence, visibility, and history like any other field, and are included in export (`OWN-07`). *Acceptance:* a field added to Characters in one campaign appears only on that campaign's characters, and is defined without code changes or a migration.
 - **`MODEL-05` (P0) — Quests / objectives** with lifecycle states: planned, active, blocked, failed, complete. *Acceptance:* state transitions are timestamped and attributable to a session.
 - **`MODEL-06` (P1) — Moments:** highlights, quotes, and awards, attachable to sessions and characters.
 - **`MODEL-07` (P0) — Journals:** free-form documents typed as GM prep, world lore, player log, or reference, each with independent visibility.
@@ -481,7 +494,7 @@ The people being recorded are not all the people running the software. A player'
   *Linked media is the limit of this guarantee.* Skaldryne cannot delete a copy it does not hold (`CAP-23`). Redacting a span in a linked session removes the span's playback link, and it tells the redacting participant and the media owner, in plain language, that the external copy still contains the span and must be edited or removed at its source.
   *Acceptance:* after redaction, the span's content cannot be recovered through search, chat, export, reprocessing, regenerated outputs, or playback from within Skaldryne. When an external copy exists, its owner is notified.
 - **`SAFE-02` (P1) — Safety tools are part of the record.** A campaign can record its lines and veils. Content under a line is excluded from outputs; content under a veil is summarised at the level the table chose. Invoking a content-stop tool during play (an X-card or equivalent, by bot command or bookmark) marks the span for exclusion before any processing. *Acceptance:* a span marked by a content-stop invocation produces no claims and appears in no output.
-- **`SAFE-03` (P0) — Voice profiles are biometric data belonging to the participant.** They are created only with the participant's consent, used only within their own instance, and deletable by the participant at any time. After deletion the participant becomes an unidentified speaker in future sessions. *Acceptance:* a participant can delete their own voice profile without GM or admin action.
+- **`SAFE-03` (P0) — Voice profiles are biometric data belonging to the participant.** They are created only with the participant's consent, used only within their own tenant (`MODEL-32`), and deletable by the participant at any time. After deletion the participant becomes an unidentified speaker in future sessions. *Acceptance:* a participant can delete their own voice profile without GM or admin action.
 - **`SAFE-04` (P1) — No persistent face templates.** Visual speaker cues (`CAP-12`) rely only on per-session signals such as the active-speaker tile and on-screen captions. No persistent facial identification is built or stored, in any phase. *Acceptance:* nothing derived from a face survives the end of the session's processing.
 - **`SAFE-05` (P0) — Participants can leave with what is theirs.** A departing player can export their own character's record and their own journals, delete their voice profile, and request redaction of their out-of-character speech. Campaign canon their character took part in remains with the group. *Acceptance:* the departure flow distinguishes personal content from shared canon and handles each as documented.
 - **`SAFE-06` (P0) — Campaigns with minors have stricter defaults.** A campaign can be marked as including minors — schools, libraries, family tables. Guardian consent is recorded through the `CAP-03` flow. Stricter defaults apply: no public pages, immediate deletion of raw audio and video, and per-person analytics (`NAV-06`) off. *Acceptance:* marking a campaign as including minors applies every stricter default at once, and relaxing any of them is an explicit, logged choice. It ships in the first release that records other people (Phase 0b), because a family or school table can be recorded from that release onward.
@@ -529,9 +542,23 @@ Commitments that follow from being self-hosted, written as testable requirements
 - **`NFR-13` (P2) — Offline reading.** The compendium, recaps, and a player's own character can be read without a connection, and sync when it returns. *Acceptance:* a device synced beforehand reads the compendium with the network disconnected.
 - **`NFR-14` (P1) — Performance at campaign scale.** Targets hold for long campaigns, not only long sessions: the diff for a new session retrieves the relevant canon rather than the whole record, and search and chat stay within their latency targets as the campaign grows. Reference scale: 200 sessions and 5,000 entities. *Acceptance:* per-session processing time and cost at reference scale stay within documented bounds of a new campaign's.
 - **`NFR-15` (P0) — No telemetry by default.** The software sends nothing to the project or any third party unless the operator enables it. Any opt-in telemetry is documented field by field, and inference traffic goes only to the backends the operator configured. *Acceptance:* a default install makes no outbound connection except to configured providers and integrations.
-- **`NFR-16` (P1) — Ready for hosting later.** Self-hosting comes first, but nothing may foreclose a hosted offering. The licence reserves competing hosted services to separate commercial terms ([LICENSING.md](LICENSING.md)), so whether and how a hosted offering exists is the maintainers' decision (§18, open decision 10). Every record belongs to an explicit tenant boundary, provider keys and storage are scoped per tenant, and no feature assumes a single trusted operator. *Acceptance:* two tenants on one instance cannot read each other's data through any interface, verified by test.
+- **`NFR-16` (P0) — Built for hosting from the start.** Self-hosting comes first, but nothing may foreclose a hosted offering. The licence reserves competing hosted services to separate commercial terms ([LICENSING.md](LICENSING.md)), so whether and how a hosted offering exists is the maintainers' decision (§18, open decision 10). Every record, file, search index, job, and log entry belongs to a tenant (`MODEL-32`). Identifiers are unique across instances, so a tenant can move between databases without renumbering, and nothing refers across a tenant boundary. Provider keys and storage are scoped per tenant, and no feature assumes a single trusted operator. *Acceptance:* two tenants on one instance cannot read each other's data through any interface, verified by test; and a tenant exported from one instance imports into another with every identifier and link unchanged.
 - **`NFR-17` (P2) — Moderation of public content.** Public pages (`SHARE-03`) have a reporting path and a takedown workflow for the operator, including for content about real people. *Acceptance:* the operator can take down a reported public page without deleting the underlying campaign.
 - **`NFR-18` (P0) — Encryption, secrets, and a published threat model.** Data is encrypted in transit and at rest, including retained media and backups. Provider keys, chat-bot tokens, and plugin credentials are stored in a secrets store, never in the record, logs, or exports, and can be rotated without downtime. The project publishes a threat model covering GM-private leakage, participant data, plugins, and ingested content, and a process for reporting vulnerabilities. *Acceptance:* a full export and the application logs contain no provider key or token, and rotating a provider key requires no restart.
+
+### 15.1 Hosting and tenancy
+
+These apply to any instance with more than one tenant, and matter most to a managed service (§2.9). Where they set limits, a self-hosting operator can change them.
+
+- **`NFR-19` (P2) — Tenants can be placed and sharded.** Each tenant runs on shared infrastructure or on its own dedicated database, storage, and processing, chosen per tenant, and can be moved between them. Tenants on shared infrastructure can be spread across several databases. *Acceptance:* a tenant moved from shared to dedicated infrastructure and back keeps every claim, evidence link, and identifier unchanged, and is unavailable only within its maintenance window.
+- **`NFR-20` (P2) — Reads scale out.** Reading — the reader, search, chat, and recaps — can be served from read replicas. A person always sees their own changes: after accepting a review, the reviewer never reads the state from before it. *Acceptance:* with reads routed to a lagging replica, a reviewer's accepted claims appear at once in their own view.
+- **`NFR-21` (P2) — One tenant cannot starve another.** Requests, processing jobs, database connections, and inference are limited per tenant, in separate pools, so one tenant's burst or backlog cannot exhaust capacity that others share. Limits are protection, not metering (`OWN-02`): they bill nothing, and a self-hosting operator sets them as they like. *Acceptance:* while one tenant processes a 40-hour backlog, another tenant's single session completes within its documented latency budget (`NFR-05`).
+- **`NFR-22` (P2) — Backup and restore per tenant.** One tenant can be backed up and restored without affecting any other, and a restore reapplies every redaction made since the backup (`SAFE-01`). *Acceptance:* restoring one tenant to an earlier backup leaves another tenant on the same instance unchanged, and nothing redacted since that backup reappears.
+- **`NFR-23` (P2) — Maintenance windows per tenant.** Upgrades that change stored data are applied to each tenant within a maintenance window that tenant chooses. During a rollout the application serves tenants on the current and the previous data version correctly. *Acceptance:* an instance with tenants on both versions serves both, and no tenant is upgraded outside its window.
+- **`NFR-24` (P0) — Upgrades are tested and safe to repeat.** Every change to stored data ships as a versioned migration. Each one is tested automatically before release, against an empty database and against reference-scale data (`NFR-14`), and checked for operations that would block a busy instance. Running a migration that has already been applied changes nothing, and a migration interrupted part-way completes when run again. *Acceptance:* running every migration twice gives the same database as running them once; and an upgrade stopped part-way completes on the next run with no manual repair.
+- **`NFR-25` (P0) — Imports are safe to repeat.** Importing the same content again — a recording, a document, a backlog, a campaign export, or a backup — creates nothing twice, and an interrupted import resumes where it stopped. Each import is recorded with its source. *Acceptance:* importing the same campaign export twice gives the same record as importing it once.
+- **`NFR-26` (P2) — Content is encrypted per tenant.** Beyond encryption at rest (`NFR-18`), sensitive content is encrypted by the application before it is stored, under keys that belong to its tenant and optionally to a single campaign. Database administrators, backups, and other tenants see only ciphertext. Deleting a tenant's keys makes its content unreadable everywhere, including in backups. The threat model lists which content is encrypted this way and what that costs search (§18.18, open decision 11). *Acceptance:* content the threat model lists as encrypted is unreadable with another tenant's keys or with database access alone; and after a tenant's keys are deleted, none of its backups yields that content.
+- **`NFR-27` (P2) — Customers control access to their content.** On a managed service, a customer can supply and revoke their own keys; after revocation, and within a documented time, the operator cannot read the customer's stored content. Operator staff have no standing access to customer content: any access is requested, granted by the customer, limited in time, and recorded where the customer can see it. The threat model states plainly what this does not protect: content is decrypted while it is processed, so it is exposed to whoever controls the running servers and inference backends, and a customer who cannot accept that should process with their own backends or self-host. *Acceptance:* after a customer revokes their key, no operator tool or backup yields their content; and every operator access appears in the customer's audit log.
 
 ---
 
@@ -551,7 +578,7 @@ Phase 0 is split so the pipeline is proven before anyone else is recorded. Miles
 
 #### 0a — A trustworthy record (internal)
 
-Scope: `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-12`, `MODEL-23` · `CAP-01`, `CAP-05`, `CAP-07`, `CAP-28` · `PIPE-01`–`PIPE-05`, `PIPE-07`, `PIPE-08`, `PIPE-12`, `PIPE-13` · `OUT-01`, `OUT-04`, `OUT-05`, `OUT-10` · `QRY-01`–`QRY-03` · `SHARE-06` · `INF-01`, `INF-02`, `INF-04`–`INF-07` · `TPL-01`–`TPL-04` · `NFR-01`–`NFR-05`, `NFR-15`, `NFR-18`.
+Scope: `MODEL-01`–`MODEL-05`, `MODEL-07`, `MODEL-09`–`MODEL-12`, `MODEL-23`, `MODEL-32` · `CAP-01`, `CAP-05`, `CAP-07`, `CAP-28` · `PIPE-01`–`PIPE-05`, `PIPE-07`, `PIPE-08`, `PIPE-12`, `PIPE-13` · `OUT-01`, `OUT-04`, `OUT-05`, `OUT-10` · `QRY-01`–`QRY-03` · `SHARE-06` · `INF-01`, `INF-02`, `INF-04`–`INF-07` · `TPL-01`–`TPL-04` · `NFR-01`–`NFR-05`, `NFR-15`, `NFR-16`, `NFR-18`, `NFR-24`, `NFR-25`.
 
 Until voice-profile consent exists (0b), speakers are labelled per session and no persistent profile is created, so the acceptance test of `CAP-05` is met in 0b.
 
@@ -575,7 +602,7 @@ Scope: `CAP-02`, `CAP-04`, `CAP-06`, `CAP-19`, `CAP-20`, `CAP-31` · `MODEL-14`,
 
 #### 1b — A deeper record
 
-Scope: `MODEL-06`, `MODEL-08`, `MODEL-15`, `MODEL-18`–`MODEL-21`, `MODEL-27`–`MODEL-30` · `CAP-16`, `CAP-18`, `CAP-29`, `CAP-30` · `PIPE-11`, `PIPE-14`, `PIPE-15` · `OUT-02`, `OUT-06`, `OUT-15` · `QRY-05`, `QRY-07`, `QRY-09` · `NAV-01`–`NAV-04`, `NAV-08`–`NAV-10` · `SHARE-03` · `INT-04` · `OWN-11` · `NFR-14`.
+Scope: `MODEL-06`, `MODEL-08`, `MODEL-15`, `MODEL-18`–`MODEL-21`, `MODEL-27`–`MODEL-30`, `MODEL-33` · `CAP-16`, `CAP-18`, `CAP-29`, `CAP-30` · `PIPE-11`, `PIPE-14`, `PIPE-15` · `OUT-02`, `OUT-06`, `OUT-15` · `QRY-05`, `QRY-07`, `QRY-09` · `NAV-01`–`NAV-04`, `NAV-08`–`NAV-10` · `SHARE-03` · `INT-04` · `OWN-11` · `NFR-14`.
 
 **Exit criteria:** a fifty-session backlog imports, with later sessions diffed against earlier canon, and is reviewed in bulk by handling only its flagged items; a wrongly accepted session is reverted and reviewed again; an old session is re-extracted after a template upgrade; the GM prepares the next session from the prep brief alone; the record answers what a character knew, held, and had on their sheet at any session; a contradiction and a retcon are each resolved in review; and the timeline, graph, quest board, and roster each open to their evidence.
 
@@ -587,15 +614,15 @@ Scope: `CAP-08`–`CAP-10`, `CAP-14`, `CAP-15`, `CAP-22`–`CAP-26` · `PIPE-10`
 
 #### 1d — An open platform
 
-Scope: `INT-01`, `INT-02`, `INT-08`, `INT-09`, `INT-11`, `INT-12` · `OWN-08` · `INF-03` · `PIPE-06` · `TPL-05`–`TPL-10`, `TPL-12` · `SAFE-11` · `NFR-06`–`NFR-08`, `NFR-16`.
+Scope: `INT-01`, `INT-02`, `INT-08`, `INT-09`, `INT-11`, `INT-12` · `OWN-08` · `INF-03` · `PIPE-06` · `TPL-05`–`TPL-10`, `TPL-12` · `SAFE-11` · `NFR-06`–`NFR-08`.
 
 **Exit criteria:** an external tool reads and writes the record through the documented API and MCP interfaces; a starter automation runs end to end; a game-system plugin installs with declared permissions and moves to a new edition through a reviewable migration; the instance is backed up and restored; and an operator fulfils a privacy request in one workflow.
 
 ### Phase 2 — v2+
 
-Scope: `MODEL-22` · `CAP-11`–`CAP-13`, `CAP-17`, `CAP-21`, `CAP-27` · `OUT-07`, `OUT-12`, `OUT-13`, `OUT-17`, `OUT-18`, `OUT-20` · `QRY-06`, `QRY-08` · `NAV-05`–`NAV-07`, `NAV-11`–`NAV-18` · `SHARE-04`, `SHARE-05` · `INT-05`–`INT-07` · `TPL-11` · `NFR-09`, `NFR-13`, `NFR-17`.
+Scope: `MODEL-22` · `CAP-11`–`CAP-13`, `CAP-17`, `CAP-21`, `CAP-27` · `OUT-07`, `OUT-12`, `OUT-13`, `OUT-17`, `OUT-18`, `OUT-20` · `QRY-06`, `QRY-08` · `NAV-05`–`NAV-07`, `NAV-11`–`NAV-18` · `SHARE-04`, `SHARE-05` · `INT-05`–`INT-07` · `TPL-11` · `NFR-09`, `NFR-13`, `NFR-17`, `NFR-19`–`NFR-23`, `NFR-26`, `NFR-27`.
 
-Phase 2 is not a single release, and its order is set by what Phase 1 teaches. A managed-hosting track is out of scope for this document beyond the requirement that nothing in Phases 0–1 forecloses it (`NFR-16`, open decision 10).
+Phase 2 is not a single release, and its order is set by what Phase 1 teaches. Whether to offer managed hosting is open decision 10. The tenancy, isolation, and upgrade requirements a managed service relies on are in §15.1, and those that shape stored data are P0, so nothing built earlier forecloses it.
 
 ---
 
@@ -657,6 +684,8 @@ Skaldryne sends nothing home by default (`NFR-15`), so every metric names how it
 
 **18.17 Everything ingested is untrusted input.** Players upload documents, speak freely, and send whispers, and any of it can carry instructions aimed at the model. `PIPE-13` and the injection fixtures in `PIPE-12` reduce the risk, but model behaviour under adversarial input is not fully predictable. Keeping GM-private content out of the context of player-facing renders is the control that does not depend on the model behaving.
 
+**18.18 Protection from the operator has a limit.** `NFR-26` and `NFR-27` keep stored content and backups unreadable without the customer's keys, but extraction, search, and chat need plaintext while they run, and embeddings and search indexes reveal content too. The more content the application encrypts, the less of it the server can search. The threat model must say exactly which content is protected from whom, and a customer who needs more must keep processing on their own backends (`INF-02`).
+
 ### Open decisions
 
 These need an answer before the milestone shown. Owners are roles until the project names maintainers for each area.
@@ -673,6 +702,7 @@ These need an answer before the milestone shown. Owners are roles until the proj
 | 8 | Who signs plugins, and whether the project runs a registry | The trust levels in `INT-11` mean nothing without a signing authority | Security | 1d |
 | 9 | Which game systems ship as bundled plugins | Sets what sheets, encounters, and coaching can do on day one (`INT-08`, `MODEL-27`, `TPL-11`) | Integrations | 1d |
 | 10 | Whether the project will offer managed hosting, and who would run it | Tenant boundaries (`NFR-16`) are built regardless; the licence reserves hosted services to commercial terms, so the answer also shapes what a commercial licence covers | Maintainers | Phase 2 |
+| 11 | Which content the application encrypts per tenant, and how search works over it | Encrypted content cannot be searched or embedded on the server without decrypting it, so the answer sets both what `NFR-26` protects and what search can reach (§18.18) | Security | Phase 2 |
 
 ---
 
@@ -684,3 +714,4 @@ These need an answer before the milestone shown. Owners are roles until the proj
 | 0.2 | 2026-09-30 | Added linked-media playback; play state (sheets, encounters, party resources); messaging, whispers, and scheduling; automations and Discord server integration; analytics and opt-in coaching; guides and style guides; the security baseline; and handling of non-members and privacy requests. Added the instance operator as a user. Scoped the roadmap: a strict priority definition, Phase 0 split into 0a and 0b, Phase 1 split into four milestones with their own exit criteria, and every requirement placed by ID. Added the open-decisions register. |
 | 0.3 | 2026-09-30 | Stated how each success metric is gathered without telemetry. Added budget enforcement, session revert, sessions for continuous play, re-extraction of old sessions, and bulk review. Moved campaigns with minors into the first release. Defined what redaction can and cannot reach, with a ledger reapplied on restore. Described the licence accurately as source-available and tied hosting to its commercial terms. |
 | 0.4 | 2026-09-30 | Added Phase 0 user stories (`docs/stories/phase-0.md`). Stated how requirements that mention later features are met before those features ship, and made the acceptance tests of `CAP-07`, `SHARE-07`, and `SAFE-01` passable in Phase 0. Moved leaving with what is yours (`SAFE-05`) into the first release, so a removed member keeps their rights from the start. Added campaign milestones, discovery progress, recall prompts, and credit for contributions, and ruled out leaderboards, player points, and streaks. |
+| 0.5 | 2026-09-30 | Added tenants as the unit of isolation: campaigns in a shared world share one tenant, and campaigns that must be kept apart get their own (`MODEL-32`). Added custom fields per tenant or campaign (`MODEL-33`). Made hosting readiness P0 (`NFR-16`). Added hosting and tenancy requirements: placement and sharding, read replicas, fair use between tenants, backup and restore per tenant, maintenance windows, repeatable migrations and imports, and per-tenant encryption with customer-controlled keys (§15.1). Added the hosting operator as a user, and the limit of protection from the operator as a risk. |
