@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 # Session planning scratch (local only)
 Plans/
+
+# Third-party datasets for local exploration and testing (never committed)
+/data/
