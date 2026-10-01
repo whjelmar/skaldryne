@@ -1,0 +1,28 @@
+{
+  "name": "db-tooling-arm-kysely",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap.ts",
+    "migrate": "node node_modules/graphile-migrate/dist/cli.js migrate",
+    "status": "node node_modules/graphile-migrate/dist/cli.js status",
+    "codegen": "node scripts/codegen.ts",
+    "fleet": "node scripts/fleet.ts",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "test": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vitest/vitest.mjs run"
+  },
+  "dependencies": {
+    "graphile-migrate": "2.0.0-rc.5",
+    "kysely": "0.29.6",
+    "pg": "8.23.1",
+    "pgvector": "0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/pg": "^8",
+    "kysely-codegen": "0.20.0",
+    "squawk-cli": "2.66.0",
+    "typescript": "^5.9",
+    "vitest": "^4"
+  }
+}

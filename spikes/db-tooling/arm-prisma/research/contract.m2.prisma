@@ -1,0 +1,228 @@
+// use prisma-8
+// M1: the reference schema, expressed in the Prisma 8 contract as far as it allows.
+// Objects the contract cannot express (hash partitions, trigger functions, triggers, partition
+// revokes, the halfvec opclass, NULLS NOT DISTINCT) are added by raw SQL operations in the
+// migration's migration.ts. See RESULTS.md.
+
+namespace public {
+  model Tenant {
+    id               Uuid              @id(map: "tenant_pkey") @default(sql`uuidv7()`)
+    name             String
+    createdAt        Timestamptz       @default(now()) @map("created_at")
+    campaigns        Campaign[]
+    fieldDefinitions FieldDefinition[]
+    importRecords    ImportRecord[]
+
+    @@rls
+    @@map("tenant")
+  }
+
+  model Campaign {
+    tenantId           Uuid                @map("tenant_id")
+    id                 Uuid                @default(sql`uuidv7()`)
+    name               String
+    claimCurrents      ClaimCurrent[]
+    claimVersions      ClaimVersion[]
+    entities           Entity[]
+    fieldDefinitions   FieldDefinition[]
+    transcriptSegments TranscriptSegment[]
+    tenant             Tenant              @relation(fields: [tenantId], references: [id], map: "campaign_tenant_id_fkey", index: false)
+
+    @@id([tenantId, id], map: "campaign_pkey")
+    @@rls
+    @@map("campaign")
+  }
+
+  model FieldDefinition {
+    tenantId   Uuid      @map("tenant_id")
+    id         Uuid      @default(sql`uuidv7()`)
+    campaignId Uuid?     @map("campaign_id")
+    key        String
+    valueType  String    @map("value_type")
+    campaign   Campaign? @relation(fields: [tenantId, campaignId], references: [tenantId, id], map: "field_definition_tenant_id_campaign_id_fkey", index: false)
+    tenant     Tenant    @relation(fields: [tenantId], references: [id], map: "field_definition_tenant_id_fkey", index: false)
+
+    @@id([tenantId, id], map: "field_definition_pkey")
+    @@unique([tenantId, campaignId, key], map: "field_definition_tenant_id_campaign_id_key_key")
+    @@check(expression: "(value_type = ANY (ARRAY['text'::text, 'number'::text, 'boolean'::text, 'date'::text]))", map: "field_definition_value_type_check")
+    @@rls
+    @@map("field_definition")
+  }
+
+  model Entity {
+    tenantId      Uuid           @map("tenant_id")
+    id            Uuid           @default(sql`uuidv7()`)
+    campaignId    Uuid           @map("campaign_id")
+    kind          String
+    // M2 (expand): name becomes nullable so M2-era code can write display_name only;
+    // a raw trigger keeps the two in sync. M3 drops name.
+    name          String?
+    displayName   String?        @map("display_name")
+    custom        Jsonb          @default(json`{}`)
+    claimCurrents ClaimCurrent[]
+    claimVersions ClaimVersion[]
+    importRecords ImportRecord[]
+    campaign      Campaign       @relation(fields: [tenantId, campaignId], references: [tenantId, id], map: "entity_tenant_id_campaign_id_fkey", index: false)
+
+    @@id([tenantId, id], map: "entity_pkey")
+    @@index([tenantId, campaignId], map: "entity_campaign_idx")
+    @@rls
+    @@map("entity")
+  }
+
+  model ClaimVersion {
+    tenantId   Uuid        @map("tenant_id")
+    claimId    Uuid        @map("claim_id")
+    version    Int
+    campaignId Uuid        @map("campaign_id")
+    subjectId  Uuid        @map("subject_id")
+    predicate  String
+    object     Jsonb
+    recordedAt Timestamptz @default(now()) @map("recorded_at")
+    campaign   Campaign    @relation(fields: [tenantId, campaignId], references: [tenantId, id], map: "claim_version_tenant_id_campaign_id_fkey", index: false)
+    entity     Entity      @relation(fields: [tenantId, subjectId], references: [tenantId, id], map: "claim_version_tenant_id_subject_id_fkey", index: false)
+
+    @@id([tenantId, claimId, version], map: "claim_version_pkey")
+    @@check(expression: "(version > 0)", map: "claim_version_version_check")
+    // Hash partitions cannot be expressed; the table is created by raw SQL in M1.
+    @@control(external)
+    @@rls
+    @@map("claim_version")
+  }
+
+  model ClaimCurrent {
+    tenantId       Uuid            @map("tenant_id")
+    claimId        Uuid            @map("claim_id")
+    version        Int
+    campaignId     Uuid            @map("campaign_id")
+    subjectId      Uuid            @map("subject_id")
+    predicate      String
+    object         Jsonb
+    claimEmbedding ClaimEmbedding?
+    campaign       Campaign        @relation(fields: [tenantId, campaignId], references: [tenantId, id], map: "claim_current_tenant_id_campaign_id_fkey", index: false)
+    entity         Entity          @relation(fields: [tenantId, subjectId], references: [tenantId, id], map: "claim_current_tenant_id_subject_id_fkey", index: false)
+
+    @@id([tenantId, claimId], map: "claim_current_pkey")
+    @@index([tenantId, subjectId], map: "claim_current_subject_idx")
+    @@rls
+    @@map("claim_current")
+  }
+
+  model ClaimEmbedding {
+    tenantId     Uuid                        @map("tenant_id")
+    claimId      Uuid                        @map("claim_id")
+    claimCurrent ClaimCurrent                @relation(fields: [tenantId, claimId], references: [tenantId, claimId], onDelete: Cascade, map: "claim_embedding_tenant_id_claim_id_fkey")
+
+    @@id([tenantId, claimId], map: "claim_embedding_pkey")
+    // embedding halfvec(768) and the HNSW index are added by raw SQL: halfvec is not a contract type.
+    @@control(tolerated)
+    @@rls
+    @@map("claim_embedding")
+  }
+
+  model TranscriptSegment {
+    tenantId    Uuid     @map("tenant_id")
+    id          Uuid     @default(sql`uuidv7()`)
+    campaignId  Uuid     @map("campaign_id")
+    sessionNo   Int      @map("session_no")
+    startMs     Int      @map("start_ms")
+    endMs       Int      @map("end_ms")
+    speaker     String?
+    text        String
+    wordTimings Bytes    @map("word_timings")
+    campaign    Campaign @relation(fields: [tenantId, campaignId], references: [tenantId, id], map: "transcript_segment_tenant_id_campaign_id_fkey", index: false)
+
+    @@id([tenantId, id], map: "transcript_segment_pkey")
+    @@index([tenantId, campaignId, sessionNo, startMs], map: "transcript_segment_session_idx")
+    @@check(expression: "(end_ms >= start_ms)", map: "transcript_segment_check")
+    @@rls
+    @@map("transcript_segment")
+  }
+
+  model ImportRecord {
+    tenantId    Uuid        @map("tenant_id")
+    source      String
+    sourceKey   String      @map("source_key")
+    entityId    Uuid        @map("entity_id")
+    contentHash String      @map("content_hash")
+    importedAt  Timestamptz @default(now()) @map("imported_at")
+    entity      Entity      @relation(fields: [tenantId, entityId], references: [tenantId, id], map: "import_record_tenant_id_entity_id_fkey", index: false)
+    tenant      Tenant      @relation(fields: [tenantId], references: [id], map: "import_record_tenant_id_fkey", index: false)
+
+    @@id([tenantId, source, sourceKey], map: "import_record_pkey")
+    @@rls
+    @@map("import_record")
+  }
+
+  policy_all tenant_isolation_tenant {
+    target    = Tenant
+    roles     = [public]
+    using     = "(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_campaign {
+    target    = Campaign
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_field_definition {
+    target    = FieldDefinition
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_entity {
+    target    = Entity
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_claim_version {
+    target    = ClaimVersion
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_claim_current {
+    target    = ClaimCurrent
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_claim_embedding {
+    target    = ClaimEmbedding
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_transcript_segment {
+    target    = TranscriptSegment
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+
+  policy_all tenant_isolation_import_record {
+    target    = ImportRecord
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    withCheck = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+}

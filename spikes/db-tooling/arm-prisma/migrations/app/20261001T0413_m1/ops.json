@@ -1,0 +1,1772 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.campaign",
+    "label": "Create table \"campaign\"",
+    "summary": "Creates table \"campaign\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "campaign"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"campaign\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"campaign\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"campaign\"",
+        "sql": "CREATE TABLE \"public\".\"campaign\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"id\" uuid DEFAULT (uuidv7()) NOT NULL,\n  \"name\" text NOT NULL,\n  CONSTRAINT \"campaign_pkey\" PRIMARY KEY (\"tenant_id\", \"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"campaign\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"campaign\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.claim_current",
+    "label": "Create table \"claim_current\"",
+    "summary": "Creates table \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"claim_current\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"claim_current\"",
+        "sql": "CREATE TABLE \"public\".\"claim_current\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"claim_id\" uuid NOT NULL,\n  \"version\" int4 NOT NULL,\n  \"campaign_id\" uuid NOT NULL,\n  \"subject_id\" uuid NOT NULL,\n  \"predicate\" text NOT NULL,\n  \"object\" jsonb NOT NULL,\n  CONSTRAINT \"claim_current_pkey\" PRIMARY KEY (\"tenant_id\", \"claim_id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"claim_current\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.claim_embedding",
+    "label": "Create table \"claim_embedding\"",
+    "summary": "Creates table \"claim_embedding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "claim_embedding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"claim_embedding\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_embedding\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"claim_embedding\"",
+        "sql": "CREATE TABLE \"public\".\"claim_embedding\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"claim_id\" uuid NOT NULL,\n  CONSTRAINT \"claim_embedding_pkey\" PRIMARY KEY (\"tenant_id\", \"claim_id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"claim_embedding\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_embedding\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.entity",
+    "label": "Create table \"entity\"",
+    "summary": "Creates table \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"entity\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"entity\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"entity\"",
+        "sql": "CREATE TABLE \"public\".\"entity\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"id\" uuid DEFAULT (uuidv7()) NOT NULL,\n  \"campaign_id\" uuid NOT NULL,\n  \"kind\" text NOT NULL,\n  \"name\" text NOT NULL,\n  \"custom\" jsonb DEFAULT '{}'::jsonb NOT NULL,\n  CONSTRAINT \"entity_pkey\" PRIMARY KEY (\"tenant_id\", \"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"entity\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"entity\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.field_definition",
+    "label": "Create table \"field_definition\"",
+    "summary": "Creates table \"field_definition\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "field_definition"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"field_definition\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"field_definition\"",
+        "sql": "CREATE TABLE \"public\".\"field_definition\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"id\" uuid DEFAULT (uuidv7()) NOT NULL,\n  \"campaign_id\" uuid,\n  \"key\" text NOT NULL,\n  \"value_type\" text NOT NULL,\n  CONSTRAINT \"field_definition_pkey\" PRIMARY KEY (\"tenant_id\", \"id\"),\n  CONSTRAINT \"field_definition_value_type_check\" CHECK ((value_type = ANY (ARRAY['text'::text, 'number'::text, 'boolean'::text, 'date'::text])))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"field_definition\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.import_record",
+    "label": "Create table \"import_record\"",
+    "summary": "Creates table \"import_record\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "import_record"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"import_record\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"import_record\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"import_record\"",
+        "sql": "CREATE TABLE \"public\".\"import_record\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"source\" text NOT NULL,\n  \"source_key\" text NOT NULL,\n  \"entity_id\" uuid NOT NULL,\n  \"content_hash\" text NOT NULL,\n  \"imported_at\" timestamptz DEFAULT (now()) NOT NULL,\n  CONSTRAINT \"import_record_pkey\" PRIMARY KEY (\"tenant_id\", \"source\", \"source_key\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"import_record\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"import_record\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.tenant",
+    "label": "Create table \"tenant\"",
+    "summary": "Creates table \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"tenant\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"tenant\"",
+        "sql": "CREATE TABLE \"public\".\"tenant\" (\n  \"id\" uuid DEFAULT (uuidv7()) NOT NULL,\n  \"name\" text NOT NULL,\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  CONSTRAINT \"tenant_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"tenant\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.transcript_segment",
+    "label": "Create table \"transcript_segment\"",
+    "summary": "Creates table \"transcript_segment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "transcript_segment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"transcript_segment\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"transcript_segment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"transcript_segment\"",
+        "sql": "CREATE TABLE \"public\".\"transcript_segment\" (\n  \"tenant_id\" uuid NOT NULL,\n  \"id\" uuid DEFAULT (uuidv7()) NOT NULL,\n  \"campaign_id\" uuid NOT NULL,\n  \"session_no\" int4 NOT NULL,\n  \"start_ms\" int4 NOT NULL,\n  \"end_ms\" int4 NOT NULL,\n  \"speaker\" text,\n  \"text\" text NOT NULL,\n  \"word_timings\" bytea NOT NULL,\n  CONSTRAINT \"transcript_segment_pkey\" PRIMARY KEY (\"tenant_id\", \"id\"),\n  CONSTRAINT \"transcript_segment_check\" CHECK ((end_ms >= start_ms))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"transcript_segment\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"transcript_segment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.field_definition.field_definition_tenant_id_campaign_id_key_key",
+    "label": "Add unique constraint (NULLS NOT DISTINCT) on \"field_definition\" (tenant_id, campaign_id, key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Add unique constraint (NULLS NOT DISTINCT) on \"field_definition\" (tenant_id, campaign_id, key)",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'field_definition_tenant_id_campaign_id_key_key')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Add unique constraint (NULLS NOT DISTINCT) on \"field_definition\" (tenant_id, campaign_id, key) (1/1)",
+        "sql": "ALTER TABLE public.field_definition ADD CONSTRAINT field_definition_tenant_id_campaign_id_key_key UNIQUE NULLS NOT DISTINCT (tenant_id, campaign_id, key)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Add unique constraint (NULLS NOT DISTINCT) on \"field_definition\" (tenant_id, campaign_id, key)",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'field_definition_tenant_id_campaign_id_key_key') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "index.claim_current.claim_current_subject_idx",
+    "label": "Create index \"claim_current_subject_idx\" on \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "claim_current_subject_idx",
+        "table": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"claim_current_subject_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_current_subject_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"claim_current_subject_idx\"",
+        "sql": "CREATE INDEX \"claim_current_subject_idx\" ON \"public\".\"claim_current\" (\"tenant_id\", \"subject_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"claim_current_subject_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"claim_current_subject_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.entity.entity_campaign_idx",
+    "label": "Create index \"entity_campaign_idx\" on \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "entity_campaign_idx",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"entity_campaign_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"entity_campaign_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"entity_campaign_idx\"",
+        "sql": "CREATE INDEX \"entity_campaign_idx\" ON \"public\".\"entity\" (\"tenant_id\", \"campaign_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"entity_campaign_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"entity_campaign_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.transcript_segment.transcript_segment_session_idx",
+    "label": "Create index \"transcript_segment_session_idx\" on \"transcript_segment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "transcript_segment_session_idx",
+        "table": "transcript_segment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"transcript_segment_session_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"transcript_segment_session_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"transcript_segment_session_idx\"",
+        "sql": "CREATE INDEX \"transcript_segment_session_idx\" ON \"public\".\"transcript_segment\" (\"tenant_id\", \"campaign_id\", \"session_no\", \"start_ms\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"transcript_segment_session_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"transcript_segment_session_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.campaign.campaign_tenant_id_fkey",
+    "label": "Add foreign key \"campaign_tenant_id_fkey\" on \"campaign\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "campaign_tenant_id_fkey",
+        "table": "campaign"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"campaign_tenant_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "campaign_tenant_id_fkey",
+          "public",
+          "\"public\".\"campaign\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"campaign_tenant_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"campaign\"\nADD CONSTRAINT \"campaign_tenant_id_fkey\"\nFOREIGN KEY (\"tenant_id\")\nREFERENCES \"public\".\"tenant\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"campaign_tenant_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "campaign_tenant_id_fkey",
+          "public",
+          "\"public\".\"campaign\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.claim_current.claim_current_tenant_id_campaign_id_fkey",
+    "label": "Add foreign key \"claim_current_tenant_id_campaign_id_fkey\" on \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "claim_current_tenant_id_campaign_id_fkey",
+        "table": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"claim_current_tenant_id_campaign_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_current_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"claim_current_tenant_id_campaign_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"claim_current\"\nADD CONSTRAINT \"claim_current_tenant_id_campaign_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"campaign_id\")\nREFERENCES \"public\".\"campaign\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"claim_current_tenant_id_campaign_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_current_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.claim_current.claim_current_tenant_id_subject_id_fkey",
+    "label": "Add foreign key \"claim_current_tenant_id_subject_id_fkey\" on \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "claim_current_tenant_id_subject_id_fkey",
+        "table": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"claim_current_tenant_id_subject_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_current_tenant_id_subject_id_fkey",
+          "public",
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"claim_current_tenant_id_subject_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"claim_current\"\nADD CONSTRAINT \"claim_current_tenant_id_subject_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"subject_id\")\nREFERENCES \"public\".\"entity\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"claim_current_tenant_id_subject_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_current_tenant_id_subject_id_fkey",
+          "public",
+          "\"public\".\"claim_current\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.claim_embedding.claim_embedding_tenant_id_claim_id_fkey",
+    "label": "Add foreign key \"claim_embedding_tenant_id_claim_id_fkey\" on \"claim_embedding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "claim_embedding_tenant_id_claim_id_fkey",
+        "table": "claim_embedding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"claim_embedding_tenant_id_claim_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_embedding_tenant_id_claim_id_fkey",
+          "public",
+          "\"public\".\"claim_embedding\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"claim_embedding_tenant_id_claim_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"claim_embedding\"\nADD CONSTRAINT \"claim_embedding_tenant_id_claim_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"claim_id\")\nREFERENCES \"public\".\"claim_current\" (\"tenant_id\", \"claim_id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"claim_embedding_tenant_id_claim_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "claim_embedding_tenant_id_claim_id_fkey",
+          "public",
+          "\"public\".\"claim_embedding\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.entity.entity_tenant_id_campaign_id_fkey",
+    "label": "Add foreign key \"entity_tenant_id_campaign_id_fkey\" on \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "entity_tenant_id_campaign_id_fkey",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"entity_tenant_id_campaign_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "entity_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"entity\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"entity_tenant_id_campaign_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"entity\"\nADD CONSTRAINT \"entity_tenant_id_campaign_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"campaign_id\")\nREFERENCES \"public\".\"campaign\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"entity_tenant_id_campaign_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "entity_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"entity\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.field_definition.field_definition_tenant_id_campaign_id_fkey",
+    "label": "Add foreign key \"field_definition_tenant_id_campaign_id_fkey\" on \"field_definition\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "field_definition_tenant_id_campaign_id_fkey",
+        "table": "field_definition"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"field_definition_tenant_id_campaign_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_definition_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"field_definition_tenant_id_campaign_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"field_definition\"\nADD CONSTRAINT \"field_definition_tenant_id_campaign_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"campaign_id\")\nREFERENCES \"public\".\"campaign\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"field_definition_tenant_id_campaign_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_definition_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.field_definition.field_definition_tenant_id_fkey",
+    "label": "Add foreign key \"field_definition_tenant_id_fkey\" on \"field_definition\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "field_definition_tenant_id_fkey",
+        "table": "field_definition"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"field_definition_tenant_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_definition_tenant_id_fkey",
+          "public",
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"field_definition_tenant_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"field_definition\"\nADD CONSTRAINT \"field_definition_tenant_id_fkey\"\nFOREIGN KEY (\"tenant_id\")\nREFERENCES \"public\".\"tenant\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"field_definition_tenant_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_definition_tenant_id_fkey",
+          "public",
+          "\"public\".\"field_definition\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.import_record.import_record_tenant_id_entity_id_fkey",
+    "label": "Add foreign key \"import_record_tenant_id_entity_id_fkey\" on \"import_record\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "import_record_tenant_id_entity_id_fkey",
+        "table": "import_record"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"import_record_tenant_id_entity_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "import_record_tenant_id_entity_id_fkey",
+          "public",
+          "\"public\".\"import_record\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"import_record_tenant_id_entity_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"import_record\"\nADD CONSTRAINT \"import_record_tenant_id_entity_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"entity_id\")\nREFERENCES \"public\".\"entity\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"import_record_tenant_id_entity_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "import_record_tenant_id_entity_id_fkey",
+          "public",
+          "\"public\".\"import_record\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.import_record.import_record_tenant_id_fkey",
+    "label": "Add foreign key \"import_record_tenant_id_fkey\" on \"import_record\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "import_record_tenant_id_fkey",
+        "table": "import_record"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"import_record_tenant_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "import_record_tenant_id_fkey",
+          "public",
+          "\"public\".\"import_record\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"import_record_tenant_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"import_record\"\nADD CONSTRAINT \"import_record_tenant_id_fkey\"\nFOREIGN KEY (\"tenant_id\")\nREFERENCES \"public\".\"tenant\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"import_record_tenant_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "import_record_tenant_id_fkey",
+          "public",
+          "\"public\".\"import_record\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.transcript_segment.transcript_segment_tenant_id_campaign_id_fkey",
+    "label": "Add foreign key \"transcript_segment_tenant_id_campaign_id_fkey\" on \"transcript_segment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "transcript_segment_tenant_id_campaign_id_fkey",
+        "table": "transcript_segment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"transcript_segment_tenant_id_campaign_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "transcript_segment_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"transcript_segment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"transcript_segment_tenant_id_campaign_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"transcript_segment\"\nADD CONSTRAINT \"transcript_segment_tenant_id_campaign_id_fkey\"\nFOREIGN KEY (\"tenant_id\", \"campaign_id\")\nREFERENCES \"public\".\"campaign\" (\"tenant_id\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"transcript_segment_tenant_id_campaign_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "transcript_segment_tenant_id_campaign_id_fkey",
+          "public",
+          "\"public\".\"transcript_segment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.campaign",
+    "label": "Enable row-level security on \"campaign\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "campaign"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"campaign\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "campaign"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"campaign\"",
+        "sql": "ALTER TABLE \"public\".\"campaign\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"campaign\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "campaign"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.claim_current",
+    "label": "Enable row-level security on \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"claim_current\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "claim_current"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"claim_current\"",
+        "sql": "ALTER TABLE \"public\".\"claim_current\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"claim_current\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "claim_current"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.claim_embedding",
+    "label": "Enable row-level security on \"claim_embedding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "claim_embedding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"claim_embedding\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "claim_embedding"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"claim_embedding\"",
+        "sql": "ALTER TABLE \"public\".\"claim_embedding\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"claim_embedding\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "claim_embedding"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.entity",
+    "label": "Enable row-level security on \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"entity\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "entity"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"entity\"",
+        "sql": "ALTER TABLE \"public\".\"entity\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"entity\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "entity"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.field_definition",
+    "label": "Enable row-level security on \"field_definition\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "field_definition"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"field_definition\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "field_definition"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"field_definition\"",
+        "sql": "ALTER TABLE \"public\".\"field_definition\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"field_definition\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "field_definition"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.import_record",
+    "label": "Enable row-level security on \"import_record\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "import_record"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"import_record\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "import_record"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"import_record\"",
+        "sql": "ALTER TABLE \"public\".\"import_record\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"import_record\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "import_record"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.tenant",
+    "label": "Enable row-level security on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"tenant\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "tenant"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"tenant\"",
+        "sql": "ALTER TABLE \"public\".\"tenant\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"tenant\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "tenant"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.transcript_segment",
+    "label": "Enable row-level security on \"transcript_segment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "transcript_segment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"transcript_segment\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "transcript_segment"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"transcript_segment\"",
+        "sql": "ALTER TABLE \"public\".\"transcript_segment\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"transcript_segment\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "transcript_segment"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.campaign.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"campaign\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "campaign"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "campaign",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"campaign\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "campaign",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.claim_current.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"claim_current\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "claim_current"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "claim_current",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"claim_current\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "claim_current",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.claim_embedding.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"claim_embedding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "claim_embedding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "claim_embedding",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"claim_embedding\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "claim_embedding",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.entity.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"entity\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.field_definition.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"field_definition\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "field_definition"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field_definition",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"field_definition\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field_definition",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.import_record.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"import_record\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "import_record"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "import_record",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"import_record\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "import_record",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.tenant.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tenant",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"tenant\" AS PERMISSIVE FOR ALL TO public USING ((id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tenant",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.transcript_segment.tenant_isolation",
+    "label": "Create RLS policy \"tenant_isolation\" on \"transcript_segment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "tenant_isolation",
+        "table": "transcript_segment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"tenant_isolation\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "transcript_segment",
+          "tenant_isolation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"tenant_isolation\"",
+        "sql": "CREATE POLICY \"tenant_isolation\" ON \"public\".\"transcript_segment\" AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"tenant_isolation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "transcript_segment",
+          "tenant_isolation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raw.claim_version.table",
+    "label": "Create hash-partitioned table \"claim_version\" and its four partitions",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Create hash-partitioned table \"claim_version\" and its four partitions",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'claim_version' AND relkind = 'p')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Create hash-partitioned table \"claim_version\" and its four partitions (1/5)",
+        "sql": "CREATE TABLE public.claim_version (\n  tenant_id   uuid NOT NULL,\n  claim_id    uuid NOT NULL,\n  version     integer NOT NULL CONSTRAINT claim_version_version_check CHECK (version > 0),\n  campaign_id uuid NOT NULL,\n  subject_id  uuid NOT NULL,\n  predicate   text NOT NULL,\n  object      jsonb NOT NULL,\n  recorded_at timestamptz NOT NULL DEFAULT now(),\n  CONSTRAINT claim_version_pkey PRIMARY KEY (tenant_id, claim_id, version),\n  CONSTRAINT claim_version_tenant_id_campaign_id_fkey FOREIGN KEY (tenant_id, campaign_id) REFERENCES public.campaign (tenant_id, id),\n  CONSTRAINT claim_version_tenant_id_subject_id_fkey FOREIGN KEY (tenant_id, subject_id) REFERENCES public.entity (tenant_id, id)\n) PARTITION BY HASH (tenant_id)",
+        "params": []
+      },
+      {
+        "description": "Create hash-partitioned table \"claim_version\" and its four partitions (2/5)",
+        "sql": "CREATE TABLE public.claim_version_p0 PARTITION OF public.claim_version FOR VALUES WITH (MODULUS 4, REMAINDER 0)",
+        "params": []
+      },
+      {
+        "description": "Create hash-partitioned table \"claim_version\" and its four partitions (3/5)",
+        "sql": "CREATE TABLE public.claim_version_p1 PARTITION OF public.claim_version FOR VALUES WITH (MODULUS 4, REMAINDER 1)",
+        "params": []
+      },
+      {
+        "description": "Create hash-partitioned table \"claim_version\" and its four partitions (4/5)",
+        "sql": "CREATE TABLE public.claim_version_p2 PARTITION OF public.claim_version FOR VALUES WITH (MODULUS 4, REMAINDER 2)",
+        "params": []
+      },
+      {
+        "description": "Create hash-partitioned table \"claim_version\" and its four partitions (5/5)",
+        "sql": "CREATE TABLE public.claim_version_p3 PARTITION OF public.claim_version FOR VALUES WITH (MODULUS 4, REMAINDER 3)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Create hash-partitioned table \"claim_version\" and its four partitions",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'claim_version' AND relkind = 'p') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "raw.claim_version.rls",
+    "label": "Enable row-level security and policy \"tenant_isolation\" on \"claim_version\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Enable row-level security and policy \"tenant_isolation\" on \"claim_version\"",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'claim_version' AND policyname = 'tenant_isolation')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Enable row-level security and policy \"tenant_isolation\" on \"claim_version\" (1/2)",
+        "sql": "ALTER TABLE public.claim_version ENABLE ROW LEVEL SECURITY",
+        "params": []
+      },
+      {
+        "description": "Enable row-level security and policy \"tenant_isolation\" on \"claim_version\" (2/2)",
+        "sql": "CREATE POLICY tenant_isolation ON public.claim_version AS PERMISSIVE FOR ALL TO public USING ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)) WITH CHECK ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Enable row-level security and policy \"tenant_isolation\" on \"claim_version\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'claim_version' AND policyname = 'tenant_isolation') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "raw.claim_version.append_only",
+    "label": "Create append-only trigger on \"claim_version\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Create append-only trigger on \"claim_version\"",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'claim_version_append_only' AND NOT tgisinternal AND tgparentid = 0)) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Create append-only trigger on \"claim_version\" (1/2)",
+        "sql": "CREATE FUNCTION public.claim_version_append_only() RETURNS trigger LANGUAGE plpgsql AS $fn$\nBEGIN\n  RAISE EXCEPTION 'claim_version is append-only (% rejected)', TG_OP;\nEND $fn$",
+        "params": []
+      },
+      {
+        "description": "Create append-only trigger on \"claim_version\" (2/2)",
+        "sql": "CREATE TRIGGER claim_version_append_only BEFORE UPDATE OR DELETE ON public.claim_version\n  FOR EACH ROW EXECUTE FUNCTION public.claim_version_append_only()",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Create append-only trigger on \"claim_version\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'claim_version_append_only' AND NOT tgisinternal AND tgparentid = 0) AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "raw.claim_current.sync",
+    "label": "Create trigger maintaining \"claim_current\" from \"claim_version\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Create trigger maintaining \"claim_current\" from \"claim_version\"",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'claim_current_sync' AND NOT tgisinternal AND tgparentid = 0)) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Create trigger maintaining \"claim_current\" from \"claim_version\" (1/2)",
+        "sql": "CREATE FUNCTION public.claim_current_sync() RETURNS trigger LANGUAGE plpgsql AS $fn$\nBEGIN\n  INSERT INTO claim_current AS c (tenant_id, claim_id, version, campaign_id, subject_id, predicate, object)\n  VALUES (NEW.tenant_id, NEW.claim_id, NEW.version, NEW.campaign_id, NEW.subject_id, NEW.predicate, NEW.object)\n  ON CONFLICT (tenant_id, claim_id) DO UPDATE\n    SET version = EXCLUDED.version, campaign_id = EXCLUDED.campaign_id, subject_id = EXCLUDED.subject_id,\n        predicate = EXCLUDED.predicate, object = EXCLUDED.object\n    WHERE c.version < EXCLUDED.version;\n  RETURN NULL;\nEND $fn$",
+        "params": []
+      },
+      {
+        "description": "Create trigger maintaining \"claim_current\" from \"claim_version\" (2/2)",
+        "sql": "CREATE TRIGGER claim_current_sync AFTER INSERT ON public.claim_version\n  FOR EACH ROW EXECUTE FUNCTION public.claim_current_sync()",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Create trigger maintaining \"claim_current\" from \"claim_version\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'claim_current_sync' AND NOT tgisinternal AND tgparentid = 0) AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "raw.claim_embedding.embedding",
+    "label": "Add halfvec(768) column \"embedding\" and HNSW index to \"claim_embedding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Add halfvec(768) column \"embedding\" and HNSW index to \"claim_embedding\"",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname = 'public' AND indexname = 'claim_embedding_hnsw')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Add halfvec(768) column \"embedding\" and HNSW index to \"claim_embedding\" (1/2)",
+        "sql": "ALTER TABLE public.claim_embedding ADD COLUMN embedding halfvec(768) NOT NULL",
+        "params": []
+      },
+      {
+        "description": "Add halfvec(768) column \"embedding\" and HNSW index to \"claim_embedding\" (2/2)",
+        "sql": "CREATE INDEX claim_embedding_hnsw ON public.claim_embedding USING hnsw (embedding halfvec_cosine_ops) WITH (m = 16, ef_construction = 64)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Add halfvec(768) column \"embedding\" and HNSW index to \"claim_embedding\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname = 'public' AND indexname = 'claim_embedding_hnsw') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "raw.grants.skal_app",
+    "label": "Grant DML to skal_app and revoke it on the claim_version partitions",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Grant DML to skal_app and revoke it on the claim_version partitions",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 WHERE has_table_privilege('skal_app', 'public.claim_version', 'SELECT') AND NOT has_table_privilege('skal_app', 'public.claim_version_p0', 'SELECT'))) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Grant DML to skal_app and revoke it on the claim_version partitions (1/2)",
+        "sql": "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO skal_app",
+        "params": []
+      },
+      {
+        "description": "Grant DML to skal_app and revoke it on the claim_version partitions (2/2)",
+        "sql": "REVOKE ALL ON public.claim_version_p0, public.claim_version_p1, public.claim_version_p2, public.claim_version_p3 FROM skal_app",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Grant DML to skal_app and revoke it on the claim_version partitions",
+        "sql": "SELECT EXISTS (SELECT 1 WHERE has_table_privilege('skal_app', 'public.claim_version', 'SELECT') AND NOT has_table_privilege('skal_app', 'public.claim_version_p0', 'SELECT')) AS result",
+        "params": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "name": "db-tooling-arm-drizzle",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap.ts",
+    "test": "node scripts/bootstrap.ts && node node_modules/typescript/bin/tsc --noEmit && node node_modules/vitest/vitest.mjs run",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "fleet": "node scripts/fleet.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "1.0.0-rc.4",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "1.0.0-rc.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}

@@ -1,0 +1,18 @@
+// use prisma-8
+// Minimal probe: one table with RLS and one policy, no raw SQL, to check db verify in isolation.
+namespace public {
+  model Probe {
+    tenantId Uuid @map("tenant_id")
+    id       Uuid @id @default(sql`uuidv7()`)
+
+    @@rls
+    @@map("probe")
+  }
+
+  policy_all probe_isolation {
+    target    = Probe
+    roles     = [public]
+    using     = "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)"
+    @@map("tenant_isolation")
+  }
+}

@@ -25,3 +25,6 @@ SELECT 'tenant B sees campaigns = ' || count(*) AS check FROM campaign;
 COMMIT;
 
 SELECT 'no context sees entities = ' || count(*) AS check FROM entity;
+
+-- Must fail with permission denied: partitions are reachable only through the parent.
+SELECT count(*) FROM claim_version_p0;

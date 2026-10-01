@@ -1,0 +1,150 @@
+[
+  {
+    "id": "column.public.entity.display_name",
+    "label": "Add column \"display_name\" to \"entity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "display_name",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"display_name\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "display_name"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"display_name\"",
+        "sql": "ALTER TABLE \"public\".\"entity\" ADD COLUMN \"display_name\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"display_name\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "display_name"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.dropNotNull.entity.name",
+    "label": "Drop NOT NULL on \"entity\".\"name\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "name",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"name\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "name"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop NOT NULL on \"name\"",
+        "sql": "ALTER TABLE \"public\".\"entity\" ALTER COLUMN \"name\" DROP NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"name\" is nullable",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "name",
+          "YES"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raw.entity.display_name_sync",
+    "label": "Create trigger keeping \"entity\".name and display_name in sync",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Create trigger keeping \"entity\".name and display_name in sync",
+        "sql": "SELECT NOT (SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'entity_name_sync')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Create trigger keeping \"entity\".name and display_name in sync (1/2)",
+        "sql": "CREATE FUNCTION public.entity_name_sync() RETURNS trigger LANGUAGE plpgsql AS $fn$\nBEGIN\n  IF TG_OP = 'INSERT' THEN\n    NEW.display_name := COALESCE(NEW.display_name, NEW.name);\n    NEW.name := COALESCE(NEW.name, NEW.display_name);\n  ELSIF NEW.name IS DISTINCT FROM OLD.name AND NEW.display_name IS NOT DISTINCT FROM OLD.display_name THEN\n    NEW.display_name := NEW.name;\n  ELSIF NEW.display_name IS DISTINCT FROM OLD.display_name AND NEW.name IS NOT DISTINCT FROM OLD.name THEN\n    NEW.name := NEW.display_name;\n  END IF;\n  RETURN NEW;\nEND $fn$",
+        "params": []
+      },
+      {
+        "description": "Create trigger keeping \"entity\".name and display_name in sync (2/2)",
+        "sql": "CREATE TRIGGER entity_name_sync BEFORE INSERT OR UPDATE ON public.entity\n  FOR EACH ROW EXECUTE FUNCTION public.entity_name_sync()",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Create trigger keeping \"entity\".name and display_name in sync",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'entity_name_sync') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "data_migration.backfill-entity-display_name",
+    "label": "Data transform: backfill-entity-display_name",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check backfill-entity-display_name has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"entity\" WHERE \"display_name\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run backfill-entity-display_name",
+        "sql": "UPDATE \"public\".\"entity\" SET \"display_name\" = \"name\" WHERE \"display_name\" IS NULL",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify backfill-entity-display_name resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"entity\" WHERE \"display_name\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,155 @@
+[
+  {
+    "id": "raw.entity.display_name_sync.drop",
+    "label": "Drop the trigger keeping \"entity\".name and display_name in sync",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "ensure not yet applied: Drop the trigger keeping \"entity\".name and display_name in sync",
+        "sql": "SELECT NOT (SELECT NOT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'entity_name_sync')) AS result",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Drop the trigger keeping \"entity\".name and display_name in sync (1/2)",
+        "sql": "DROP TRIGGER entity_name_sync ON public.entity",
+        "params": []
+      },
+      {
+        "description": "Drop the trigger keeping \"entity\".name and display_name in sync (2/2)",
+        "sql": "DROP FUNCTION public.entity_name_sync()",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify: Drop the trigger keeping \"entity\".name and display_name in sync",
+        "sql": "SELECT NOT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'entity_name_sync') AS result",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "data_migration.handle-nulls-entity-display_name",
+    "label": "Data transform: handle-nulls-entity-display_name",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check handle-nulls-entity-display_name has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"entity\" WHERE \"display_name\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run handle-nulls-entity-display_name",
+        "sql": "UPDATE \"public\".\"entity\" SET \"display_name\" = \"name\" WHERE \"display_name\" IS NULL",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify handle-nulls-entity-display_name resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"entity\" WHERE \"display_name\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.entity.name",
+    "label": "Drop column \"name\" from \"entity\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "name",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"name\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "name"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"name\"",
+        "sql": "ALTER TABLE \"public\".\"entity\" DROP COLUMN \"name\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"name\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "name"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.setNotNull.entity.display_name",
+    "label": "Set NOT NULL on \"entity\".\"display_name\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "display_name",
+        "table": "entity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"display_name\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "display_name"
+        ]
+      },
+      {
+        "description": "ensure no NULL values in \"display_name\"",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"entity\" WHERE \"display_name\" IS NULL) AS \"result\"",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "set NOT NULL on \"display_name\"",
+        "sql": "ALTER TABLE \"public\".\"entity\" ALTER COLUMN \"display_name\" SET NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"display_name\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "entity",
+          "display_name",
+          "NO"
+        ]
+      }
+    ]
+  }
+]

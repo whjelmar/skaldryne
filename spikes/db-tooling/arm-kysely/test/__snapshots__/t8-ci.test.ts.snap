@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`T8 > T8a squawk runs over the committed migration files, which are exactly the SQL that executes 1`] = `
+{
+  "000001-m1-reference-schema.sql: prefer-bigint-over-int": 5,
+  "000001-m1-reference-schema.sql: require-lock-timeout": 1,
+  "000001-m1-reference-schema.sql: require-statement-timeout": 1,
+  "000002-m2-expand-display_name.sql: require-lock-timeout": 1,
+  "000002-m2-expand-display_name.sql: require-statement-timeout": 1,
+  "000003-m3-contract-drop-name.sql: adding-not-nullable-field": 1,
+  "000003-m3-contract-drop-name.sql: ban-drop-column": 1,
+  "000003-m3-contract-drop-name.sql: require-lock-timeout": 1,
+  "000003-m3-contract-drop-name.sql: require-statement-timeout": 1,
+}
+`;

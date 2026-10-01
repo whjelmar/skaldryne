@@ -1,0 +1,33 @@
+1..32
+ok 1 - the expected nine tenant tables exist
+ok 2 - RLS enabled on campaign
+ok 3 - RLS enabled on claim_current
+ok 4 - RLS enabled on claim_embedding
+ok 5 - RLS enabled on claim_version
+ok 6 - RLS enabled on entity
+ok 7 - RLS enabled on field_definition
+ok 8 - RLS enabled on import_record
+ok 9 - RLS enabled on tenant
+ok 10 - RLS enabled on transcript_segment
+ok 11 - campaign has exactly the tenant_isolation policy
+ok 12 - claim_current has exactly the tenant_isolation policy
+ok 13 - claim_embedding has exactly the tenant_isolation policy
+ok 14 - claim_version has exactly the tenant_isolation policy
+ok 15 - entity has exactly the tenant_isolation policy
+ok 16 - field_definition has exactly the tenant_isolation policy
+ok 17 - import_record has exactly the tenant_isolation policy
+ok 18 - tenant has exactly the tenant_isolation policy
+ok 19 - transcript_segment has exactly the tenant_isolation policy
+ok 20 - campaign policy covers all commands and keys on app.tenant_id
+ok 21 - claim_current policy covers all commands and keys on app.tenant_id
+ok 22 - claim_embedding policy covers all commands and keys on app.tenant_id
+ok 23 - claim_version policy covers all commands and keys on app.tenant_id
+ok 24 - entity policy covers all commands and keys on app.tenant_id
+ok 25 - field_definition policy covers all commands and keys on app.tenant_id
+ok 26 - import_record policy covers all commands and keys on app.tenant_id
+ok 27 - tenant policy covers all commands and keys on app.tenant_id
+ok 28 - transcript_segment policy covers all commands and keys on app.tenant_id
+ok 29 - skal_app has no privileges on partition claim_version_p0
+ok 30 - skal_app has no privileges on partition claim_version_p1
+ok 31 - skal_app has no privileges on partition claim_version_p2
+ok 32 - skal_app has no privileges on partition claim_version_p3

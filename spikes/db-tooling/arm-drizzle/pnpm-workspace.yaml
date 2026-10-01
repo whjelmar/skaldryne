@@ -1,0 +1,11 @@
+# The spike lives on a network share where pnpm's symlinked virtual store fails
+# ("The file or directory is not a reparse point", os error 4390), so use a flat node_modules.
+nodeLinker: hoisted
+
+# esbuild's postinstall only verifies its binary (shipped as @esbuild/win32-x64). On the share,
+# cmd.exe cannot use a UNC cwd, so the script runs in C:\Windows and fails; skip it explicitly.
+# For the same reason, cmd.exe runs package scripts in C:\Windows. PowerShell accepts a UNC cwd.
+scriptShell: pwsh
+
+allowBuilds:
+  esbuild: false

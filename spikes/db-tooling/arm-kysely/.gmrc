@@ -1,0 +1,16 @@
+/*
+ * graphile-migrate configuration for arm A (JSON5).
+ * Local spike credentials only (see ../README.md). Scripts and tests pass the same
+ * settings programmatically via src/migrate.ts, overriding the database names.
+ */
+{
+  connectionString: "postgres://skal_migrator:migrator@localhost:55432/kysely_main",
+  shadowConnectionString: "postgres://skal_migrator:migrator@localhost:55432/kysely_shadow",
+  rootConnectionString: "postgres://postgres:postgres@localhost:55432/postgres",
+
+  migrationsFolder: "./migrations",
+
+  // Shadow resets (used by `graphile-migrate commit`) recreate the database, then create the
+  // extensions as the superuser, exactly as the bootstrap script does for the real databases.
+  afterReset: [{ _: "sql", file: "../db/bootstrap-extensions.sql", root: true }],
+}

@@ -1,0 +1,21 @@
+# Z: is an SMB share where pnpm's symlinked virtual store fails
+# ("The file or directory is not a reparse point", os error 4390), so use a flat node_modules.
+nodeLinker: hoisted
+
+minimumReleaseAgeExclude:
+  - '@prisma/orm-extension-pgvector@8.0.0-rc.14'
+  - '@prisma/orm-family-sql@8.0.0-rc.14'
+  - '@prisma/orm-framework@8.0.0-rc.14'
+  - '@prisma/orm-postgres@8.0.0-rc.14'
+  - '@prisma/orm-target-postgres@8.0.0-rc.14'
+  - '@prisma/orm-toolchain@8.0.0-rc.14'
+
+allowBuilds:
+  esbuild: false
+  workerd: false
+
+# prisma@8.0.0-rc.19 pins @prisma/orm-toolchain@8.0.0-rc.13 while @prisma/orm-postgres@8.0.0-rc.14
+# pulls rc.14. The mixed pair fails with "Malformed authoring pslBlock contribution at \"enum\"".
+overrides:
+  '@prisma/orm-toolchain': 8.0.0-rc.14
+  '@prisma/orm-framework': 8.0.0-rc.14

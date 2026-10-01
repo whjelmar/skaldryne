@@ -1,0 +1,1310 @@
+{
+  "version": "8",
+  "dialect": "postgres",
+  "id": "959d90c1-02e9-4be5-9532-d032f3d23e87",
+  "prevIds": [
+    "33ae9553-f4d9-45f1-8fbf-b6324a17279c"
+  ],
+  "ddl": [
+    {
+      "isRlsEnabled": true,
+      "name": "campaign",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "claim_current",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "claim_embedding",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "claim_version",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "entity",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "field_definition",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "import_record",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "tenant",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "transcript_segment",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "claim_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "version",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "campaign_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "subject_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "predicate",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "object",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "claim_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "type": "halfvec(768)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "embedding",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "claim_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "version",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "campaign_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "subject_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "predicate",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "object",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "recorded_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "campaign_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "kind",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "display_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'{}'",
+      "generated": null,
+      "identity": null,
+      "name": "custom",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "campaign_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "key",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "value_type",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "source",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "source_key",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "entity_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "content_hash",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "imported_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tenant"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tenant"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tenant"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tenant_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "campaign_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "session_no",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "start_ms",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "end_ms",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "speaker",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "text",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "type": "bytea",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "word_timings",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "tenant_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "subject_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "claim_current_subject_idx",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "embedding",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "halfvec_cosine_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "m=16, ef_construction=64",
+      "method": "hnsw",
+      "concurrently": false,
+      "name": "claim_embedding_hnsw",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "tenant_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "campaign_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "entity_campaign_idx",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "tenant_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "campaign_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "session_no",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "start_ms",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "transcript_segment_session_idx",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "tenant",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "campaign_tenant_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "campaign",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "claim_current_tenant_id_campaign_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "subject_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "entity",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "claim_current_tenant_id_subject_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "claim_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "claim_current",
+      "columnsTo": [
+        "tenant_id",
+        "claim_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "claim_embedding_tenant_id_claim_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "campaign",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "claim_version_tenant_id_campaign_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "subject_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "entity",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "claim_version_tenant_id_subject_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "campaign",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "entity_tenant_id_campaign_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "tenant",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "field_definition_tenant_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "campaign",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "field_definition_tenant_id_campaign_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "tenant",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "import_record_tenant_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "entity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "entity",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "import_record_tenant_id_entity_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "campaign",
+      "columnsTo": [
+        "tenant_id",
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "transcript_segment_tenant_id_campaign_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "id"
+      ],
+      "nameExplicit": true,
+      "name": "campaign_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "claim_id"
+      ],
+      "nameExplicit": true,
+      "name": "claim_current_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "claim_id"
+      ],
+      "nameExplicit": true,
+      "name": "claim_embedding_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "claim_id",
+        "version"
+      ],
+      "nameExplicit": true,
+      "name": "claim_version_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "id"
+      ],
+      "nameExplicit": true,
+      "name": "entity_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "id"
+      ],
+      "nameExplicit": true,
+      "name": "field_definition_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "source",
+        "source_key"
+      ],
+      "nameExplicit": true,
+      "name": "import_record_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": true,
+      "name": "tenant_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "tenant"
+    },
+    {
+      "columns": [
+        "tenant_id",
+        "id"
+      ],
+      "nameExplicit": true,
+      "name": "transcript_segment_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "tenant_id",
+        "campaign_id",
+        "key"
+      ],
+      "nullsNotDistinct": true,
+      "name": "field_definition_tenant_id_campaign_id_key_key",
+      "entityType": "uniques",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "value": "version > 0",
+      "name": "claim_version_version_check",
+      "entityType": "checks",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "value": "value_type IN ('text', 'number', 'boolean', 'date')",
+      "name": "field_definition_value_type_check",
+      "entityType": "checks",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "value": "end_ms >= start_ms",
+      "name": "transcript_segment_check",
+      "entityType": "checks",
+      "schema": "public",
+      "table": "transcript_segment"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "campaign"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "claim_current"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "claim_embedding"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "claim_version"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "entity"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "field_definition"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "import_record"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "tenant"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "ALL",
+      "roles": [
+        "public"
+      ],
+      "using": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "withCheck": "tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid",
+      "name": "tenant_isolation",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "transcript_segment"
+    }
+  ],
+  "renames": []
+}
