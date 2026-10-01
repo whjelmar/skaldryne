@@ -33,6 +33,7 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0012](0012-web-interface.md) | Web interface framework (recommendation: React single-page app) | Open | — | 0a |
 | [0013](0013-local-language-model-server.md) | Local language model server (recommendation: llama.cpp server) | Open | — | 0a |
 | [0014](0014-local-speech-server.md) | Local speech server (recommendation: our own, on faster-whisper and pyannote) | Open | — | 0a |
+| [0017](0017-database-tooling.md) | Database client and migration tooling (recommendation: Kysely with graphile-migrate) | Open | — | 0a |
 
 ## Not yet decided
 
@@ -41,7 +42,6 @@ These are needed later and are deliberately left open until then.
 | Question | Needed by | Notes |
 | --- | --- | --- |
 | Quality thresholds and the backend qualification floor (PRD open decision 2) | 0a exit | Set from a baseline run on the fixtures of [0002](0002-evaluation-fixture-sources.md), not guessed in advance. |
-| Database client and migration tooling | 0a | Must support per-transaction settings for row-level security ([0007](0007-visibility-enforcement.md)) and plain SQL migrations ([0005](0005-record-storage.md)). |
 | Authentication and single sign-on library | 0b | Needed for `SHARE-07`. |
 | Default retention window for raw audio (PRD open decision 5) | 0b | |
 | Object storage beyond the local disk | 1c | Video makes media storage large enough to matter (`NFR-11`). |
