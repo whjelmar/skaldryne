@@ -1,6 +1,6 @@
 # Skaldryne — Product Requirements Document
 
-**Status:** Draft v0.5 · **Last updated:** 2026-09-30 · **Owner:** project maintainers
+**Status:** Draft v0.6 · **Last updated:** 2026-11-02 · **Owner:** project maintainers
 
 ---
 
@@ -53,7 +53,7 @@ Stated plainly so scope arguments have a reference point.
 Runs one ongoing campaign for a regular group. Owns the continuity problem.
 
 - **Job:** know what happened last session without re-listening to three hours of audio. *Done when* a recap is readable in minutes and specific enough to open the next session with.
-- **Job:** look up a detail mid-session without breaking the scene. *Done when* a query returns the answer in seconds, with the session it came from.
+- **Job:** look up a detail mid-session without breaking the scene. *Done when* a query, asked aloud or typed, returns the answer in seconds, with the session it came from.
 - **Job:** find the threads left open. *Done when* unresolved commitments and dangling hooks are listed without being hand-tracked.
 - **Job:** share a recap with players without leaking prep. *Done when* a player-safe version exists without manual redaction.
 - **Job:** walk into the next session prepared. *Done when* a prep brief built from open threads, likely NPCs, and character knowledge is ready without assembling it by hand.
@@ -365,6 +365,10 @@ Every output here is a **rendering of the record** (`MODEL-01`), never independe
 - **`QRY-08` (P2) — Visual queries.** "Show me the map when we entered the vault" returns the cited frames. *Acceptance:* a query about a visually established fact returns the frame, not only the text claim.
 - **`QRY-09` (P1) — "As of" browsing.** The record, search, and chat can be scoped to their state as of any session or episode, so someone catching up is never spoiled by what comes later. *Acceptance:* a query scoped to session five returns nothing established in session six or later.
 - **`QRY-10` (P1) — At-table lookup.** During play, a GM-only lookup answers names, facts, and "what did they promise" questions from the record and, once live captions exist (`CAP-21`), from the live transcript of the session in progress. The answer and its source appear on a phone or second screen within the latency target (`NFR-05`). *Acceptance:* a fact from any processed session is returned with its source within the target; with live captions enabled, an NPC introduced an hour earlier in the same session is found before the session has been processed.
+- **`QRY-11` (P1) — Spoken queries and spoken answers.** The at-table lookup (`QRY-10`) and campaign chat (`QRY-02`) accept a question spoken by push-to-talk, transcribed by the configured speech-recognition backend (`INF-01`), including on the fully local path (`OWN-03`). The answer is spoken through the text-to-speech backend and always shown as text with its citations; the spoken form is short and names its source ("session four"). Answers play only on the asker's own device. They never play into the room or a shared voice channel unless every part of the answer is visible to everyone who can hear it and the GM has turned that on for the campaign. The asker's visibility scope applies to a spoken answer exactly as to a written one (`MODEL-13`, `QRY-04`), and the assistant declines aloud rather than invents (`QRY-03`). The spoken question and the spoken answer are out-of-character and never enter the record (`PIPE-03`): live capture excludes the assistant's own audio and treats the asker's query span as off the record (`CAP-19`). The text-to-speech voice never imitates a participant without their consent (`SAFE-03`, as in `OUT-17`).
+  *Rationale:* a GM mid-scene cannot look away to type, and the table is already being recorded, so a spoken lookup must neither leak a secret aloud nor become part of what it records. The accessibility drivers in §2.7 apply to blind and low-vision GMs.
+  *Acceptance:* in a fixture session where the GM asks three spoken questions, each is answered aloud on the GM's device with its source within the `NFR-05` target; no claim, beat, or transcript passage in the record comes from the questions or answers; and a player asking aloud about a GM-private fact hears a refusal.
+- **`QRY-12` (P2) — Voice queries through the voice-channel bot.** Anyone at the table can address the bot in the voice channel it joined for capture (`CAP-02`, `INT-10`) and ask a question aloud, under every rule of `QRY-11`. The bot speaks its answer into the channel only when everyone who can hear it shares the asker's visibility scope and the GM has turned spoken channel answers on; otherwise the answer goes privately to the asker in text through their preferred channel (`MSG-01`). *Acceptance:* a player who asks the bot aloud about a fact visible only to them receives the answer privately in text, and nothing is spoken into the channel.
 
 ---
 
@@ -531,7 +535,7 @@ Commitments that follow from being self-hosted, written as testable requirements
 - **`NFR-02` (P0) — Cost transparency** (`INF-05`), including citation overhead.
 - **`NFR-03` (P0) — Retention defaults favour deletion of audio**, with transcript governed separately and its trade-off documented (`CAP-07`).
 - **`NFR-04` (P0) — Security posture** consistent with [SECURITY.md](SECURITY.md): secret handling for provider keys, an authenticated API surface, no credentials in logs.
-- **`NFR-05` (P0) — Documented performance targets:** maximum session duration, processing latency budget relative to session length, video resolution and duration ceilings, live-caption latency, at-table lookup latency (`QRY-10`), and campaign size ceiling (`NFR-14`). Every limit is a stated decision rather than an emergent surprise.
+- **`NFR-05` (P0) — Documented performance targets:** maximum session duration, processing latency budget relative to session length, video resolution and duration ceilings, live-caption latency, at-table lookup latency (`QRY-10`), spoken lookup latency from the end of a question to the start of its spoken answer (`QRY-11`), and campaign size ceiling (`NFR-14`). Every limit is a stated decision rather than an emergent surprise.
 - **`NFR-06` (P1) — Observability:** per-stage timing, failure rates, and token spend queryable by the operator.
 - **`NFR-07` (P1) — Accessibility.** WCAG 2.2 AA as the interface target. Transcript and caption availability are treated as accessibility features in their own right (§2.7).
 - **`NFR-08` (P1) — Backup and restore** covering the record and its provenance, verifiable by test restore.
@@ -596,7 +600,7 @@ Milestone 1a comes first, because every later milestone assumes the players are 
 
 #### 1a — The table joins in
 
-Scope: `CAP-02`, `CAP-04`, `CAP-06`, `CAP-19`, `CAP-20`, `CAP-31` · `MODEL-14`, `MODEL-16`, `MODEL-17`, `MODEL-24`, `MODEL-26`, `MODEL-31` · `PIPE-09` · `OUT-08`, `OUT-19` · `QRY-10` · `MSG-01`–`MSG-05` · `INT-03`, `INT-10` · `INF-08` · `SAFE-02`, `SAFE-07`–`SAFE-09` · `GUIDE-01`–`GUIDE-04` · `NFR-12`.
+Scope: `CAP-02`, `CAP-04`, `CAP-06`, `CAP-19`, `CAP-20`, `CAP-31` · `MODEL-14`, `MODEL-16`, `MODEL-17`, `MODEL-24`, `MODEL-26`, `MODEL-31` · `PIPE-09` · `OUT-08`, `OUT-19` · `QRY-10`, `QRY-11` · `MSG-01`–`MSG-05` · `INT-03`, `INT-10` · `INF-08` · `SAFE-02`, `SAFE-07`–`SAFE-09` · `GUIDE-01`–`GUIDE-04` · `NFR-12`.
 
 **Exit criteria:** a group plays over a voice channel with the bot recording, takes something off the record, and bookmarks moments; the GM whispers one player through that player's chosen channel; the next session is scheduled from a poll; a play-by-post channel becomes reviewable segments; a session that would exceed its budget waits for the operator's choice; a new player joins from an invite and completes onboarding without the GM's help; and a player can block another participant.
 
@@ -620,7 +624,7 @@ Scope: `INT-01`, `INT-02`, `INT-08`, `INT-09`, `INT-11`, `INT-12` · `OWN-08` ·
 
 ### Phase 2 — v2+
 
-Scope: `MODEL-22` · `CAP-11`–`CAP-13`, `CAP-17`, `CAP-21`, `CAP-27` · `OUT-07`, `OUT-12`, `OUT-13`, `OUT-17`, `OUT-18`, `OUT-20` · `QRY-06`, `QRY-08` · `NAV-05`–`NAV-07`, `NAV-11`–`NAV-18` · `SHARE-04`, `SHARE-05` · `INT-05`–`INT-07` · `TPL-11` · `NFR-09`, `NFR-13`, `NFR-17`, `NFR-19`–`NFR-23`, `NFR-26`, `NFR-27`.
+Scope: `MODEL-22` · `CAP-11`–`CAP-13`, `CAP-17`, `CAP-21`, `CAP-27` · `OUT-07`, `OUT-12`, `OUT-13`, `OUT-17`, `OUT-18`, `OUT-20` · `QRY-06`, `QRY-08`, `QRY-12` · `NAV-05`–`NAV-07`, `NAV-11`–`NAV-18` · `SHARE-04`, `SHARE-05` · `INT-05`–`INT-07` · `TPL-11` · `NFR-09`, `NFR-13`, `NFR-17`, `NFR-19`–`NFR-23`, `NFR-26`, `NFR-27`.
 
 Phase 2 is not a single release, and its order is set by what Phase 1 teaches. Whether to offer managed hosting is open decision 10. The tenancy, isolation, and upgrade requirements a managed service relies on are in §15.1, and those that shape stored data are P0, so nothing built earlier forecloses it.
 
@@ -715,3 +719,4 @@ These need an answer before the milestone shown. Owners are roles until the proj
 | 0.3 | 2026-09-30 | Stated how each success metric is gathered without telemetry. Added budget enforcement, session revert, sessions for continuous play, re-extraction of old sessions, and bulk review. Moved campaigns with minors into the first release. Defined what redaction can and cannot reach, with a ledger reapplied on restore. Described the licence accurately as source-available and tied hosting to its commercial terms. |
 | 0.4 | 2026-09-30 | Added Phase 0 user stories (`docs/stories/phase-0.md`). Stated how requirements that mention later features are met before those features ship, and made the acceptance tests of `CAP-07`, `SHARE-07`, and `SAFE-01` passable in Phase 0. Moved leaving with what is yours (`SAFE-05`) into the first release, so a removed member keeps their rights from the start. Added campaign milestones, discovery progress, recall prompts, and credit for contributions, and ruled out leaderboards, player points, and streaks. |
 | 0.5 | 2026-09-30 | Added tenants as the unit of isolation: campaigns in a shared world share one tenant, and campaigns that must be kept apart get their own (`MODEL-32`). Added custom fields per tenant or campaign (`MODEL-33`). Made hosting readiness P0 (`NFR-16`). Added hosting and tenancy requirements: placement and sharding, read replicas, fair use between tenants, backup and restore per tenant, maintenance windows, repeatable migrations and imports, and per-tenant encryption with customer-controlled keys (§15.1). Added the hosting operator as a user, and the limit of protection from the operator as a risk. |
+| 0.6 | 2026-11-02 | Added spoken queries with spoken answers, heard only on the asker's device and kept out of the record (`QRY-11`), with a documented spoken lookup latency target (`NFR-05`), and voice queries through the voice-channel bot (`QRY-12`). |
