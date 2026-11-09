@@ -1,6 +1,6 @@
 # 0004 — TypeScript on Node.js, in one repository
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `NFR-01`, `NFR-10`, `INT-08`, `INT-12`
+**Status:** Accepted · **Date:** 2026-09-30 · **Serves:** `NFR-01`, `NFR-10`, `INT-08`, `INT-12`
 
 ## Context
 

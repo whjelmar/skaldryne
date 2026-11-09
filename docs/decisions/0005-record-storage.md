@@ -1,6 +1,6 @@
 # 0005 — PostgreSQL holds the record, the search indexes, and the job queue
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Serves:** `MODEL-01`, `MODEL-11`, `MODEL-13`, `QRY-01`, `PIPE-08`, `NFR-01`, `NFR-04`, `NFR-14`, `NFR-18`, `SAFE-01`, `SHARE-06`
+**Status:** Accepted · **Date:** 2026-09-30 · **Serves:** `MODEL-01`, `MODEL-11`, `MODEL-13`, `QRY-01`, `PIPE-08`, `NFR-01`, `NFR-04`, `NFR-14`, `NFR-18`, `SAFE-01`, `SHARE-06`
 
 ## Context
 
