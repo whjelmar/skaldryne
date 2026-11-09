@@ -9,6 +9,14 @@ These experiments address all three. This file pre-registers the fixtures, the e
 
 Record 0017 stays Open whatever these experiments show.
 
+## Amendment, 2026-11-09: Prisma arms dropped
+
+The maintainer chose to run Experiments 1–3 without the two Prisma reference arms (`arm-prisma7`, and `arm-prisma` for Experiment 1). The council had already agreed that Prisma 8 RC is not viable for Phase 0a, and Prisma 7 was a reference only. Nothing else below changes: fixtures, expected results and scoring are as first registered.
+
+A first attempt on 2026-10-01 was interrupted after a few minutes, before any Experiment 1 query code or results existed. Its files were moved out of the tree unread, and this run starts from the pre-registered commit.
+
+One agent does each arm. It builds its migration experiment (2 or 3) first, then writes its Experiment 1 queries without seeing the other arm's Experiment 1 code.
+
 ## Environment
 
 - **Postgres:** 18 with pgvector and pgTAP, container `db-tooling-db-1` on localhost:55432. Roles are as in [README.md](README.md).
