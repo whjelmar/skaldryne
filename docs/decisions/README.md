@@ -24,11 +24,11 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0003](0003-local-reference-hardware.md) | One reference machine with a 16 GB GPU, and two unpromised profiles | Proposed | Open decision 4 | 0a |
 | [0004](0004-language-runtime-and-repository.md) | TypeScript on Node.js, in one repository | Accepted | — | 0a |
 | [0005](0005-record-storage.md) | PostgreSQL holds the record, the search indexes, and the job queue | Accepted | — | 0a |
-| [0006](0006-record-model.md) | Record model | Open | — | 0a |
-| [0007](0007-visibility-enforcement.md) | Visibility enforcement | Open | — | 0a |
-| [0008](0008-inference-backend-interface.md) | Inference backend interface | Open | — | 0a |
-| [0009](0009-pipeline-execution.md) | Pipeline execution | Open | — | 0a |
-| [0010](0010-deployment.md) | Deployment | Open | — | 0a |
+| [0006](0006-record-model.md) | Append-only claim versions, evidence anchored to stable source blocks, redaction as the one erasure | Accepted | — | 0a |
+| [0007](0007-visibility-enforcement.md) | Row-level security on every read, and one reader that builds model context as the GM, one person, or the whole table | Accepted | — | 0a |
+| [0008](0008-inference-backend-interface.md) | One interface per model capability, with our own adapters chosen per stage by configuration | Accepted | — | 0a |
+| [0009](0009-pipeline-execution.md) | Sessions and documents run as chains of durable, resumable jobs on the database queue, limited per backend | Accepted | — | 0a |
+| [0010](0010-deployment.md) | One-command container composition, with migrations as their own step and `local` and `external` model profiles | Accepted | — | 0a |
 | [0011](0011-http-framework.md) | HTTP framework (recommendation: Hono) | Open | — | 0a |
 | [0012](0012-web-interface.md) | Web interface framework (recommendation: React single-page app) | Open | — | 0a |
 | [0013](0013-local-language-model-server.md) | Local language model server (recommendation: llama.cpp server) | Open | — | 0a |
@@ -43,5 +43,6 @@ These are needed later and are deliberately left open until then.
 | --- | --- | --- |
 | Quality thresholds and the backend qualification floor (PRD open decision 2) | 0a exit | Set from a baseline run on the fixtures of [0002](0002-evaluation-fixture-sources.md), not guessed in advance. |
 | Authentication and single sign-on library | 0b | Needed for `SHARE-07`. |
+| How TLS certificates are provided | 0b | Bundled reverse proxy with automatic certificates, operator-provided certificates, or both ([0010](0010-deployment.md)). |
 | Default retention window for raw audio (PRD open decision 5) | 0b | |
 | Object storage beyond the local disk | 1c | Video makes media storage large enough to matter (`NFR-11`). |

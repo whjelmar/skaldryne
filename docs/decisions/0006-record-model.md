@@ -1,14 +1,14 @@
 # 0006 — Record model
 
-**Status:** Open · **Date:** 2026-09-30 · **Serves:** `MODEL-01`, `MODEL-09`, `MODEL-10`, `MODEL-36`, `MODEL-11`, `PIPE-04`, `PIPE-05`, `PIPE-07`, `TPL-04`, `OUT-10`, `SAFE-01`, `OWN-04`
+**Status:** Accepted · **Date:** 2026-11-09 · **Serves:** `MODEL-01`, `MODEL-09`, `MODEL-10`, `MODEL-36`, `MODEL-11`, `PIPE-04`, `PIPE-05`, `PIPE-07`, `TPL-04`, `OUT-10`, `SAFE-01`, `OWN-04`
 
 ## Context
 
 The PRD makes the structured record primary and prose a rendering of it (`MODEL-01`). Every claim carries evidence, confidence, and the versions that produced it (`MODEL-09`, `TPL-04`). Corrections keep the old value (`MODEL-11`). Nothing reaches the record without review (`PIPE-05`). And redaction must remove a span everywhere (`SAFE-01`), which an append-only history would otherwise keep forever. Evidence must also keep pointing at the right passage when its source is edited, for example a rewritten journal or a corrected transcript (`MODEL-36`).
 
-## Recommendation
+## Decision
 
-**Recommended, not decided:** the design below.
+Claims are append-only versions with redaction as the one erasure, evidence is anchored to stable blocks of immutable source versions, and rendered outputs are caches. The design:
 
 ### Sources and evidence
 
@@ -36,7 +36,7 @@ The PRD makes the structured record primary and prose a rendering of it (`MODEL-
 - **A redaction ledger** records what was redacted by reference only: source, range, who, and when, with no content. The ledger is reapplied on export import, and on backup restore once backups exist (`SAFE-01`).
 - **History gaps are visible.** A claim chain that lost versions to redaction shows that something was removed, not what.
 
-## Consequences if adopted
+## Consequences
 
 - The record can always answer who changed what and when, and why a claim exists (`OWN-04`).
 - Storage grows with every correction and rerun. At the campaign sizes targeted, that growth is small next to media.
@@ -44,13 +44,9 @@ The PRD makes the structured record primary and prose a rendering of it (`MODEL-
 - Redaction is the one path that can destroy data, so it is small, heavily tested, and always writes to the ledger before deleting.
 - Block matching between source versions is a piece of logic of its own that needs fixture tests: inserted, reordered, split, merged, edited, and deleted paragraphs. When matching is unsure, it treats the block as changed rather than unchanged, so the reviewer sees it.
 
-## Options considered
+## Alternatives considered
 
-- **Mutable records with an audit log beside them.** Simpler queries, but the audit log becomes the real history and the two can disagree. Not recommended.
-- **Full event sourcing, with the record rebuilt by replaying every event.** Clean in theory, but redaction then means rewriting the event log, and replays grow slow. The recommended design keeps history per claim, which is what the product needs.
-- **Soft-deleting redacted content.** Not recommended: `SAFE-01` requires the content to be gone, not hidden.
-- **Character offsets into the whole text, with a quoted snippet to find the passage again after an edit.** Simpler to store, but finding text again fails when the passage itself was edited or appears twice, and the citation lands on the wrong text without anyone knowing. Not recommended (`MODEL-36`).
-
-## To decide
-
-Append-only claims with redaction as the one erasure, mutable records with an audit log, or full event sourcing? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.
+- **Mutable records with an audit log beside them.** Simpler queries, but the audit log becomes the real history and the two can disagree. Rejected.
+- **Full event sourcing, with the record rebuilt by replaying every event.** Clean in theory, but redaction then means rewriting the event log, and replays grow slow. The chosen design keeps history per claim, which is what the product needs. Rejected.
+- **Soft-deleting redacted content.** Rejected: `SAFE-01` requires the content to be gone, not hidden.
+- **Character offsets into the whole text, with a quoted snippet to find the passage again after an edit.** Simpler to store, but finding text again fails when the passage itself was edited or appears twice, and the citation lands on the wrong text without anyone knowing. Rejected (`MODEL-36`).
