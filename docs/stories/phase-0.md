@@ -1,6 +1,6 @@
 # Phase 0 User Stories
 
-**Status:** Draft · **Derived from:** [PRD.md](../../PRD.md) v0.4, §16 milestones 0a and 0b · **Last updated:** 2026-09-30
+**Status:** Draft · **Derived from:** [PRD.md](../../PRD.md) v0.8, §16 milestones 0a and 0b · **Last updated:** 2026-11-09
 
 The PRD says what Skaldryne must do and why. This file breaks Phase 0 into stories that can be built, demonstrated, and closed. When the two disagree, the PRD wins and this file is corrected.
 
@@ -97,6 +97,15 @@ Until voice-profile consent exists in 0b, speakers are labelled per session and 
 - **Given** the documentation, **when** I look for performance targets, **then** I find the maximum session duration, file size, processing-time budget relative to session length, and campaign-size ceiling.
 - **Given** a file over the documented ceiling, **when** I start uploading it, **then** it is refused before the upload completes, with a message naming the limit.
 
+#### S0a-38 — Upgrade without fear
+**As an** operator, **I want** every upgrade to be safe to run again, **so that** an interrupted upgrade never leaves my campaigns needing manual repair.
+**Covers:** `NFR-24` · **Depends on:** S0a-01
+
+- **Given** a release that changes stored data, **when** it is built, **then** each change ships as a versioned migration tested against an empty database and against reference-scale data.
+- **Given** a migration that would block a busy instance, **when** the release is checked, **then** the check fails and names the operation.
+- **Given** a fresh database, **when** every migration is run twice, **then** the result is identical to running them once.
+- **Given** an upgrade stopped part-way, **when** I run it again, **then** it completes with no manual repair and no campaign data lost.
+
 ### Set up a campaign
 
 #### S0a-07 — Create a campaign and choose what happens to the audio
@@ -132,6 +141,16 @@ Until voice-profile consent exists in 0b, speakers are labelled per session and 
 - **Given** a campaign, **when** I create a journal, **then** I type it as GM prep, world lore, player log, or reference.
 - **Given** any record — journal, entity, or claim — **when** I open it, **then** it shows one visibility level: GM-private, player-visible, or public.
 - **Given** a new journal typed as GM prep, **when** it is created, **then** it is GM-private by default.
+
+#### S0a-37 — Keep separate tables completely apart
+**As a** GM who runs games for unrelated groups, **I want** each group's campaigns in its own tenant, **so that** nothing from one group can ever surface in another's.
+**Covers:** `MODEL-32`, `NFR-16` · **Depends on:** S0a-07
+
+- **Given** a new campaign, **when** I create it, **then** it belongs to exactly one tenant, either an existing one or a new one I create.
+- **Given** campaigns in two tenants under my one sign-in, **when** I search, ask, link, or generate an output in one, **then** nothing from the other tenant is seen, found, linked, or used.
+- **Given** two tenants on one instance, **when** the isolation tests run against every interface, **then** neither tenant can read the other's records, files, search indexes, jobs, or logs.
+- **Given** any record, file, index entry, job, or log entry, **when** it is stored, **then** it carries its tenant, and its identifier is unique across instances.
+- **Given** a campaign exported from one tenant, **when** I import it into another tenant or another instance, **then** its history and evidence are intact and every identifier and link is unchanged.
 
 ### Capture and process
 
@@ -303,6 +322,17 @@ Until voice-profile consent exists in 0b, speakers are labelled per session and 
 - **Given** a recap and a compendium entry that used the old value, **when** I correct the claim, **then** both show the corrected value the next time they are opened.
 - **Given** cached rendered output, **when** a claim it depends on changes, **then** the cache is invalidated.
 
+#### S0a-36 — Citations survive edits to their source
+**As a** GM, **I want** claims to keep pointing at the right passage when I edit a journal or correct a transcript, **so that** an edit never leaves a citation on the wrong text.
+**Covers:** `MODEL-36` · **Depends on:** S0a-10, S0a-16
+
+- **Given** a claim cited from a journal paragraph, **when** I insert three paragraphs above it, **then** the claim still resolves in one step to the same passage, highlighted.
+- **Given** a claim cited from a paragraph, **when** I edit a word inside that paragraph, **then** the claim shows the passage both as it was cited and as it now reads.
+- **Given** a claim cited from a paragraph, **when** I delete that paragraph, **then** the claim appears in review with its original citation still readable, and never points at other text.
+- **Given** a corrected transcript, **when** the correction is saved, **then** every claim cited from an unchanged segment still resolves to that segment.
+- **Given** a passage that is redacted (0b), **when** redaction runs, **then** claims whose only evidence was there are removed, not re-anchored (`SAFE-01`).
+- **(fixture) Given** a journal edited by reordering, splitting, and merging paragraphs, **when** citations are carried to the new version, **then** none lands on the wrong passage, and any block the matcher is unsure of is shown as changed.
+
 ### Templates
 
 #### S0a-32 — Read and override every prompt
@@ -335,6 +365,15 @@ Until voice-profile consent exists in 0b, speakers are labelled per session and 
 
 - **Given** a campaign with reviewed sessions, corrections, and custom types, **when** I take a full-fidelity export and import it into a fresh instance, **then** nothing is lost: claims, evidence, corrections, visibility, templates, and history all round-trip.
 - **Given** the same campaign, **when** I take a Markdown export, **then** it opens in a plain-text notes vault with working wikilinks between entities.
+
+#### S0a-39 — Import again without creating duplicates
+**As a** GM, **I want** to re-run any import safely, **so that** a retry or a mistake never doubles my campaign.
+**Covers:** `NFR-25` · **Depends on:** S0a-11, S0a-35
+
+- **Given** a campaign export already imported, **when** I import the same export again, **then** the record is identical to importing it once.
+- **Given** a recording or document already uploaded, **when** I upload the same file again, **then** nothing is created twice and I am told it was already imported.
+- **Given** an import interrupted part-way, **when** I run it again, **then** it resumes where it stopped and the result matches an uninterrupted import.
+- **Given** any import, **when** it finishes, **then** it is recorded with its source.
 
 ---
 
@@ -528,6 +567,8 @@ Every requirement in milestones 0a and 0b maps to at least one story.
 | `MODEL-13` | S0b-11 |
 | `MODEL-23` | S0a-20 |
 | `MODEL-25` | S0b-07 |
+| `MODEL-32` | S0a-37 |
+| `MODEL-36` | S0a-36 |
 | `CAP-01` | S0a-11 |
 | `CAP-03` | S0b-03, S0b-04 |
 | `CAP-05` | S0a-12, S0b-05 |
@@ -578,5 +619,8 @@ Every requirement in milestones 0a and 0b maps to at least one story.
 | `NFR-04` | S0a-05 |
 | `NFR-05` | S0a-06 |
 | `NFR-15` | S0a-03 |
+| `NFR-16` | S0a-37 |
 | `NFR-18` | S0a-05 |
+| `NFR-24` | S0a-38 |
+| `NFR-25` | S0a-39 |
 
