@@ -1,0 +1,227 @@
+[P1] rerun code=1 index={"valid":false,"ready":false} applied=["000001.sql","000002.sql","000003.sql"]
+graphile-migrate: Running migration '000004-m4.sql'
+error: relation "entity_kind_conc_idx" already exists
+  length: 102,
+  severity: 'ERROR',
+  code: '42P07',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'index.c',
+  line: '906',
+  routine: 'index_create'
+}
+
+
+[P2] rerun code=0 index={"valid":false,"ready":false} applied=["000001.sql","000002.sql","000003.sql","000004.sql"]
+graphile-migrate: Running migration '000004-m4.sql'
+graphile-migrate: 1 committed migrations executed
+
+
+[P3] code=1
+graphile-migrate: Running migration '000004-m4.sql'
+error: DROP INDEX CONCURRENTLY cannot run inside a transaction block
+  length: 130,
+  severity: 'ERROR',
+  code: '25001',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'xact.c',
+  line: '3654',
+  routine: 'PreventInTransactionBlock'
+}
+
+
+[P3b] code=1
+graphile-migrate: Running migration '000004-m4.sql'
+error: CREATE INDEX CONCURRENTLY cannot run inside a transaction block
+  length: 132,
+  severity: 'ERROR',
+  code: '25001',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'xact.c',
+  line: '3654',
+  routine: 'PreventInTransactionBlock'
+}
+
+
+[P4] rerun code=1 index={"valid":false,"ready":false} applied=["000001.sql","000002.sql","000003.sql","000004.sql"]
+graphile-migrate: Running migration '000005-m4b-create.sql'
+error: relation "entity_kind_conc_idx" already exists
+  length: 102,
+  severity: 'ERROR',
+  code: '42P07',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'index.c',
+  line: '906',
+  routine: 'index_create'
+}
+
+
+[P5] code=1
+graphile-migrate: Running migration '000004-m4.sql'
+error: CREATE INDEX CONCURRENTLY cannot be executed from a function
+  length: 275,
+  severity: 'ERROR',
+  code: '25001',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: 'SQL statement "CREATE INDEX CONCURRENTLY entity_kind_conc_idx ON entity (tenant_id, kind)"\n' +
+    'PL/pgSQL function inline_code_block line 1 at EXECUTE',
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'xact.c',
+  line: '3674',
+  routine: 'PreventInTransactionBlock'
+}
+
+
+[P6] rerun code=1 index={"valid":false,"ready":false} applied=["000001.sql","000002.sql","000003.sql","000004.sql"]
+graphile-migrate: Running migration '000005-m4b-create.sql'
+error: relation "entity_kind_conc_idx" already exists
+  length: 102,
+  severity: 'ERROR',
+  code: '42P07',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'index.c',
+  line: '906',
+  routine: 'index_create'
+}
+
+
+[P7] rerun code=0 index={"valid":true,"ready":true} applied=["000001.sql","000002.sql","000003.sql","000004.sql"]
+graphile-migrate: Running migration '000004-m4.sql'
+graphile-migrate: 1 committed migrations executed
+
+
+[P7b] code=0
+graphile-migrate: Running migration '000004-m4.sql'
+graphile-migrate: 1 committed migrations executed
+
+
+[S1] files: 000001-m1-reference-schema.sql, 000002-m2-expand-display_name.sql, 000003-m3-contract-drop-name.sql, 000004-x-add-branch-x.sql, 000004-y-add-branch-y.sql
+
+[S1] code=1
+Error: Previous migration with hash 'sha1:a45cbc5a15f926911958f6568dd8f90f6a278299' doesn't match '000004.sql''s expected previous hash 'sha1:baa1a407dd27a14e796ad1fd491bd0bf6b23254c'
+
+
+[S2] code=1
+Error: Previous migration with hash 'sha1:93b11b2442921adfa9168f509ba5a5d111024217' doesn't match '000005.sql''s expected previous hash 'sha1:baa1a407dd27a14e796ad1fd491bd0bf6b23254c'
+
+
+[S3a] files: 000001-m1-reference-schema.sql, 000002-m2-expand-display_name.sql, 000003-m3-contract-drop-name.sql, 000004-y-add-branch-y.sql, 000005-x-add-branch-x.sql
+
+[S3a] code=1
+graphile-migrate: Running migration '000005-x-add-branch-x.sql'
+error: column "branch_x" of relation "entity" already exists
+  length: 133,
+  severity: 'ERROR',
+  code: '42701',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'tablecmds.c',
+  line: '7695',
+  routine: 'check_for_column_name_collision'
+}
+
+
+[S3b] code=1
+graphile-migrate: Running migration '000005-x-add-branch-x.sql'
+error: insert or update on table "migrations" violates foreign key constraint "migrations_previous_hash_fkey"
+  length: 339,
+  severity: 'ERROR',
+  code: '23503',
+  detail: 'Key (previous_hash)=(sha1:93b11b2442921adfa9168f509ba5a5d111024217) is not present in table "migrations".',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'graphile_migrate',
+  table: 'migrations',
+  column: undefined,
+  dataType: undefined,
+  constraint: 'migrations_previous_hash_fkey',
+  file: 'ri_triggers.c',
+  line: '2772',
+  routine: 'ri_ReportViolation'
+}
+
+applied=["000001.sql","000002.sql","000003.sql","000004.sql"] branch_y exists=false
+
+[S4] code=0
+graphile-migrate: Already up to date
+
+applied=["000001.sql","000002.sql","000003.sql","000005.sql"] branch_y exists=false
+
+[S5] code=0
+graphile-migrate: Running migration '000001-m1-reference-schema.sql'
+graphile-migrate: Running migration '000002-m2-expand-display_name.sql'
+graphile-migrate: Running migration '000003-m3-contract-drop-name.sql'
+graphile-migrate: Running migration '000004-y-add-branch-y.sql'
+graphile-migrate: Running migration '000005-x-add-branch-x.sql'
+graphile-migrate: 5 committed migrations executed
+
+

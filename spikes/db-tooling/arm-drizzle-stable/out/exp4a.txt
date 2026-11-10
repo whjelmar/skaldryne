@@ -1,0 +1,17 @@
+T9 plain, migrate(): message="Failed query: CREATE INDEX CONCURRENTLY items_v_idx ON items (v);\nparams: " cause="CREATE INDEX CONCURRENTLY cannot run inside a transaction block" code=25001
+T9 breakpoint-separated, migrate(): code=25001 cause="CREATE INDEX CONCURRENTLY cannot run inside a transaction block"
+T9 plain, drizzle-kit migrate: exit=1 output="No config path provided, using default 'drizzle.config.ts'\nReading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\drizzle.config.ts'\nUsing 'pg' driver for database querying\n[⣷] applying migrations...\u001b[2K\u001b[1G[⣷] applying migrations..."
+T9 COMMIT/BEGIN workaround, migrate(): applied rows=2 index=[{"relname":"items_v_idx","indisvalid":true,"indisready":true}]
+T9 COMMIT/BEGIN workaround, drizzle-kit migrate: exit=0 index=[{"relname":"items_v_idx","indisvalid":true,"indisready":true}]
+T10a killed: message="Failed query: rollback\nparams: " cause="Connection terminated unexpectedly" code=undefined
+T10a rerun: columns=id,v,c applied rows=2
+T10b p1 killed: err="Connection terminated unexpectedly" index=[{"relname":"items_v_idx","indisvalid":false,"indisready":false}] applied rows=1
+T10b p1 rerun: index=[{"relname":"items_v_idx","indisvalid":true,"indisready":true}] applied rows=2
+T10b p2 killed: index=[{"relname":"items_v_idx","indisvalid":false,"indisready":false}] applied rows=1
+T10b p2 rerun: runner returned success; index=[{"relname":"items_v_idx","indisvalid":false,"indisready":false}] applied rows=2
+T10b p3 killed: index=[{"relname":"items_v_idx","indisvalid":false,"indisready":false}] applied rows=1
+T10b p3 rerun: error code=42P07 cause="relation \"items_v_idx\" already exists"; index=[{"relname":"items_v_idx","indisvalid":false,"indisready":false}] applied rows=1
+T11 migrate(): returned without error; branch_y=null applied created_at=1000,2000
+T11 drizzle-kit migrate: exit=0 output="No config path provided, using default 'drizzle.config.ts'\nReading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\drizzle.config.ts'\nUsing 'pg' driver for database querying\n[⣷] applying migrations...\u001b[2K\u001b[1G[✓] migrations applied successfully!" branch_y=null
+T7 tamper: no error from migrate(); stored hashes unchanged=true
+T7 tamper, drizzle-kit migrate: exit=0 output=":\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\drizzle.config.ts'\nUsing 'pg' driver for database querying\n[⣷] applying migrations...\u001b[2K\u001b[1G[✓] migrations applied successfully!"

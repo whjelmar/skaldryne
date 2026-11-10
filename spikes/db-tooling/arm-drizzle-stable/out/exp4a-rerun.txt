@@ -1,0 +1,964 @@
+{
+ "pattern": "P1 plain file",
+ "doc": "documented (ordinary file)",
+ "note": "one CREATE INDEX CONCURRENTLY statement",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P2 breakpoint split",
+ "doc": "documented (breakpoints)",
+ "note": "statement-breakpoint isolates the statement into its own query",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P3 journal breakpoints:false",
+ "doc": "documented (config)",
+ "note": "journal entry breakpoints=false; whole file sent as one string",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P4 IF NOT EXISTS",
+ "doc": "documented SQL",
+ "note": "idempotent single statement",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P5 DROP IF EXISTS + CREATE (two breakpoints)",
+ "doc": "documented SQL",
+ "note": "the idempotent file pattern",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P6 DO block EXECUTE",
+ "doc": "documented SQL",
+ "note": "dynamic SQL inside a function-like block",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P7 COMMIT first",
+ "doc": "NOT documented (hack: ends the migrator tx from inside the file)",
+ "note": "COMMIT then idempotent drop/create",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "schema \"drizzle\" already exists, skipping | relation \"__drizzle_migrations\" already exists, skipping | index \"t_idx\" does not exist, skipping | there is no transaction in progress",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "[✓] migrations applied successfully!",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ }
+}
+{
+ "pattern": "P8 COMMIT first, BEGIN last",
+ "doc": "NOT documented (hack)",
+ "note": "as P7, then reopen a transaction so the migrator COMMIT is clean",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "schema \"drizzle\" already exists, skipping | relation \"__drizzle_migrations\" already exists, skipping | index \"t_idx\" does not exist, skipping",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "[✓] migrations applied successfully!",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ }
+}
+{
+ "pattern": "P7b COMMIT first, IF NOT EXISTS only (no drop)",
+ "doc": "NOT documented (hack)",
+ "note": "non-self-healing idempotency",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "schema \"drizzle\" already exists, skipping | relation \"__drizzle_migrations\" already exists, skipping | there is no transaction in progress",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "[✓] migrations applied successfully!",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ }
+}
+{
+ "pattern": "P7c COMMIT first, plain CREATE (no drop)",
+ "doc": "NOT documented (hack)",
+ "note": "no idempotency",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "schema \"drizzle\" already exists, skipping | relation \"__drizzle_migrations\" already exists, skipping | there is no transaction in progress",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": true,
+  "detail": "[✓] migrations applied successfully!",
+  "indexRows": [
+   {
+    "indisvalid": true
+   }
+  ],
+  "migrationRows": 2
+ }
+}
+{
+ "pattern": "P9 COMMIT in one string (breakpoints:false)",
+ "doc": "NOT documented (hack)",
+ "note": "multi-statement simple query",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P10 dblink_exec",
+ "doc": "NOT documented (hack; needs dblink extension and a connection string in the file)",
+ "note": "build on a second connection outside the migrator transaction",
+ "T9 migrate()": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "password or GSSAPI delegated credentials required",
+  "indexRows": [],
+  "migrationRows": 1
+ },
+ "T9 kit migrate": {
+  "setupOk": true,
+  "runnerSaysSuccess": false,
+  "detail": "",
+  "indexRows": [],
+  "migrationRows": 1
+ }
+}
+{
+ "pattern": "P1 plain file",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P2 breakpoint split",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P3 journal breakpoints:false",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P4 IF NOT EXISTS",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P5 DROP IF EXISTS + CREATE (two breakpoints)",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P6 DO block EXECUTE",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "CREATE INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P7 COMMIT first",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "Connection terminated unexpectedly",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "index": [
+    {
+     "indisvalid": true
+    }
+   ],
+   "migrationRows": 2
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "s:622:28) /     at Connection.emit (node:events:508:28) /     at Socket.<anonymous> (C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\node_modules\\pg\\lib\\connection.js:64:12) /     at Socket.emit (node:events:508:28) /     at TCP.<anonymous> (node:net:346:12) / Node.js v25.3.0",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "err": "[✓] migrations applied successfully!",
+   "index": [
+    {
+     "indisvalid": true
+    }
+   ],
+   "migrationRows": 2
+  }
+ }
+}
+{
+ "pattern": "P8 COMMIT first, BEGIN last",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "Connection terminated unexpectedly",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "index": [
+    {
+     "indisvalid": true
+    }
+   ],
+   "migrationRows": 2
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "s:622:28) /     at Connection.emit (node:events:508:28) /     at Socket.<anonymous> (C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\node_modules\\pg\\lib\\connection.js:64:12) /     at Socket.emit (node:events:508:28) /     at TCP.<anonymous> (node:net:346:12) / Node.js v25.3.0",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "err": "[✓] migrations applied successfully!",
+   "index": [
+    {
+     "indisvalid": true
+    }
+   ],
+   "migrationRows": 2
+  }
+ }
+}
+{
+ "pattern": "P7b COMMIT first, IF NOT EXISTS only (no drop)",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "Connection terminated unexpectedly",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 2
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "s:622:28) /     at Connection.emit (node:events:508:28) /     at Socket.<anonymous> (C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\node_modules\\pg\\lib\\connection.js:64:12) /     at Socket.emit (node:events:508:28) /     at TCP.<anonymous> (node:net:346:12) / Node.js v25.3.0",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": true,
+   "err": "[✓] migrations applied successfully!",
+   "index": [
+    {
+     "indisvalid": true
+    }
+   ],
+   "migrationRows": 2
+  }
+ }
+}
+{
+ "pattern": "P7c COMMIT first, plain CREATE (no drop)",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "Connection terminated unexpectedly",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "relation \"t_idx\" already exists",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 1,
+   "err": "s:622:28) /     at Connection.emit (node:events:508:28) /     at Socket.<anonymous> (C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\node_modules\\pg\\lib\\connection.js:64:12) /     at Socket.emit (node:events:508:28) /     at TCP.<anonymous> (node:net:346:12) / Node.js v25.3.0",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [
+    {
+     "indisvalid": false
+    }
+   ],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P9 COMMIT in one string (breakpoints:false)",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "pattern": "P10 dblink_exec",
+ "migrate()": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "password or GSSAPI delegated credentials required",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "password or GSSAPI delegated credentials required",
+   "index": [],
+   "migrationRows": 1
+  }
+ },
+ "kit migrate": {
+  "afterKill": {
+   "runnerSaysSuccess": false,
+   "killedBackends": 0,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  },
+  "afterRerun": {
+   "runnerSaysSuccess": false,
+   "err": "",
+   "index": [],
+   "migrationRows": 1
+  }
+ }
+}
+{
+ "T10a": "migrate()",
+ "afterKill": {
+  "setupOk": true,
+  "killed": 1,
+  "runnerSaysSuccess": false,
+  "cols": [
+   "id",
+   "a"
+  ],
+  "migrationRows": 1
+ },
+ "afterRerun": {
+  "runnerSaysSuccess": true,
+  "cols": [
+   "id",
+   "a",
+   "b"
+  ],
+  "migrationRows": 2
+ },
+ "freshBatchKilledSecondFile": {
+  "runnerSaysSuccess": false,
+  "tExists": null,
+  "migrationRows": 0
+ }
+}
+{
+ "T10a": "kit migrate",
+ "afterKill": {
+  "setupOk": true,
+  "killed": 1,
+  "runnerSaysSuccess": false,
+  "cols": [
+   "id",
+   "a"
+  ],
+  "migrationRows": 1
+ },
+ "afterRerun": {
+  "runnerSaysSuccess": true,
+  "cols": [
+   "id",
+   "a",
+   "b"
+  ],
+  "migrationRows": 2
+ },
+ "freshBatchKilledSecondFile": {
+  "runnerSaysSuccess": false,
+  "tExists": null,
+  "migrationRows": 0
+ }
+}
+{
+ "T7": "migrate()",
+ "rerunSaysSuccess": true,
+ "cols": [
+  "id",
+  "a",
+  "b"
+ ],
+ "hashesUnchanged": true
+}
+{
+ "T7": "kit migrate",
+ "rerunSaysSuccess": true,
+ "output": "[✓] migrations applied successfully!",
+ "cols": [
+  "id",
+  "a",
+  "b"
+ ],
+ "hashesUnchanged": true
+}
+T11 {
+ "baseGenerate": "Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-base-146\\drizzle.config.mjs'\n1 tables\nbase_tbl 1 columns 0 indexes 0 fks\n\n[✓] Your SQL migration file ➜ drizzle\\0000_base.sql 🚀",
+ "yGenerate": "Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-Y-147\\drizzle.config.mjs'\n2 tables\nbase_tbl 1 columns 0 indexes 0 fks\ny_tbl 1 columns 0 indexes 0 fks\n\n[✓] Your SQL migration file ➜ drizzle\\0001_yielding_namor.sql 🚀",
+ "xGenerate": "Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-X-148\\drizzle.config.mjs'\n2 tables\nbase_tbl 1 columns 0 indexes 0 fks\nx_tbl 1 columns 0 indexes 0 fks\n\n[✓] Your SQL migration file ➜ drizzle\\0001_rare_stryfe.sql 🚀",
+ "yFiles": [
+  "0000_base.sql",
+  "0001_yielding_namor.sql",
+  "meta",
+  "meta/0000_snapshot.json",
+  "meta/0001_snapshot.json",
+  "meta/_journal.json"
+ ],
+ "xFiles": [
+  "0000_base.sql",
+  "0001_rare_stryfe.sql",
+  "meta",
+  "meta/0000_snapshot.json",
+  "meta/0001_snapshot.json",
+  "meta/_journal.json"
+ ],
+ "yJournalNew": [
+  {
+   "idx": 1,
+   "version": "7",
+   "when": 1794284374060,
+   "tag": "0001_yielding_namor",
+   "breakpoints": true
+  }
+ ],
+ "xJournalNew": [
+  {
+   "idx": 1,
+   "version": "7",
+   "when": 1794284376103,
+   "tag": "0001_rare_stryfe",
+   "breakpoints": true
+  }
+ ],
+ "gitJournalMerge": {
+  "exitCode": 1,
+  "hasConflictMarkers": true,
+  "text": "{\n  \"version\": \"7\",\n  \"dialect\": \"postgresql\",\n  \"entries\": [\n    {\n      \"idx\": 0,\n      \"version\": \"7\",\n      \"when\": 1794284373531,\n      \"tag\": \"0000_base\",\n      \"breakpoints\": true\n    },\n    {\n      \"idx\": 1,\n      \"version\": \"7\",\n<<<<<<< main(X)\n      \"when\": 1794284376103,\n      \"tag\": \"0001_rare_stryfe\",\n=======\n      \"when\": 1794284374060,\n      \"tag\": \"0001_yielding_namor\",\n>>>>>>> Y\n      \"breakpoints\": true\n    }\n  ]\n}"
+ },
+ "snapshotSameNameDifferentContent": true,
+ "snapshotIds": {
+  "X": {
+   "id": "cc175261-c213-4655-a411-86dc902f0622",
+   "prevId": "494f6b26-0998-4a45-8b14-9210a06a46e4"
+  },
+  "Y": {
+   "id": "c5409f4b-71ac-4251-9c8e-10b0bdba6244",
+   "prevId": "494f6b26-0998-4a45-8b14-9210a06a46e4"
+  }
+ },
+ "A_YX_migrate": {
+  "xAppliedFirst": true,
+  "rerunOk": true,
+  "tables": "base_tbl,x_tbl",
+  "rowsBefore": 2,
+  "rowsAfter": 2,
+  "journalOrder": [
+   "0:0000_base@1794284373531",
+   "1:0001_yielding_namor@1794284374060",
+   "1:0001_rare_stryfe@1794284376103"
+  ]
+ },
+ "A_YX_kitmigrate": {
+  "code": 0,
+  "output": "[✓] migrations applied successfully!",
+  "tables": "base_tbl,x_tbl"
+ },
+ "A_YX_freshDb": {
+  "ok": true,
+  "tables": "base_tbl,x_tbl,y_tbl",
+  "appliedOrder": [
+   {
+    "id": 1,
+    "created_at": "1794284373531"
+   },
+   {
+    "id": 2,
+    "created_at": "1794284374060"
+   },
+   {
+    "id": 3,
+    "created_at": "1794284376103"
+   }
+  ]
+ },
+ "A_YX_check": {
+  "code": 0,
+  "output": "Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-mergedYX-149\\drizzle.config.mjs'\nEverything's fine 🐶🔥"
+ },
+ "A_XY_migrate": {
+  "xAppliedFirst": true,
+  "rerunOk": true,
+  "tables": "base_tbl,x_tbl",
+  "rowsBefore": 2,
+  "rowsAfter": 2,
+  "journalOrder": [
+   "0:0000_base@1794284373531",
+   "1:0001_rare_stryfe@1794284376103",
+   "1:0001_yielding_namor@1794284374060"
+  ]
+ },
+ "A_XY_kitmigrate": {
+  "code": 0,
+  "output": "[✓] migrations applied successfully!",
+  "tables": "base_tbl,x_tbl"
+ },
+ "A_XY_freshDb": {
+  "ok": true,
+  "tables": "base_tbl,x_tbl,y_tbl",
+  "appliedOrder": [
+   {
+    "id": 1,
+    "created_at": "1794284373531"
+   },
+   {
+    "id": 2,
+    "created_at": "1794284376103"
+   },
+   {
+    "id": 3,
+    "created_at": "1794284374060"
+   }
+  ]
+ },
+ "A_XY_check": {
+  "code": 0,
+  "output": "or (idx: 1, when: 1794284374060) follows 0001_rare_stryfe (idx: 1, when: 1794284376103) in the journal, but its timestamp is not greater. If the earlier entry has already been applied, the migrator will skip this entry. Journal timestamps must strictly increase in entry order.\nEverything's fine 🐶🔥"
+ },
+ "control_YappliedThenMerged": {
+  "ok": true,
+  "tables": "base_tbl,x_tbl,y_tbl"
+ },
+ "regenerate": "Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-rebased-154\\drizzle.config.mjs'\n3 tables\nbase_tbl 1 columns 0 indexes 0 fks\nx_tbl 1 columns 0 indexes 0 fks\ny_tbl 1 columns 0 indexes 0 fks\n\n[✓] Your SQL migration file ➜ drizzle\\0002_amused_karma.sql 🚀",
+ "regenFiles": [
+  "0000_base.sql",
+  "0001_rare_stryfe.sql",
+  "0002_amused_karma.sql",
+  "meta",
+  "meta/0000_snapshot.json",
+  "meta/0001_snapshot.json",
+  "meta/0002_snapshot.json",
+  "meta/_journal.json"
+ ],
+ "B_regen_on_prodlike": {
+  "ok": true,
+  "tables": "base_tbl,x_tbl,y_tbl",
+  "journal": [
+   "0:0000_base@1794284373531",
+   "1:0001_rare_stryfe@1794284376103",
+   "2:0002_amused_karma@1794284381756"
+  ]
+ },
+ "B_regen_on_devdb_with_old_Y": {
+  "ok": false,
+  "err": "relation \"y_tbl\" already exists",
+  "tables": "base_tbl,y_tbl"
+ },
+ "C_missingSqlFile": {
+  "ok": false,
+  "err": "No file C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-merged-missing-155\\drizzle/0001_yielding_namor.sql found in C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\p-merged-missing-155\\drizzle folder"
+ },
+ "D_namedAaaYThenZzzX": {
+  "ok": true,
+  "tables": "base_tbl,x_tbl",
+  "filesSort": [
+   "0000_base.sql",
+   "0001_aaa_y.sql",
+   "0001_zzz_x.sql"
+  ]
+ }
+}
+KITRAW {"code":1,"output":"Reading config file 'C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-drizzle-stable\\.r3tmp\\kit-162.config.mjs'\nUsing 'pg' driver for database querying\n[⣷] applying migrations...[⣷] applying migrations..."}

@@ -304,3 +304,221 @@ Both arms reported their findings honestly. The tests were not symmetric.
   - EXPLAIN on a fixture large enough to reach HNSW and GIN.
 - **A slip in the verification above.** The Round 2 verification says the Drizzle arm "has no EXPLAIN report to compare". In fact `arm-drizzle-stable/out/exp1-explain.txt` (24 KB) exists.
 - **Process.** The coordinator who wrote the original Kysely recommendation also wrote the amendment and briefed both arms. The independent verifier is the main safeguard, and it confirmed the Drizzle share overstatement.
+
+## Round 3 verification (2026-11-09)
+
+Independent pass by a verifier who did not author round 3. Nothing was committed and no authored file was edited. The authors' `exp4b-results/` files were backed up before my 4b sample run and restored byte-identical. No `verify3_` database remains.
+
+### Defect found: `pnpm test` fails in both arms
+
+The tsc step of `pnpm test` now fails with 25 TS1295/TS1287/TS1470 errors, all in `reference/exp4b-common.ts`. Both arms' tsconfig `include` covers `scripts/`, the `exp4b-*.ts` scripts import `../../reference/exp4b-common.ts`, and that directory has no `type: module` package. Vitest never runs. The "pnpm test passes" claims were true only for the Node 24 copy, which excluded the exp4b files. Fix: exclude `scripts/exp4b-*` from tsconfig, or give `reference/` its own package.json. I ran `node node_modules/vitest/vitest.mjs run` directly instead.
+
+### 4a (tests rerun)
+
+- Kysely: 45 passed, 1 failed (46 tests). The failure is the known round-2 T10b assertion. All 15 exp4a tests pass.
+- Drizzle: 50 passed, 0 failed. All 14 exp4a tests pass.
+- The kill lands mid-build. The helper blocks the build on a table lock, waits for `wait_event_type = 'Lock'` on the CIC backend, then terminates it. Tests assert `indisvalid=false, indisready=false` afterwards.
+- Drizzle's COMMIT;/BEGIN; hack is fairly described as unsupported: a test greps the Drizzle sources for a no-transaction switch and finds none.
+- Drizzle's T11 skip is silent: `migrate()` and the CLI both exit 0 with a success message.
+- Kysely S4 (hand re-chained file) is silently skipped, exit 0 "Already up to date". It needs hand-editing an applied file. Realistic cases S1-S3 refuse loudly.
+
+### T10b judgement
+
+- Kysely P7 (`beforeAllMigrations` dropping INVALID indexes) meets the literal criterion. It ends with a valid index on rerun, uses no manual SQL, and a re-kill gives an error rather than success. It is a documented runner feature.
+- Caveats: it is global rather than per-migration, it drops any INVALID index in `public` including another session's in-flight build, and it lives outside the migration file. All file-based patterns fail, and P2 (`IF NOT EXISTS`) reports success on an INVALID index.
+- Verdict: **pass with caveats**. The authors' "fail plus flag" is conservative but defensible.
+- Drizzle: the drop-then-CIC pattern inside COMMIT;/BEGIN; ends valid but relies on an undocumented hack that also commits earlier pending files in the batch, and there is no hook mechanism. Verdict: **fail / not applicable**. The asymmetry is documented-versus-unsupported and should be stated as such.
+
+### Verdicts per test
+
+| Test | Kysely | Drizzle |
+|---|---|---|
+| T9 | pass | fail |
+| T10a | pass | pass |
+| T10b | pass with caveats (P7) | fail / n.a. |
+| T11 | pass on realistic cases, S4 caveat | fail |
+| T7 | reported, reproduced | reported, reproduced |
+
+### 4b (rename blast radius)
+
+- I reran 5 columns per arm: `session_no`, `subject_id`, `entity.id`, `job.kind`, `embedding`. Classifications match the saved tables exactly, reverts were clean, and results were restored.
+- The column list (25 columns) is identical across arms and scoring uses the shared `classifyRefs`.
+- Reference totals differ, 76 versus 78, only because Drizzle's `job` queries filter on `tenantId` explicitly while Kysely's rely on RLS. This is a query-code difference.
+- The lower-bound claim for Kysely is **verified**. On a renamed column, a standalone probe reports TS2769 on the `.orderBy` call at its own line. Within a failed `.select([...])` chain only the call start is reported, so later typed references are masked. The strict score is a true lower bound.
+- Caveats: TypeScript versions differ (5.9.3 versus 7.0.2). Drizzle D2 scoring 100% is near-true by construction. D1 shows the mapping layer absorbs a DB-only rename.
+
+### 4c (Node 24)
+
+- Node v24.22.2 exists at `C:\Users\walte\dev\scratch\node24\node.exe`.
+- The saved logs do not print the Node version, so use of Node 24 is plausible but not demonstrable from the artefacts.
+- Results match Node 25 (Kysely 30/1, Drizzle 36/0). The exp4a tests were not run on Node 24, which the spec did not require.
+- Verdict: **accepted, evidence weak**.
+
+### 4d (pgvector at scale)
+
+Rerun on the existing `vecscale` data, using temp tables only:
+
+| Mode | recall@10 | short | p50 ms | p95 ms |
+|---|---|---|---|---|
+| exact | 1.0 | 0 | 38.5 | 48.1 |
+| partitioned, ef 1000 | 0.980 | 0 | 21.4 | 27.7 |
+| partial, ef 1000 | 0.974 | 0 | 24.6 | 34.1 |
+| partitioned, ef 800 | 0.947 | 0 | 23.0 | 35.0 |
+
+Recall is identical to the authors' numbers. Latency is somewhat lower.
+
+**The data is not representative.** Within-cluster ranking is almost pure noise: same-cluster cosine distance is about 0.80, other-cluster about 1.0, and d10/d11 is 0.998. Recall against the exact top-10 is therefore a harsh metric on near-ties. The mean cosine distance of returned rows shows this:
+
+| Mode | mean distance |
+|---|---|
+| exact | 0.7911 |
+| partitioned, ef 1000 | 0.7912 |
+| partitioned, ef 200 | 0.8116 |
+| partitioned, ef 40 | 0.8340 |
+| mode (i), ef 200 | 0.8361 |
+| mode (ii) relaxed, ef 200 | 0.8491 |
+
+Rows scored as recall 0.18 to 0.43 are only 0.04 to 0.065 worse in distance. Real embeddings have clearer neighbours.
+
+**Lower-noise sample** (2 campaigns, 110,000 rows, 40 queries, same HNSW parameters):
+
+| sigma | mean d1/d10 | unfiltered recall at ef 40 | at ef 200 | at ef 1000 |
+|---|---|---|---|---|
+| 0.5 | 0.955 | 0.915 | 0.918 | 0.975 |
+| 2.5 (authors', 550k rows) | 0.962 | about 0.18 | not remeasured | not remeasured |
+
+Reported figures for the authors' data are the 0.18 unfiltered recall and the ef 1000 pass. The sample is smaller, so it is not a like-for-like comparison. It shows that recall is very sensitive to the noise level, and that d1/d10 does not distinguish the two datasets. The d1/d10 ratio is therefore not evidence of a realistic dataset.
+
+**Points that do transfer:** post-filter HNSW under-returns rows (62 to 79 of 100 queries return fewer than 10 rows in mode (i)), and relaxed_order iterative scan fixes the row count.
+
+**The "pass only via per-campaign HNSW at ef 1000" framing is misleading.** Exact mode meets the literal pass criterion: recall 1.0, 10 rows, p95 about 43 to 48 ms, under 100 ms. At about 55k rows per campaign a brute-force filtered scan is already enough, and the HNSW passes are not much faster.
+
+`01_generate.sql` has a stale `\set sigma 1.5` while the SQL hardcodes 2.5. Sigma was tuned (1.5 discarded, then 2.5) before benchmarking, which the authors disclosed.
+
+**Verdict:** the numbers are reproducible, but the verdict is **not trustworthy as a forecast**. The reliable conclusions are narrower: filtered HNSW needs iterative scan or per-campaign indexes, and exact scan fits the budget at reference scale.
+
+
+## Round 3 bias audit (2026-11-09)
+
+This is the Critic pass for Experiment 4. It was read-only: I ran no suite and committed nothing. I wrote none of the round 3 work.
+
+Sources read:
+- `EXPERIMENTS.md`. Unchanged since eb51330, and every round 3 file is dated after that commit.
+- Both arms' "Experiment 4a (round 3)" sections and their `test/exp4a.test.ts`.
+- `EXP4B.md` and the Drizzle schema source.
+- `EXP4C.md`.
+- `EXP4D.md` and `exp4d/`.
+- The coordinator's briefs to each round 3 agent. I diffed the two 4a briefs word by word.
+
+### Verdict
+
+Round 3 tilts both ways, the tilts partly cancel, and none of them reverses a result.
+
+- **4a leans toward graphile-migrate**, through unequal briefs and a generous T11 label. The Kysely arm's own T10b headline goes the other way and understates graphile.
+- **The 4b headline leans toward Drizzle.** 100% against 64.5% overstates the gap, though the direction is real.
+- **4d is framed too darkly** and misses that the exact scan passes. It does not bear on the tool choice.
+- **4c is clean.**
+
+### 1. The 4a briefs did not use the same words
+
+**T10b effort.**
+- Kysely brief: "try EVERY idempotent pattern graphile-migrate 1.4.1 supports (read its docs/source in node_modules: e.g. splitting across files, `--! no-transaction` constraints, idempotent single statements, DO blocks, anything else)". It restates the pass rule.
+- Drizzle brief: "If T9 failed, record T10b as not applicable/fail and why". It gives no hints and no restated pass rule, and it supplies the verdict in advance.
+- Result: graphile got 9 patterns, and the hints led to P7, its only passing route. Drizzle got 3 patterns.
+- Never tried for Drizzle: the counterpart of P7, a cleanup step in the code that wraps `migrate()`.
+
+**T11 framing.**
+- Kysely brief: "model a realistic two-branch merge". It ran six scenarios.
+- Drizzle brief: "rerun to confirm round 2's finding". It ran one scenario.
+- Never tested: whether a realistic merge collides in `meta/_journal.json` or the snapshot `prevId` chain (a git conflict, or `drizzle-kit check`). That collision could be Drizzle's counterpart of graphile's chain refusal.
+
+**4b and 4c briefs:** neutral.
+
+### 2. 4a judgement calls
+
+**T10b.** The labels are inconsistent in both directions.
+- graphile P7 is a documented runner feature (`beforeAllMigrations`). It ends with a valid index, needs no SQL run by hand, and never reported success early. It meets the literal pass rule, so the "FAIL" headline understates graphile.
+- Drizzle's `COMMIT;…BEGIN;` file is not a runner mechanism, so T9 "fail" is correct. Inside that hack, though, pattern 1 also reaches a valid index.
+- Caveats on P7:
+  - It drops every INVALID index in `public` with a locking, non-concurrent `DROP INDEX`.
+  - That includes an index another node is still building concurrently (untested).
+- Caveat on the Drizzle hack: it commits earlier pending files partway through the batch, which breaks the T6 all-or-nothing guarantee.
+- Both arms show the same `IF NOT EXISTS` false success and reported it the same way.
+
+**T11.** The graphile "pass on the realistic cases" is generous. The spec has no carve-out for realistic cases.
+- S1 and S2 refuse clearly.
+- S3a and S3b refuse, but only with misleading errors ("column already exists", FK 23503).
+- S4 skips silently. That path is reached by re-chaining the file by hand, which is the natural response to the S2 error.
+- Correct label: conditional pass.
+- Drizzle skips silently in the default flow, and its CLI prints success. Its fail stands, and graphile still leads.
+
+**T7 and T10a:** symmetric. In T10a, both harnesses needed a workaround for a crash on a lost connection, and both disclosed it.
+
+### 3. 4b scoring
+
+- **D2 as the primary variant is defensible.** It renames both the column and the code's name for it, which is what a Kysely rename forces.
+- **D2 scores 100% by construction.** A renamed TypeScript property cannot compile. The D1 row ("0 caught / 78 unaffected") invites a misreading.
+- **Raw column text in the Drizzle schema source was not scored.** About 8–10 references sit in `sql` text:
+  - `tenant_id` in the tenant-isolation policies;
+  - `start_ms` in the CHECK constraint;
+  - `text` in the `tsv` generated expression;
+  - `state` in the `job_ready_idx` predicate.
+
+  Postgres rewrites the live objects on RENAME, so these become stale source text, not query failures.
+- **Neither arm generated a migration for the rename.** That leaves out drizzle-kit's prompt to choose rename or drop-and-add, a real hazard on the Drizzle side.
+- **The TypeScript versions differ:** 5.9.3 for Kysely, `^7.0.2` for Drizzle. Kysely's strict/attributed split depends on where TS2769 lands, so rerun Kysely under 7.0.2.
+- **The Kysely `.set(eb => ({...}))` callback form** accounts for 11 of its runtime-only references. That is an authoring choice; whether the object form would be caught is unchecked.
+
+### 4. 4d dataset and framing
+
+- **The exact scan passes.** Mode (iii) has recall 1.000, 0 short, and p95 43.1 ms, below the 100 ms bar. The verdict "PASS ... only through index design plus a very high ef_search" is wrong.
+- **The data was steered toward a worst case.**
+  - The spec asks only for clustered data. The brief added "meaningful but overlapping" and "show the data isn't trivially separable".
+  - Sigma 2.5 makes the top 10 near ties (d10/d11 0.998), so recall@10 mostly measures how ties are broken.
+  - `01_generate.sql` still has a stale `\set sigma 1.5`.
+- **"Pessimistic bound" is not a bound.**
+  - Pessimistic: the flat structure within each cluster.
+  - Optimistic: the campaign filter is perfectly correlated with the clusters, and there are only 10 campaigns.
+  - Per-campaign indexes or partitions also mean DDL for every new campaign.
+- **Tool relevance: none.** Both arms can express the query.
+  - Open question: a generic prepared plan (Drizzle `.prepare()`, or any pooled prepare) may not match a partial index. Partitions are not affected.
+
+### 5. Corrected headlines
+
+**4a, graphile-migrate 1.4.1:**
+- T9 pass.
+- T10a pass.
+- T10b: no pattern inside a migration file passes. It passes through the documented global `beforeAllMigrations` hook, which drops all INVALID indexes with a locking drop.
+- T11: refuses in the default flows, gives misleading errors after a rebase, and skips silently after a re-chain by hand.
+- T7: detects edits to pending files only.
+
+**4a, Drizzle Kit 0.31:**
+- T9 fail.
+- T10a pass.
+- T10b: not reachable natively. An undocumented `COMMIT;…BEGIN;` hack works but breaks batch atomicity.
+- T11 fail: skips silently and reports success. A realistic merge through the journal and snapshots is untested.
+- T7: no detection.
+
+**Both runners:** `IF NOT EXISTS` reports success while the index is INVALID.
+
+**4b:** compile-time catch on a full rename, with 0 silent passes in either arm.
+- Kysely: about 74% (range 64–78%).
+- Drizzle: 100% of query-code references, or about 90% counting raw SQL in the schema source.
+- The TypeScript versions differ (see section 3).
+
+**4c:** pass, identical on Node 24.22.2.
+
+**4d:**
+- At reference scale, the filtered exact scan passes (p95 43 ms).
+- Filtered global HNSW fails on this synthetic data.
+- Per-campaign HNSW passes only at `ef_search` 1000.
+- The data is unrepresentative in both directions.
+- 4d does not separate the tools.
+
+### 6. Fixes before 0017 is decided
+
+- Give Drizzle the same T10b and T11 brief graphile got.
+- Rerun Kysely 4b under TypeScript 7.0.2.
+- Report the 4b score with and without the raw SQL in the schema source.
+- Correct the EXP4D verdict.
+- Commit each coordinator brief next to its result.

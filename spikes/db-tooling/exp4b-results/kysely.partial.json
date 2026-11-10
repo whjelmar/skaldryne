@@ -1,0 +1,640 @@
+{
+ "arm": "kysely",
+ "versions": {
+  "kysely": "0.29.6",
+  "codegen": "kysely-codegen 0.20.0",
+  "typescript": "5.9.3",
+  "vitest": "4.1.11"
+ },
+ "renameSuffix": "_r",
+ "baseline": {
+  "codegenMatchesCommitted": true,
+  "tscErrors": 0,
+  "tests": [
+   "passed: Q1 graph hops from e3 in tenant A",
+   "passed: Q2 full-text search: A1 english 'cult or leader'",
+   "passed: Q2 full-text search: A2 german 'Kult'",
+   "passed: Q3 hybrid search by reciprocal rank fusion",
+   "passed: RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+   "passed: Q4 SKIP LOCKED job queue: the two-connection sequence",
+   "passed: EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query"
+  ]
+ },
+ "columns": [
+  {
+   "column": "claim_current.subject_id",
+   "migration": "ALTER TABLE public.claim_current RENAME COLUMN subject_id TO subject_id_r;",
+   "tscErrors": [
+    {
+     "file": "src/exp1.ts",
+     "line": 15,
+     "code": "TS2322",
+     "msg": "Type 'SelectQueryBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\", { [x: string]: any; object: JsonValue; campaign_id: string; claim_id: string; predicate: string; subject_id_r: string; tenant_id: string; version: number; }>' is not assignable to type 'CommonTableExpressionOutput<DB, \"walk(entity_id, depth, path)\">'.",
+     "detail": "Type 'SelectQueryBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\", { [x: string]: any; object: JsonValue; campaign_id: string; claim_id: string; predicate: string; subject_id_r: string; tenant_id: string; version: number; }>' is missing the following properties from type 'DeleteQueryBuilder<DB, any, { depth: any; path: any; entity_id: any; }>': #private, using, returning, returningAll, and 3 more."
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 17,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">[]): SelectQueryBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { ...; }, \"c\", { ...; }>', gave the following error.\nType '\"c.subject_id as entity_id\"' is not assignable to type 'SelectExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">): SelectQueryBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { ...; }, \"c\", { ...; }>', gave the following error.\nArgument of type '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' is not assignable to parameter of type 'SelectCallback<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">'.\nType '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' provides no match for the signature '(eb: ExpressionBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">): readonly SelectExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { ...; }, \"c\">[]'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">): SelectQueryBuilder<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { ...; }, \"c\", { ...; }>', gave the following error.\nArgument of type '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' is not assignable to parameter of type 'SelectExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">'."
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 25,
+     "code": "TS2345",
+     "msg": "Argument of type '\"c.subject_id\"' is not assignable to parameter of type 'ReferenceExpression<DB & { walk: { depth: any; path: any; entity_id: any; }; } & { c: ClaimCurrent; }, \"c\">'.",
+     "detail": ""
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 35,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">[]): SelectQueryBuilder<...>', gave the following error.\nType '\"c.subject_id as entity_id\"' is not assignable to type 'SelectExpression<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">'.\nOverload 2 of 3, '(callback: SelectCallback<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">): SelectQueryBuilder<...>', gave the following error.\nArgument of type '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' is not assignable to parameter of type 'SelectCallback<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">'.\nType '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' provides no match for the signature '(eb: ExpressionBuilder<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">): readonly SelectExpression<...>[]'.\nOverload 3 of 3, '(selection: SelectExpression<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">): SelectQueryBuilder<...>', gave the following error.\nArgument of type '(string | AliasedRawBuilder<number, \"depth\"> | AliasedRawBuilder<string[], \"path\">)[]' is not assignable to parameter of type 'SelectExpression<{ walk: { depth: any; path: any; entity_id: any; }; campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; ... 8 more ...; w: { ...; }; }, \"c\" | \"w\">'."
+    },
+    {
+     "file": "test/exp1.test.ts",
+     "line": 70,
+     "code": "TS7006",
+     "msg": "Parameter 'p' implicitly has an 'any' type.",
+     "detail": ""
+    }
+   ],
+   "tests": [
+    {
+     "title": "Q1 graph hops from e3 in tenant A",
+     "status": "failed",
+     "message": "error: column c.subject_id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q2 full-text search: A1 english 'cult or leader'",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A2 german 'Kult'",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q3 hybrid search by reciprocal rank fusion",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+     "status": "failed",
+     "message": "error: column c.subject_id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q4 SKIP LOCKED job queue: the two-connection sequence",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query",
+     "status": "passed",
+     "message": ""
+    }
+   ],
+   "dbErrors": [
+    {
+     "error": "column c.subject_id does not exist at character 64",
+     "statement": "with recursive \"walk\"(\"entity_id\", \"depth\", \"path\") as (select \"c\".\"subject_id\" as \"entity_id\", 1 as \"depth\", array[(c.object ->> 'entity')::uuid, c.subject_id] as \"path\" from \"claim_current\" as \"c\" where \"c\".\"tenant_id\" = $1 and \"c\".\"object\" ? 'entity' and c.object ->> 'entity' = $2 and \"c\".\"subject_id\" <> $3 union all select \"c\".\"subject_id\" as \"entity_id\", w.depth + 1 as \"depth\", w.path || c.subject_id as \"path\" from \"walk\" as \"w\" inner join \"claim_current\" as \"c\" on \"c\".\"tenant_id\" = $4 and \"c\".\"object\" ? 'entity' and c.object ->> 'entity' = w.entity_id::text where \"w\".\"depth\" < $5 and c.subject_id <> all (w.path)) select * from (select distinct on (\"w\".\"entity_id\") \"w\".\"entity_id\" as \"entityId\", \"e\".\"display_name\" as \"displayName\", \"w\".\"depth\", \"w\".\"path\" from \"walk\" as \"w\" inner join \"entity\" as \"e\" on \"e\".\"tenant_id\" = $6 and \"e\".\"id\" = \"w\".\"entity_id\" order by \"w\".\"entity_id\", \"w\".\"depth\") as \"shortest\" order by \"depth\", \"displayName\"",
+     "fn": "graphHops"
+    },
+    {
+     "error": "column c.subject_id does not exist at character 64",
+     "statement": "with recursive \"walk\"(\"entity_id\", \"depth\", \"path\") as (select \"c\".\"subject_id\" as \"entity_id\", 1 as \"depth\", array[(c.object ->> 'entity')::uuid, c.subject_id] as \"path\" from \"claim_current\" as \"c\" where \"c\".\"tenant_id\" = $1 and \"c\".\"object\" ? 'entity' and c.object ->> 'entity' = $2 and \"c\".\"subject_id\" <> $3 union all select \"c\".\"subject_id\" as \"entity_id\", w.depth + 1 as \"depth\", w.path || c.subject_id as \"path\" from \"walk\" as \"w\" inner join \"claim_current\" as \"c\" on \"c\".\"tenant_id\" = $4 and \"c\".\"object\" ? 'entity' and c.object ->> 'entity' = w.entity_id::text where \"w\".\"depth\" < $5 and c.subject_id <> all (w.path)) select * from (select distinct on (\"w\".\"entity_id\") \"w\".\"entity_id\" as \"entityId\", \"e\".\"display_name\" as \"displayName\", \"w\".\"depth\", \"w\".\"path\" from \"walk\" as \"w\" inner join \"entity\" as \"e\" on \"e\".\"tenant_id\" = $6 and \"e\".\"id\" = \"w\".\"entity_id\" order by \"w\".\"entity_id\", \"w\".\"depth\") as \"shortest\" order by \"depth\", \"displayName\"",
+     "fn": "graphHops"
+    }
+   ],
+   "refs": [
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "typed-string",
+     "line": 18,
+     "snip": "c.subject_id as entity_id",
+     "verdict": "runtime",
+     "evidence": "observed: column c.subject_id does not exist at character 64"
+    },
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "raw-sql-text",
+     "line": 20,
+     "snip": "c.subject_id]",
+     "verdict": "runtime",
+     "evidence": "observed: column c.subject_id does not exist at character 64"
+    },
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "typed-string",
+     "line": 25,
+     "snip": "\"c.subject_id\", \"<>\"",
+     "verdict": "compile",
+     "evidence": "TS2345 at L25"
+    },
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "typed-string",
+     "line": 36,
+     "snip": "c.subject_id as entity_id",
+     "verdict": "runtime",
+     "evidence": "observed: column c.subject_id does not exist at character 64"
+    },
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "raw-sql-text",
+     "line": 38,
+     "snip": "w.path || c.subject_id",
+     "verdict": "runtime",
+     "evidence": "observed: column c.subject_id does not exist at character 64"
+    },
+    {
+     "q": "Q1",
+     "fn": "graphHops",
+     "table": "claim_current",
+     "col": "subject_id",
+     "form": "raw-sql-text",
+     "line": 41,
+     "snip": "c.subject_id <> all",
+     "verdict": "runtime",
+     "evidence": "observed: column c.subject_id does not exist at character 64"
+    }
+   ],
+   "revert": {
+    "typesIdentical": true,
+    "tscClean": true,
+    "testsGreen": true
+   }
+  },
+  {
+   "column": "transcript_segment.id",
+   "migration": "ALTER TABLE public.transcript_segment RENAME COLUMN id TO id_r;",
+   "tscErrors": [
+    {
+     "file": "src/exp1.ts",
+     "line": 72,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nType '\"s.id\"' is not assignable to type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to type 'AliasedExpressionFactory<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<number, \"rank\"> | AliasedExpression<string, \"headline\">)[]' is missing the following properties from type 'AliasedExpression<any, any>': expression, alias, toOperationNode"
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 111,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | AliasedExpression<number, \"r\">)[]' is not assignable to parameter of type 'readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nType '\"s.id\"' is not assignable to type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | AliasedExpression<number, \"r\">)[]' is not assignable to parameter of type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | AliasedExpression<number, \"r\">)[]' is not assignable to type 'AliasedExpressionFactory<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(\"s.id\" | AliasedExpression<number, \"r\">)[]' is missing the following properties from type 'AliasedExpression<any, any>': expression, alias, toOperationNode"
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 115,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 4, '(expr: OrderByExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}>, modifiers?: OrderByModifiers | undefined): OverBuilder<...>', gave the following error.\nArgument of type '\"s.id\"' is not assignable to parameter of type 'OrderByExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}>'.\nOverload 2 of 4, '(exprs: readonly (OrderByExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}> | DirectedOrderByStringReference<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", {}>)[]): OverBuilder<...>', gave the following error.\nArgument of type 'string' is not assignable to parameter of type 'readonly (OrderByExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}> | DirectedOrderByStringReference<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", {}>)[]'.\nOverload 3 of 4, '(expr: DirectedOrderByStringReference<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}>): OverBuilder<DB & { ...; } & { ...; }, \"s\" | \"q\">', gave the following error.\nArgument of type '\"s.id\"' is not assignable to parameter of type 'DirectedOrderByStringReference<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\", {}>'."
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 129,
+     "code": "TS2345",
+     "msg": "Argument of type '\"s.id\"' is not assignable to parameter of type 'ReferenceExpression<{ campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; entity: Entity; ... 8 more ...; fts: { ...; }; }, \"e\" | \"s\">'.",
+     "detail": ""
+    }
+   ],
+   "tests": [
+    {
+     "title": "Q1 graph hops from e3 in tenant A",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A1 english 'cult or leader'",
+     "status": "failed",
+     "message": "error: column s.id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q2 full-text search: A2 german 'Kult'",
+     "status": "failed",
+     "message": "error: column s.id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q3 hybrid search by reciprocal rank fusion",
+     "status": "failed",
+     "message": "error: column s.id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+     "status": "failed",
+     "message": "error: column s.id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q4 SKIP LOCKED job queue: the two-connection sequence",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query",
+     "status": "passed",
+     "message": ""
+    }
+   ],
+   "dbErrors": [
+    {
+     "error": "column s.id does not exist at character 8",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.id does not exist at character 8",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.id does not exist at character 23",
+     "statement": "with \"fts\" as (select \"s\".\"id\", cast(row_number() over(order by ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") desc, \"s\".\"id\") as integer) as \"r\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($1::regconfig, $2) as \"q\" on true where \"s\".\"tenant_id\" = $3 and \"s\".\"campaign_id\" = $4 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"r\" limit $5), \"vec\" as (select \"e\".\"segment_id\" as \"id\", cast(row_number() over(order by e.embedding <=> $6::halfvec(768), \"e\".\"segment_id\") as integer) as \"r\" from \"segment_embedding\" as \"e\" inner join \"transcript_segment\" as \"s\" on \"s\".\"tenant_id\" = \"e\".\"tenant_id\" and \"s\".\"id\" = \"e\".\"segment_id\" where \"s\".\"tenant_id\" = $7 and \"s\".\"campaign_id\" = $8 order by \"r\" limit $9) select coalesce(\"f\".\"id\", \"v\".\"id\") as \"id\", \"f\".\"r\" as \"ftsRank\", \"v\".\"r\" as \"vecRank\", round(coalesce(1.0 / (60 + f.r), 0) + coalesce(1.0 / (60 + v.r), 0), 6)::float8 as \"score\" from \"fts\" as \"f\" full join \"vec\" as \"v\" on \"v\".\"id\" = \"f\".\"id\" order by \"score\" desc, \"id\" limit $10",
+     "fn": "hybridSearch"
+    },
+    {
+     "error": "column s.id does not exist at character 8",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    }
+   ],
+   "refs": [
+    {
+     "q": "Q2",
+     "fn": "searchSegments",
+     "table": "transcript_segment",
+     "col": "id",
+     "form": "typed-string",
+     "line": 73,
+     "snip": "\"s.id\"",
+     "verdict": "runtime",
+     "evidence": "observed: column s.id does not exist at character 8"
+    },
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "transcript_segment",
+     "col": "id",
+     "form": "typed-string",
+     "line": 112,
+     "snip": "\"s.id\"",
+     "verdict": "runtime",
+     "evidence": "observed: column s.id does not exist at character 23"
+    },
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "transcript_segment",
+     "col": "id",
+     "form": "typed-string",
+     "line": 115,
+     "snip": ".orderBy(\"s.id\")",
+     "verdict": "compile",
+     "evidence": "TS2769 at L115"
+    },
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "transcript_segment",
+     "col": "id",
+     "form": "typed-string",
+     "line": 129,
+     "snip": "onRef(\"s.id\"",
+     "verdict": "compile",
+     "evidence": "TS2345 at L129"
+    }
+   ],
+   "revert": {
+    "typesIdentical": true,
+    "tscClean": true,
+    "testsGreen": true
+   }
+  },
+  {
+   "column": "transcript_segment.session_no",
+   "migration": "ALTER TABLE public.transcript_segment RENAME COLUMN session_no TO session_no_r;",
+   "tscErrors": [
+    {
+     "file": "src/exp1.ts",
+     "line": 72,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nType '\"s.session_no as sessionNo\"' is not assignable to type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to type 'AliasedExpressionFactory<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<number, \"rank\"> | AliasedExpression<string, \"headline\">)[]' is missing the following properties from type 'AliasedExpression<any, any>': expression, alias, toOperationNode"
+    }
+   ],
+   "tests": [
+    {
+     "title": "Q1 graph hops from e3 in tenant A",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A1 english 'cult or leader'",
+     "status": "failed",
+     "message": "error: column s.session_no does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q2 full-text search: A2 german 'Kult'",
+     "status": "failed",
+     "message": "error: column s.session_no does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q3 hybrid search by reciprocal rank fusion",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+     "status": "failed",
+     "message": "error: column s.session_no does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q4 SKIP LOCKED job queue: the two-connection sequence",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query",
+     "status": "passed",
+     "message": ""
+    }
+   ],
+   "dbErrors": [
+    {
+     "error": "column s.session_no does not exist at character 18",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.session_no does not exist at character 18",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.session_no does not exist at character 18",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    }
+   ],
+   "refs": [
+    {
+     "q": "Q2",
+     "fn": "searchSegments",
+     "table": "transcript_segment",
+     "col": "session_no",
+     "form": "typed-string",
+     "line": 74,
+     "snip": "\"s.session_no as sessionNo\"",
+     "verdict": "runtime",
+     "evidence": "observed: column s.session_no does not exist at character 18"
+    },
+    {
+     "q": "Q2",
+     "fn": "searchSegments",
+     "table": "transcript_segment",
+     "col": "session_no",
+     "form": "typed-string",
+     "line": 83,
+     "snip": ".orderBy(\"s.session_no\")",
+     "verdict": "runtime",
+     "evidence": "observed: column s.session_no does not exist at character 18"
+    }
+   ],
+   "revert": {
+    "typesIdentical": true,
+    "tscClean": true,
+    "testsGreen": true
+   }
+  },
+  {
+   "column": "transcript_segment.start_ms",
+   "migration": "ALTER TABLE public.transcript_segment RENAME COLUMN start_ms TO start_ms_r;",
+   "tscErrors": [
+    {
+     "file": "src/exp1.ts",
+     "line": 72,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'readonly SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">[]'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nType '\"s.start_ms as startMs\"' is not assignable to type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">): SelectQueryBuilder<DB & { s: TranscriptSegment; } & { ...; }, \"s\" | \"q\", { ...; }>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to parameter of type 'SelectExpression<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(eb: ExpressionBuilder<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">) => (\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<...> | AliasedExpression<...>)[]' is not assignable to type 'AliasedExpressionFactory<DB & { s: TranscriptSegment; } & { q: { q: string; }; }, \"s\" | \"q\">'.\nType '(\"s.id\" | \"s.session_no as sessionNo\" | \"s.start_ms as startMs\" | AliasedExpression<number, \"rank\"> | AliasedExpression<string, \"headline\">)[]' is missing the following properties from type 'AliasedExpression<any, any>': expression, alias, toOperationNode"
+    }
+   ],
+   "tests": [
+    {
+     "title": "Q1 graph hops from e3 in tenant A",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A1 english 'cult or leader'",
+     "status": "failed",
+     "message": "error: column s.start_ms does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q2 full-text search: A2 german 'Kult'",
+     "status": "failed",
+     "message": "error: column s.start_ms does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q3 hybrid search by reciprocal rank fusion",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+     "status": "failed",
+     "message": "error: column s.start_ms does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q4 SKIP LOCKED job queue: the two-connection sequence",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query",
+     "status": "passed",
+     "message": ""
+    }
+   ],
+   "dbErrors": [
+    {
+     "error": "column s.start_ms does not exist at character 51",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.start_ms does not exist at character 51",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    },
+    {
+     "error": "column s.start_ms does not exist at character 51",
+     "statement": "select \"s\".\"id\", \"s\".\"session_no\" as \"sessionNo\", \"s\".\"start_ms\" as \"startMs\", cast(round(cast(ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") as numeric), 4) as float8) as \"rank\", ts_headline(cast($1 as regconfig), \"s\".\"text\", \"q\".\"q\") as \"headline\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($2::regconfig, $3) as \"q\" on true where \"s\".\"tenant_id\" = $4 and \"s\".\"campaign_id\" = $5 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"rank\" desc, \"s\".\"session_no\", \"s\".\"start_ms\" limit $6",
+     "fn": "searchSegments"
+    }
+   ],
+   "refs": [
+    {
+     "q": "Q2",
+     "fn": "searchSegments",
+     "table": "transcript_segment",
+     "col": "start_ms",
+     "form": "typed-string",
+     "line": 75,
+     "snip": "\"s.start_ms as startMs\"",
+     "verdict": "runtime",
+     "evidence": "observed: column s.start_ms does not exist at character 51"
+    },
+    {
+     "q": "Q2",
+     "fn": "searchSegments",
+     "table": "transcript_segment",
+     "col": "start_ms",
+     "form": "typed-string",
+     "line": 84,
+     "snip": ".orderBy(\"s.start_ms\")",
+     "verdict": "runtime",
+     "evidence": "observed: column s.start_ms does not exist at character 51"
+    }
+   ],
+   "revert": {
+    "typesIdentical": true,
+    "tscClean": true,
+    "testsGreen": true
+   }
+  },
+  {
+   "column": "segment_embedding.segment_id",
+   "migration": "ALTER TABLE public.segment_embedding RENAME COLUMN segment_id TO segment_id_r;",
+   "tscErrors": [
+    {
+     "file": "src/exp1.ts",
+     "line": 129,
+     "code": "TS2345",
+     "msg": "Argument of type '\"e.segment_id\"' is not assignable to parameter of type 'ReferenceExpression<{ campaign: Campaign; claim_current: ClaimCurrent; claim_embedding: ClaimEmbedding; claim_version: ClaimVersion; entity: Entity; ... 8 more ...; fts: { ...; }; }, \"e\" | \"s\">'.",
+     "detail": ""
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 130,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 3, '(selections: readonly SelectExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">[]): SelectQueryBuilder<...>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">) => (AliasedExpression<...> | \"e.segment_id as id\")[]' is not assignable to parameter of type 'readonly SelectExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">[]'.\nOverload 2 of 3, '(callback: SelectCallback<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">): SelectQueryBuilder<...>', gave the following error.\nType '\"e.segment_id as id\"' is not assignable to type 'SelectExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">'.\nOverload 3 of 3, '(selection: SelectExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">): SelectQueryBuilder<...>', gave the following error.\nArgument of type '(eb: ExpressionBuilder<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">) => (AliasedExpression<...> | \"e.segment_id as id\")[]' is not assignable to parameter of type 'SelectExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">'.\nType '(eb: ExpressionBuilder<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">) => (AliasedExpression<...> | \"e.segment_id as id\")[]' is not assignable to type 'AliasedExpressionFactory<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\">'.\nType '(AliasedExpression<number, \"r\"> | \"e.segment_id as id\")[]' is missing the following properties from type 'AliasedExpression<any, any>': expression, alias, toOperationNode"
+    },
+    {
+     "file": "src/exp1.ts",
+     "line": 134,
+     "code": "TS2769",
+     "msg": "No overload matches this call.",
+     "detail": "Overload 1 of 4, '(expr: OrderByExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}>, modifiers?: OrderByModifiers | undefined): OverBuilder<...>', gave the following error.\nArgument of type '\"e.segment_id\"' is not assignable to parameter of type 'OrderByExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}>'.\nOverload 2 of 4, '(exprs: readonly (OrderByExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}> | DirectedOrderByStringReference<...>)[]): OverBuilder<...>', gave the following error.\nArgument of type 'string' is not assignable to parameter of type 'readonly (OrderByExpression<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}> | DirectedOrderByStringReference<...>)[]'.\nOverload 3 of 4, '(expr: DirectedOrderByStringReference<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}>): OverBuilder<...>', gave the following error.\nArgument of type '\"e.segment_id\"' is not assignable to parameter of type 'DirectedOrderByStringReference<DB & { fts: { id: string; r: number; }; } & { e: SegmentEmbedding; } & { s: TranscriptSegment; }, \"e\" | \"s\", {}>'."
+    }
+   ],
+   "tests": [
+    {
+     "title": "Q1 graph hops from e3 in tenant A",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A1 english 'cult or leader'",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q2 full-text search: A2 german 'Kult'",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "Q3 hybrid search by reciprocal rank fusion",
+     "status": "failed",
+     "message": "error: column e.segment_id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "RLS: Q1-Q3 with no tenant set return zero rows, and claim_current counts 0",
+     "status": "failed",
+     "message": "error: column e.segment_id does not exist |     at C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\pg\\lib\\client.js:694:17 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+     "title": "Q4 SKIP LOCKED job queue: the two-connection sequence",
+     "status": "passed",
+     "message": ""
+    },
+    {
+     "title": "EXPLAIN (COSTS OFF) with enable_seqscan = off, recorded for each logged query",
+     "status": "passed",
+     "message": ""
+    }
+   ],
+   "dbErrors": [
+    {
+     "error": "column e.segment_id does not exist at character 602",
+     "statement": "with \"fts\" as (select \"s\".\"id\", cast(row_number() over(order by ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") desc, \"s\".\"id\") as integer) as \"r\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($1::regconfig, $2) as \"q\" on true where \"s\".\"tenant_id\" = $3 and \"s\".\"campaign_id\" = $4 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"r\" limit $5), \"vec\" as (select \"e\".\"segment_id\" as \"id\", cast(row_number() over(order by e.embedding <=> $6::halfvec(768), \"e\".\"segment_id\") as integer) as \"r\" from \"segment_embedding\" as \"e\" inner join \"transcript_segment\" as \"s\" on \"s\".\"tenant_id\" = \"e\".\"tenant_id\" and \"s\".\"id\" = \"e\".\"segment_id\" where \"s\".\"tenant_id\" = $7 and \"s\".\"campaign_id\" = $8 order by \"r\" limit $9) select coalesce(\"f\".\"id\", \"v\".\"id\") as \"id\", \"f\".\"r\" as \"ftsRank\", \"v\".\"r\" as \"vecRank\", round(coalesce(1.0 / (60 + f.r), 0) + coalesce(1.0 / (60 + v.r), 0), 6)::float8 as \"score\" from \"fts\" as \"f\" full join \"vec\" as \"v\" on \"v\".\"id\" = \"f\".\"id\" order by \"score\" desc, \"id\" limit $10",
+     "fn": "hybridSearch"
+    },
+    {
+     "error": "column e.segment_id does not exist at character 602",
+     "statement": "with \"fts\" as (select \"s\".\"id\", cast(row_number() over(order by ts_rank_cd(\"s\".\"tsv\", \"q\".\"q\") desc, \"s\".\"id\") as integer) as \"r\" from \"transcript_segment\" as \"s\" inner join websearch_to_tsquery($1::regconfig, $2) as \"q\" on true where \"s\".\"tenant_id\" = $3 and \"s\".\"campaign_id\" = $4 and \"s\".\"tsv\" @@ \"q\".\"q\" order by \"r\" limit $5), \"vec\" as (select \"e\".\"segment_id\" as \"id\", cast(row_number() over(order by e.embedding <=> $6::halfvec(768), \"e\".\"segment_id\") as integer) as \"r\" from \"segment_embedding\" as \"e\" inner join \"transcript_segment\" as \"s\" on \"s\".\"tenant_id\" = \"e\".\"tenant_id\" and \"s\".\"id\" = \"e\".\"segment_id\" where \"s\".\"tenant_id\" = $7 and \"s\".\"campaign_id\" = $8 order by \"r\" limit $9) select coalesce(\"f\".\"id\", \"v\".\"id\") as \"id\", \"f\".\"r\" as \"ftsRank\", \"v\".\"r\" as \"vecRank\", round(coalesce(1.0 / (60 + f.r), 0) + coalesce(1.0 / (60 + v.r), 0), 6)::float8 as \"score\" from \"fts\" as \"f\" full join \"vec\" as \"v\" on \"v\".\"id\" = \"f\".\"id\" order by \"score\" desc, \"id\" limit $10",
+     "fn": "hybridSearch"
+    }
+   ],
+   "refs": [
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "segment_embedding",
+     "col": "segment_id",
+     "form": "typed-string",
+     "line": 129,
+     "snip": "\"e.segment_id\")",
+     "verdict": "compile",
+     "evidence": "TS2345 at L129"
+    },
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "segment_embedding",
+     "col": "segment_id",
+     "form": "typed-string",
+     "line": 131,
+     "snip": "\"e.segment_id as id\"",
+     "verdict": "runtime",
+     "evidence": "observed: column e.segment_id does not exist at character 602"
+    },
+    {
+     "q": "Q3",
+     "fn": "hybridSearch",
+     "table": "segment_embedding",
+     "col": "segment_id",
+     "form": "typed-string",
+     "line": 134,
+     "snip": ".orderBy(\"e.segment_id\")",
+     "verdict": "compile",
+     "evidence": "TS2769 at L134"
+    }
+   ],
+   "revert": {
+    "typesIdentical": true,
+    "tscClean": true,
+    "testsGreen": true
+   }
+  }
+ ]
+}
