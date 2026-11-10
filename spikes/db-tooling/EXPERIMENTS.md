@@ -365,6 +365,41 @@ If no candidate passes, report the best combination.
 
 Do not commit.
 
+### 5c: drop-before-create for non-blocking index files (added 2026-11-10)
+
+**Why.** 5a's K1 failed. When the Node client running `migrate` is hard-killed during a `CREATE INDEX CONCURRENTLY`, the orphaned backend finishes the index. The migration stays unrecorded, so the next run fails with "already exists". The maintainer asked for a test of the fix in which index files drop the index before creating it.
+
+**Question.** Can a non-blocking index migration under graphile-migrate 1.4.1 drop its index before creating it, so that a rerun after K1 succeeds without breaking what 5a and round 3 established?
+
+**Method.**
+1. Use 5a's harness, migrations and hook unchanged, except for the index migration under test.
+2. Try these forms of the index migration in order. Record for each whether graphile-migrate accepts it and runs it outside a transaction.
+   - **F1:** one `--! no-transaction` file with `DROP INDEX CONCURRENTLY IF EXISTS x;` followed by `CREATE INDEX CONCURRENTLY x …;`. Postgres may reject this, because several statements sent in one query run in an implicit transaction. If it does, record the error and move to F2.
+   - **F2:** any other form that keeps the drop and the create in the migration files, for example two files or a `DO` block. Only use plain SQL that graphile-migrate runs; no change to the runner. Record why each form works or not.
+   - If no form works, stop and report that. Do not substitute a different fix such as a wrapper or hook change; report it as a possible next step instead.
+3. With each working form, run:
+   - **K1:** 5 runs, as in 5a;
+   - **S2 and K2:** 5 runs each, as in 5a, as a check that nothing regresses;
+   - **the round 3 killed-index test:** the index build is killed by terminating its backend, and the hook repairs it on the next run;
+   - **a clean run:** a fresh database, migrated once, with the index valid and the migration recorded once.
+
+**Pass, for a working form:**
+- K1: in all 5 runs, the next `migrate` after the orphaned build ends succeeds, leaves exactly one valid index, and records the migration once;
+- S2, K2, the killed-index test and the clean run give the same outcomes as in 5a and round 3;
+- a run refused because another holds the lock is still refused, and no index under construction is dropped.
+
+The rule from 0017 that non-blocking index files never use `IF NOT EXISTS` stands. `DROP … IF EXISTS` is a different statement; record whether the rule needs rewording.
+
+Also report how long the lock stays held in K1, and whether a second run started during that time is refused, as in 5a.
+
+**Output.**
+- `exp5/5c/EXP5C.md`;
+- tests under `exp5/5c/`;
+- databases prefixed `lock5c_`, dropped at the end;
+- no edits to 5a, 5b or the arms.
+
+Do not commit.
+
 ## Verification and bias audit
 
 - **Verifier.** A separate agent, not one of the authors, reruns every arm's `pnpm test` from a clean database on local disk. It checks each result against this file, recomputes the raw SQL shares and appends its findings to `VERIFICATION.md`.
