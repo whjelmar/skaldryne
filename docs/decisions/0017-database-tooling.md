@@ -112,58 +112,86 @@ The auditor also found that only the Kysely arm was given the killed-run and non
 
 Its verdict: the round was tilted toward Kysely on its headline numbers, and toward Drizzle on Drizzle's own typing self-scores. After both corrections, Kysely still leads on the hard queries, but the margin is modest.
 
-**Not tested in either round:**
-- the non-blocking index build through Drizzle's migrator;
-- an older file merged late, on graphile-migrate;
-- a type-safety test that renames columns and counts what fails to compile;
-- the HNSW and campaign filter at reference scale (`NFR-14`);
-- any run on Node.js 24 LTS.
+### Round 3: the items left untested
+
+Round 2 left five things untested. They were pre-registered as Experiment 4 (`EXPERIMENTS.md`, commit eb51330) and run on 2026-11-09. A verifier reran them and an auditor checked them for bias, as before. The auditor found the first migration briefs unequal: graphile-migrate was told to try every pattern and model a realistic merge, while Drizzle was not. Drizzle's tests were rerun with the same wording. It also found that the two arms' rename tests ran on different TypeScript versions, so the Kysely arm was rerun on the same version. Both reruns are what is reported below. Everything is on the spike branch, commit 0f632bb.
+
+**Migration runners.** "Pass" means the runner reaches a correct state with no manual SQL and never reports success while something is wrong.
+
+| Test | graphile-migrate 1.4.1 | Drizzle Kit 0.31.11 |
+| --- | --- | --- |
+| Non-blocking index build (`CONCURRENTLY`) | Pass, in a file that opts out of the transaction. | Fail. Every supported form errors and rolls the batch back. Only an undocumented file that starts with `COMMIT;` works, and it breaks the batch's atomicity. |
+| Killed transactional file | Pass. | Pass. |
+| Killed non-blocking index build | Pass only with a `beforeAllMigrations` hook that drops invalid indexes. The hook is global, sits outside the migration file and could drop an index another session is still building. Every pattern inside the file fails. | Fail. No supported pattern can run the build. |
+| Older file merged late | Refused in three of five scenarios, with a hash-chain error that is misleading after a rebase. Applied silently on a fresh database. Skipped silently after an applied file was hand-edited to re-chain. | Fail. Skipped silently in every scenario, while the command prints "migrations applied successfully!". A git merge of its migration list also conflicts. |
+| Applied file edited later | Not detected. | Not detected. |
+
+On both runners, a non-blocking build written with `IF NOT EXISTS` reports success while the index is still invalid.
+
+**Type safety under renames.** Each of the 25 columns used by the four hard queries was renamed in turn, and the test counted the references to it that fail to compile.
+
+| | Kysely 0.29.6 | Drizzle 0.45.4 |
+| --- | --- | --- |
+| References in query code caught | 56 of 76 (74%); 49 (64%) counting only errors reported on the right line | 78 of 78 (100%) |
+| Including raw SQL in the schema and migrations | 61% (53% strict) | 87% |
+| References that compile and then pass wrongly | none | none |
+
+The Kysely result is the same on TypeScript 5.9.3 and 7.0.2. Raw SQL in either arm is caught by neither compiler. The Kysely count of raw-SQL references was done by hand and is less certain than Drizzle's.
+
+**Node.js 24 LTS.** Both suites give the same results on Node.js 24 as on 25: Kysely passes 30 of 31, failing only the known killed-index test, and Drizzle passes 36 of 36. The verifier rates this evidence weak, because the logs do not print the Node version.
+
+**The vector index at reference scale (`NFR-14`).** The test used 550,000 `halfvec(768)` rows across 10 campaigns. An exact scan through the campaign index already meets the target: recall 1.0, 10 rows for every query, p95 of 43 ms. Filtered HNSW failed: recall was at most 0.13, and many queries returned fewer than 10 rows. Iterative scan did not fix it. One HNSW index per campaign, as partitions or partial indexes, reached a recall of 0.97–0.98 only at the maximum search width. The verifier found the generated data unrealistically uniform, so the HNSW figures are pessimistic. This test does not separate the tools. It does mean that a large campaign will need iterative scan or per-campaign indexes, whichever tool is chosen.
+
+**Still not tested:** our own migration runner, which has not been built; Drizzle 1.0; Prisma 8 at general release; and HNSW on real embeddings.
 
 ## Recommendation
 
-**Recommended, not decided:**
+**Recommended, not decided.** Round 3 changed both halves of the round 2 recommendation, so it is restated here.
 
-- **Queries:** Kysely, with types generated from a database built by the migrations. The lead over Drizzle 0.45 on hard queries is real but modest. It comes from recursive queries, window functions and `CASE`, which the record model and search need.
-- **Migrations:** a small runner of our own over plain SQL files, rather than graphile-migrate or Drizzle Kit. The spec named this fallback in advance for a failed must-have. It has not been built or tested.
+- **Queries: the evidence is split.** Kysely writes the hard queries with less raw SQL, because Drizzle 0.45 has no recursive queries, window functions or `CASE`. Drizzle catches every renamed column in query code at compile time, where Kysely catches about three in four. Neither lets a wrong rename pass its tests. Choose Kysely if the hard queries weigh more, and Drizzle if rename safety does. Either way, the hard queries keep some raw SQL that no compiler checks, and the tests must cover it.
+- **Migrations: graphile-migrate 1.4.1,** with:
+  - the `beforeAllMigrations` hook that drops invalid indexes;
+  - a CI hash check of applied files;
+  - a rule that non-blocking index files never use `IF NOT EXISTS`;
+  - enforced line endings.
 
-  It has four jobs:
-  - apply files in name order, refusing a file that sorts before one already applied;
-  - run one transaction per file, with an opt-out that afterwards checks every index is valid and fails the run if one is not;
-  - check the hash of every applied file against the committed one;
-  - run against a list of databases and report each one's version.
-
-  The version it records is what processes check on start ([0010](0010-deployment.md)). The pre-registered limit is about 150 lines, and the same suite must pass on it before this record can be accepted.
-
-  The alternative is to keep graphile-migrate 1.4.1, plus a CI hash check, a rule that non-blocking index files drop any invalid index first and check validity after, and enforced line endings. That leaves the killed-build failure to be handled by hand.
+  Round 2 recommended our own runner because graphile-migrate failed the killed-index test. It now passes with the hook and refuses most late merges, so the fallback's precondition is weaker. Our own runner remains the alternative if the hook's risk is unacceptable: it is global, and it could drop an index another session is still building. The runner would be about 150 lines, unbuilt, with the four jobs listed under Options. Drizzle Kit is not recommended under either query choice. Drizzle queries do not need it: Drizzle ORM can run on migrations applied by graphile-migrate.
 
 Whichever is chosen, adopting it means:
 
 - **Migrations are plain SQL,** as [0005](0005-record-storage.md) says. Partitions, triggers, policies, grants and the partition `REVOKE`s are written like everything else.
 - **One transaction helper sets the audience,** `withAudience(campaign, audience, tx => …)`, as [0007](0007-visibility-enforcement.md) describes. Application code contains no raw SQL for it.
 - **Three roles and a bootstrap step.** The roles are application, migration and redaction ([0010](0010-deployment.md)). pgvector needs a superuser to create it, so install creates the extension before `migrate` first runs.
-- **CI** builds a fresh database from the migrations, compares its schema dump with the committed one, and fails if regenerated types changed.
+- **CI** builds a fresh database from the migrations, compares its schema dump with the committed one, and fails if regenerated types or the Drizzle schema no longer match it.
 - **A migration that has shipped is never edited.** Corrections are new migrations.
-- **Before acceptance,** the chosen arm's suite is rerun on Node.js 24 LTS ([0004](0004-language-runtime-and-repository.md)).
+- **Vector search** starts with an exact scan within a campaign. Iterative scan or per-campaign indexes are added when a campaign's size needs them (`NFR-14`).
 
 ## Consequences if adopted
 
-- The schema is written in SQL and read in TypeScript. There is no generated schema to fight, and no gap between what a tool thinks exists and what does.
-- We own the migration runner, its tests and the CI checks. That is about 150 lines, but every upgrade depends on it.
+- The migrations are written in SQL. With Kysely, query types are generated from the migrated database. With Drizzle, the TypeScript schema is a second copy of it, and CI keeps the two in step.
+- graphile-migrate's hook and the CI checks are ours to maintain. A killed non-blocking build is repaired on the next run, not by hand.
+- With Kysely, a renamed column can still compile in about a quarter of query references, so tests carry more weight. Kysely is maintained by a small team and is still versioned 0.x.
+- With Drizzle, recursive queries, window functions and `CASE` are written as raw SQL, and one nullable result was typed as a number.
 - Vector results come back as strings and similarity scores need a cast. A small typed wrapper hides this.
 - Generated types are loose for jsonb, so a wrong value type-checks and fails at runtime. Writes go through a helper.
-- Kysely is maintained by a small team and still versioned 0.x.
 
 ## Options considered
 
-- **Drizzle 0.45 for queries.** It covers the same hard queries correctly with somewhat more raw SQL, and it has typed column references and native policy, `halfvec` and HNSW declarations. Not recommended. It has no recursive queries, window functions or `CASE`, and it typed a nullable rank as a number. Worth revisiting at 1.0.
-- **Drizzle Kit for migrations.** Not recommended. It runs all pending files in one transaction, skips an older file merged late without a word, and never checks applied hashes.
-- **graphile-migrate 1.4.1.** Workable with the CI checks above. A killed non-blocking index build leaves an invalid index and needs manual recovery, and edits to applied files go unnoticed.
-- **Prisma 8.** Dropped from round 2. Round 1 found release-candidate defects that touch tenancy and data. Worth a fresh spike at its general release.
+- **Kysely 0.29 for queries.** It writes the hard queries with the least raw SQL. Its rename detection is weaker, at about 74% of query references.
+- **Drizzle 0.45 for queries.** It catches every rename in query code, and it has native policy, `halfvec` and HNSW declarations. It has no recursive queries, window functions or `CASE`, and it typed a nullable rank as a number. Worth revisiting at 1.0.
+- **Drizzle Kit for migrations.** Not recommended. It cannot run a non-blocking index build without an undocumented workaround, it skips an older file merged late while reporting success, and it never checks applied hashes.
+- **Our own migration runner.** Unbuilt, about 150 lines. It has four jobs:
+  - apply files in name order, refusing a file that sorts before one already applied;
+  - run one transaction per file, with an opt-out that afterwards checks every index is valid;
+  - check the hash of every applied file;
+  - run against a list of databases and report each one's version.
+
+  It avoids graphile-migrate's global hook, but every upgrade depends on code we own.
+- **Prisma 8.** Dropped from rounds 2 and 3. Round 1 found release-candidate defects that touch tenancy and data. Worth a fresh spike at its general release.
 
 ## To decide
 
 1. Kysely or Drizzle for queries?
-2. Our own runner, graphile-migrate 1.4.1 with the CI checks, or something else for migrations?
-3. Run the untested items above first, or decide now?
+2. graphile-migrate 1.4.1 with the hook and CI checks, or our own runner?
 
 When a maintainer decides, this record becomes Proposed or Accepted with the chosen options, or is replaced by a record that states them.
