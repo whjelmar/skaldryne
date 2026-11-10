@@ -235,6 +235,59 @@ Each arm writes `EXP1.md` with:
 
 Record exact versions and every difference from the 1.0 RC results.
 
+## Experiment 4: the untested items (round 3, added 2026-11-09)
+
+Added after round 2 results, at the maintainer's request, to close the gaps listed in record 0017 before it is decided. It is committed before any round 3 code. Every test in it is given to both arms in the same words, which fixes the asymmetry the round 2 audit found. Nothing in Experiments 1–3 changes.
+
+### 4a: migration runners, same tests for both
+
+Each runner gets every test below, including those it already had. Round 2 results stand. A test that was already run is rerun only to confirm it, and any difference is explained.
+
+| Test | Pass criterion |
+| --- | --- |
+| T9 (CONCURRENTLY) | As in Experiment 2, through the runner's own mechanism. If the runner cannot run a file outside a transaction, that is a fail; record the error. |
+| T10a (killed transactional file) | As in Experiment 2. |
+| T10b (killed no-transaction file) | As in Experiment 2. Try every idempotent pattern the runner supports; record each one and its outcome. **Pass:** at least one pattern ends with a valid index on rerun, without manual SQL, and the runner never reports success while the index is INVALID. |
+| T11 (late merge) | Two branches each add a migration. Branch X's is applied to a database. Branch Y's, authored first and with a name or number that sorts earlier, is then merged and the runner is run. **Pass:** the runner either applies Y's migration or refuses with a clear error. Silently skipping it is a fail. |
+| T7 tamper check | As in Experiment 2. Reported, not scored. |
+
+Use the existing prefixes `kysely14_` and `drizzle045_`. One agent per runner. Neither sees the other's round 3 work.
+
+### 4b: type safety under a rename
+
+Run in both stable arms with one procedure, by one agent. For every column referenced by Q1–Q4 in Experiment 1, one at a time:
+1. Rename the column in the schema source: a new migration plus regenerated types for Kysely, and `schema.ts` for Drizzle.
+2. Run `tsc --noEmit`, then the Experiment 1 tests.
+3. Record whether each reference to the column fails to compile, fails only at runtime, or passes wrongly.
+4. Revert the rename.
+
+**Score:** the share of references caught at compile time, for each arm and each query. References inside raw `sql` fragments count. This is the measure the raw SQL share stood in for. Use the prefix `rename_`.
+
+### 4c: Node.js 24 LTS
+
+Rerun every test in both stable arms (`pnpm test`, Experiments 1–3) on the current Node.js 24 LTS release. Use a portable Node 24 binary from nodejs.org; do not change the machine's default Node. Use a second container from the same image on localhost:55433, so this run does not share a database server with 4a or 4b. **Pass:** the same results as on Node 25.3.0, with any difference explained.
+
+### 4d: the vector index at reference scale
+
+This test is independent of the tool, and is written in plain SQL. It runs alone, after 4a–4c finish, so timings are not disturbed. Use the database `vecscale` on localhost:55432.
+
+**Data.** Reference scale (`NFR-14`) is 200 sessions and 5,000 entities per campaign. One campaign holds 5,000 entity embeddings and 200 × 250 = 50,000 passage embeddings, so 55,000 rows. Load 10 campaigns, 550,000 `halfvec(768)` rows in all, into one table with `campaign_id`. Use the stand-in schema's HNSW settings. Vectors are synthetic but clustered: draw 200 centres per campaign and add Gaussian noise. Use a fixed seed. Query vectors are 100 held-out points drawn the same way.
+
+**Queries.** Each query asks for the top 10 by cosine distance within one campaign, run in three modes:
+- (i) the HNSW index with a `WHERE campaign_id = $1` filter;
+- (ii) the same, with `hnsw.iterative_scan = relaxed_order`, if the installed pgvector supports it;
+- (iii) an exact scan of the campaign's rows through a btree on `campaign_id`.
+
+**Record:**
+- the pgvector version;
+- the index build time and size;
+- the `EXPLAIN (ANALYZE, BUFFERS)` plan for each mode;
+- recall@10 against mode (iii);
+- how many queries return fewer than 10 rows;
+- p50 and p95 latency over the 100 queries, after one warm-up pass.
+
+**Pass:** some mode, achievable through settings or index design, gives recall@10 ≥ 0.95, returns 10 rows for every query, and has p95 under 100 ms on this machine. Report every mode either way. This test does not choose a tool, but it does decide what the query layer must be able to express.
+
 ## Verification and bias audit
 
 - **Verifier.** A separate agent, not one of the authors, reruns every arm's `pnpm test` from a clean database on local disk. It checks each result against this file, recomputes the raw SQL shares and appends its findings to `VERIFICATION.md`.
