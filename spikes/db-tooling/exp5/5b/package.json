@@ -1,0 +1,19 @@
+{
+  "name": "db-tooling-exp5b",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "run:all": "node run.ts",
+    "test": "node node_modules/vitest/vitest.mjs run"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.4",
+    "graphile-migrate": "1.4.1",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "drizzle-kit": "0.31.11",
+    "vitest": "4.1.11"
+  }
+}

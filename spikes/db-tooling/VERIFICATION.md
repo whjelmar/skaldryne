@@ -522,3 +522,101 @@ Round 3 tilts both ways, the tilts partly cancel, and none of them reverses a re
 - Report the 4b score with and without the raw SQL in the schema source.
 - Correct the EXP4D verdict.
 - Commit each coordinator brief next to its result.
+
+## Experiment 5 verification (2026-11-10)
+
+Independent rerun and audit of `exp5/5a` and `exp5/5b` against the criteria in EXPERIMENTS.md, section "Experiment 5". The verifier did not write either experiment. Only `lock5_` and `schema5_` databases were used; none remain (checked in `pg_database` at the end). The authors' `reports/exp5a.log`, `results.json` and `results/*.json` were overwritten by the reruns and then restored from copies taken before (5b results confirmed byte-identical with `cmp`). This section is the only file edited.
+
+### 0. Pre-registration integrity
+
+- **CONFIRMED.** The Experiment 5 section of EXPERIMENTS.md has one commit (`4c05a18`, 2026-11-10 09:06, "Pre-register Experiment 5"), and `git diff` shows no later edit. Criteria were not changed after results.
+- **MINOR DEVIATION.** The brief names the output `EXP5.md`; the authors wrote `EXP5A.md` and `EXP5B.md`. No tracked file is modified (`git status`: only `exp5/` and the pre-existing `arm-drizzle-stable/.r3tmp/` untracked).
+- **CONFIRMED.** 5b `base/` equals the arms: `diff -rq` of `base/migrations/committed` against `arm-kysely-stable/migrations/committed` is empty; `base/schema/define.ts`, `base/schema/m3.ts` and `base/drizzle.config.arm.ts` are identical to the files in `arm-drizzle-stable/`; `current.sql` is identical.
+
+### 1. Experiment 5a
+
+Rerun: `node node_modules/vitest/vitest.mjs run` in `exp5/5a`, 142 s, "25 passed (25)". The log has 25 lines: 20 `pass=true`, 5 `pass=false`, and the five false ones are exactly K1 #1 to #5.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| S1, S2, S3 pass 5/5 | CONFIRMED | Rerun log: all 15 lines `pass=true`. The `pass` expression in `test/exp5a.test.ts` (lines 55, 111-113) requires: no overlap, M4 recorded exactly once, loser output matches `/Failed to get exclusive lock/`, a rerun exits 0, and for S2/S3 the invalid index keeps its OID and ends valid. Winner order varied between runs (`final codes=0/1` vs `1/0`). |
+| Second run refused with "Failed to get exclusive lock" | CONFIRMED | The regex is part of the pass condition for S1/S2/S3. The log's `msg=` field shows only the last 120 characters of output (a stack frame), which looks like it lacks the message, but the test applies the regex to the full output. The five K1 lines print the message literally. |
+| No double apply; building index not dropped | CONFIRMED | `M4 rows=1` in every line; `dropped` is asserted false in S2/S3. |
+| K2 (backend terminated) releases the lock, 5/5 | CONFIRMED | K2 lines: `advisory held after A died=false`, B code 0, index rebuilt with a new OID and valid, M4 rows=1. |
+| K1 (Node client hard-killed) fails 0/5 | CONFIRMED | K1 lines: `orphan backend gone within 10s=false, advisory still held=true`; B refused while the blocker was held; after release the lock freed, index VALID, `M4 recorded=false`, later rerun `code=1` with Postgres `index_create` "already exists". Same in all five. |
+| Verdict 3 of 4 criteria | CONFIRMED | Matches the log and the criterion table in EXP5A.md section 5. |
+
+**K1 fairness: fair, with caveats.** K1's pass condition (`orphanGone && holdersAfterKill.length === 0`) is a literal reading of "a killed run does not leave the lock held". EXP5A.md reports the failure, and its section 6 says the held lock is also what stopped a second run's hook from touching the in-flight index, so the mitigating effect is not hidden.
+- K1 tests do not call `expect`, so Vitest says "25 passed" while 5 runs failed their criterion. The prose and the log are correct; a skim of the Vitest line would not show it.
+- The brief's step 4 (build a wrapper, rerun S1-S3 "also with a run killed while it holds the lock") was conditional on 1.4.1 not preventing overlap. The authors did not build one, since 1.4.1 does lock, and argued that a client-side wrapper lock would be released when the wrapper dies, permitting the overlap. That argument is untested, and K1 is the case the wrapper clause was written for. Not bias, but the criterion stays open rather than closed.
+
+**Other 5a notes.**
+- Source citations (file and line numbers) come from WebFetch renderings of GitHub v1.4.1 and are labelled approximate in EXP5A.md section 1. I did not re-derive them; the run-time behaviour (a granted advisory lock in `pg_locks` held by the migrating backend, refusal on the second run) independently supports the claim.
+- S3 is a second OS process, not a second container; stated in EXP5A.md section 2.
+
+### 2. Experiment 5b
+
+Rerun: `node run.ts` (all variants, 141 s) and the C3 Vitest file. Detection, finding counts and error counts matched the authors' `results/results.json` in every cell, for all five candidates.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| C2 and C3 detect D1-D8 on both sides, 0 control false alarms | CONFIRMED | Rerun: control findings 0 for c2 and c3; `detected` true for every `*m` and `*s` variant of D1-D8 for both. Both also detect D9 and D10 on both sides. |
+| C3 control: 64 tests, 0 failed | CONFIRMED | Run by hand on a freshly migrated database: "64 passed (64)". |
+| C1 has 15 control false alarms (partitioned parent invisible) | CONFIRMED | Rerun control findings 15, all `schema only: claim_version...` per EXP5B.md; D10m not detected by C1. These are explained baseline differences, not unexplained false alarms in the pre-registered sense. |
+| C4 has 20 false alarms; exit code 0 even on prompt stops | CONFIRMED | Rerun control 20 findings; `facts.exit` is 0 in all 23 variants; prompt stops in `d1m`, `d1s`, `d8m` only. The raw control statement count was 36 in the authors' run and 24 in mine, which confirms the primary key churn instability. |
+| C4 changes nothing | CONFIRMED | `facts.unchanged` true in all 23 variants. |
+| About 1 s, far under 60 s | CONFIRMED | Rerun median per check: c1 1730, c2 1258, c2b 1032, c3 970, c4 899 ms. Authors: 1743, 1276, 1046, 971, 907. Create plus migrate 104-177 ms confirmed from the stored results. |
+| C2 needs superuser for `CREATE EXTENSION vector` | CONFIRMED | As `skal_migrator` on a new database: "permission denied to create extension vector ... Must be superuser". `createDatabase` uses `postgres` for that statement. |
+| `push` without `--strict` and without a TTY executes statements | CONFIRMED | By hand, outside the harness: `drizzle-kit push` with stdin from `/dev/null` against an empty scratch database printed "Changes applied", exit 0; 9 tables existed afterwards. Scratch database and the temporary `work/` directory removed. |
+| C2b D9s blind; C4 D9 and D10m blind | CONFIRMED | Rerun matrix: `c2b d9s` not detected; `c4 d9m, d9s, d10m` not detected; `c1 d10m` not detected. |
+
+**DISCREPANCY (minor, count only).** EXP5B.md says "22 variants", "22 total" databases, "each of the 22 `push --strict --verbose` runs" and "all 22 runs", and its how-to-run comment says "all 22 variants". `results.json` holds 23 variants: `ctl` plus 11 drift cases (D1, D2, D3a, D3b, D4-D10) times 2 sides. The data are right; the prose count is off by one.
+
+### 3. Planted drift implements D1-D10
+
+**CONFIRMED** from `lib/drift.ts`. Each case is applied to one side of a fresh copy of the unchanged pair and the other side is untouched. `inBlock` throws unless its edit pattern is unique, so a no-op edit cannot slip through.
+- D1: rename `campaign.name` to `title` (migration `RENAME COLUMN` vs schema `text('title')`).
+- D2: `DROP NOT NULL` vs removing `.notNull()`.
+- D3a: `entity.kind` text vs `varchar(100)`. D3b: `halfvec(768)` vs `halfvec(384)`.
+- D4: default `'{}'` vs `'[]'`.
+- D5: index on `transcript_segment (tenant_id, speaker)`.
+- D6: FK `entity.tenant_id -> tenant`, same constraint name on both sides.
+- D7: `CHECK (length(name) > 0)`.
+- D8: `audit_log` table with matching columns and primary key.
+- D9: policy `USING (true) WITH CHECK (true)` vs `tenantIsolation(sql true)`.
+- D10: `claim_version.note` added on the partition parent.
+
+Migration-side drift is added as a proper committed file with a computed hash; graphile-migrate accepted all 23 variants without error.
+
+**Control differences are explained, not hidden: CONFIRMED, with a caveat.** EXP5B.md lists five baseline differences and attributes the C1 and C4 control findings to them (partitioned parent invisible to `pull`; NULLS NOT DISTINCT; hnsw readback; primary key churn). The C1 findings are all `claim_version` lines. Caveat: C2 and C3 score 0 partly because the catalog query and the C3 test exclude partitions on purpose (`NOT c.relispartition`), while C1 and C4 cannot choose. EXP5B.md says this ("neither can see partitions, triggers or grants"), so it is disclosed, but a reader comparing "0 vs 15 vs 20" should know the 0 covers a narrower scope. C3 also carries hand-tuned normalisers (`typeText`, shared `canonExpr`) developed against this control pair; C2 compares raw catalog text with only the `public.` prefix stripped, so C2's zero is the less tuned of the two.
+
+### 4. Bias check
+
+- Criteria changed after the fact: no (section 0).
+- Cases dropped: none. D1-D10 are all present on both sides; D3 is split into 3a and 3b, which adds cases.
+- Counts that do not match logs: 5a none; 5b only the 22 vs 23 variant count.
+- Detection rule: "detected" means a candidate's findings differ from its own control findings. This is stated in EXP5B.md and is the only fair rule for C1 and C4, but it lets C1 and C4 "pass" through baseline lists the authors maintain, and for C4 the D1m, D1s and D8m detections exist only because drizzle-kit stopped at a rename prompt. EXP5B.md flags both (`DET*`) and hedges its C1 and C4 verdicts. I agree with the hedging; I would not call C1 or C4 a clean pass.
+- C4's `dropPkeyChurn` filter hides a real primary key column reorder; disclosed in EXP5B.md.
+- The privilege finding (C1 and C4 gain false alarms under `skal_app`; cause "not confirmed in source") is reported as observed only. I did not rerun it.
+
+### 5. Spot check by hand: D5 (index on one side) through C3
+
+Independent of `run.ts` and its drift builder: created `schema5_hand`, migrated `base/migrations` with graphile-migrate, then:
+1. `pg_indexes` count for `transcript_segment_speaker_idx` = 0, and the name appears in no `base/schema/define.ts` and no committed migration.
+2. C3 against the untouched database: 64 passed.
+3. `CREATE INDEX transcript_segment_speaker_idx ON transcript_segment (tenant_id, speaker)` by psql, then C3 again: 1 failed, 63 passed. The failing test is `transcript_segment > has matching indexes`: `schema only: [] database only: [transcript_segment_speaker_idx: btree (tenant_id,speaker) with()]`.
+
+**CONFIRMED.** The detection is real: it names the right table, aspect and index, only that test fails, and the same database with the index absent is clean. Database dropped afterwards.
+
+### 6. Findings
+
+| # | Item | Severity |
+|---|---|---|
+| 1 | EXP5B.md says 22 variants; there are 23 (`ctl` plus 22 drift variants). | Low, wording |
+| 2 | 5a K1 runs do not assert, so Vitest reports 25 passed while 5 runs failed the criterion; the log, `results.json` and EXP5A.md state it correctly. | Low, presentation |
+| 3 | Brief asks for `EXP5.md`; two files were written. | Low |
+| 4 | 5a: wrapper not built or tested; the argument that it cannot help with K1 is unverified. | Medium, open question |
+| 5 | 5a: S3 is a second process, not a second container; pgbouncer transaction mode untested (both stated by the authors). | Low |
+| 6 | 5a: source line numbers come from a WebFetch rendering and were not re-verified by me; behaviour supports the claim. | Low |
+
+**Overall:** every numeric claim in the 5a and 5b write-ups that I reran was reproduced, apart from the variant count. No evidence of bias, dropped cases, or criteria edits. K1 is reported fairly.

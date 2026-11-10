@@ -1,0 +1,152 @@
+[
+  {
+    "scenario": "S1",
+    "run": 1,
+    "outcome": "waiting-backend=280868 advisory-holders=280868:true loser exited early code=1 msg=\"(C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; final codes=0/1 M4 rows=1 s1_col columns=1 rerun code=0 \"graphile-migrate: Already up to date\"",
+    "pass": true
+  },
+  {
+    "scenario": "S1",
+    "run": 2,
+    "outcome": "waiting-backend=280984 advisory-holders=280984:true loser exited early code=1 msg=\"(C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; final codes=1/0 M4 rows=1 s1_col columns=1 rerun code=0 \"graphile-migrate: Already up to date\"",
+    "pass": true
+  },
+  {
+    "scenario": "S1",
+    "run": 3,
+    "outcome": "waiting-backend=281015 advisory-holders=281015:true loser exited early code=1 msg=\"(C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; final codes=0/1 M4 rows=1 s1_col columns=1 rerun code=0 \"graphile-migrate: Already up to date\"",
+    "pass": true
+  },
+  {
+    "scenario": "S1",
+    "run": 4,
+    "outcome": "waiting-backend=281124 advisory-holders=281124:true loser exited early code=1 msg=\"(C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; final codes=1/0 M4 rows=1 s1_col columns=1 rerun code=0 \"graphile-migrate: Already up to date\"",
+    "pass": true
+  },
+  {
+    "scenario": "S1",
+    "run": 5,
+    "outcome": "waiting-backend=281153 advisory-holders=281153:true loser exited early code=1 msg=\"(C:\\Users\\walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; final codes=1/0 M4 rows=1 s1_col columns=1 rerun code=0 \"graphile-migrate: Already up to date\"",
+    "pass": true
+  },
+  {
+    "scenario": "S2",
+    "run": 1,
+    "outcome": "A pid=281172 holds advisory=281172:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1004359,\"valid\":false,\"ready\":false} (oid before=1004359) dropped=false; A code=0; final index={\"oid\":1004359,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S2",
+    "run": 2,
+    "outcome": "A pid=281203 holds advisory=281203:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1006125,\"valid\":false,\"ready\":false} (oid before=1006125) dropped=false; A code=0; final index={\"oid\":1006125,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S2",
+    "run": 3,
+    "outcome": "A pid=281234 holds advisory=281234:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1007892,\"valid\":false,\"ready\":false} (oid before=1007892) dropped=false; A code=0; final index={\"oid\":1007892,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S2",
+    "run": 4,
+    "outcome": "A pid=281265 holds advisory=281265:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1009658,\"valid\":false,\"ready\":false} (oid before=1009658) dropped=false; A code=0; final index={\"oid\":1009658,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S2",
+    "run": 5,
+    "outcome": "A pid=281296 holds advisory=281296:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1011424,\"valid\":false,\"ready\":false} (oid before=1011424) dropped=false; A code=0; final index={\"oid\":1011424,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S3",
+    "run": 1,
+    "outcome": "A pid=281328 holds advisory=281328:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1013191,\"valid\":false,\"ready\":false} (oid before=1013191) dropped=false; A code=0; final index={\"oid\":1013191,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S3",
+    "run": 2,
+    "outcome": "A pid=281358 holds advisory=281358:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1014957,\"valid\":false,\"ready\":false} (oid before=1014957) dropped=false; A code=0; final index={\"oid\":1014957,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S3",
+    "run": 3,
+    "outcome": "A pid=281388 holds advisory=281388:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1016719,\"valid\":false,\"ready\":false} (oid before=1016719) dropped=false; A code=0; final index={\"oid\":1016719,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S3",
+    "run": 4,
+    "outcome": "A pid=281420 holds advisory=281420:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1018490,\"valid\":false,\"ready\":false} (oid before=1018490) dropped=false; A code=0; final index={\"oid\":1018490,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "S3",
+    "run": 5,
+    "outcome": "A pid=281451 holds advisory=281451:true; B exited code=1 msg=\"walte\\dev\\skaldryne-spike\\spikes\\db-tooling\\arm-kysely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1020256,\"valid\":false,\"ready\":false} (oid before=1020256) dropped=false; A code=0; final index={\"oid\":1020256,\"valid\":true,\"ready\":true}; M4 rows=1; rerun code=0",
+    "pass": true
+  },
+  {
+    "scenario": "K1",
+    "run": 1,
+    "outcome": "lock holder pid=281483 (advisory 281483); after SIGKILL of the node process: orphan backend gone within 10s=false, advisory still held=true; B (blocker still held) refused 'Failed to get exclusive lock' (final code 1); lock freed after orphan finished=true; index after orphan={\"oid\":1022023,\"valid\":true,\"ready\":true}; M4 recorded=false; later rerun code=1 \", | constraint: undefined, | file: 'index.c', | line: '906', | routine: 'index_create' | }\" index={\"oid\":1022023,\"valid\":true,\"ready\":true}",
+    "pass": false
+  },
+  {
+    "scenario": "K1",
+    "run": 2,
+    "outcome": "lock holder pid=281611 (advisory 281611); after SIGKILL of the node process: orphan backend gone within 10s=false, advisory still held=true; B (blocker still held) refused 'Failed to get exclusive lock' (final code 1); lock freed after orphan finished=true; index after orphan={\"oid\":1023789,\"valid\":true,\"ready\":true}; M4 recorded=false; later rerun code=1 \", | constraint: undefined, | file: 'index.c', | line: '906', | routine: 'index_create' | }\" index={\"oid\":1023789,\"valid\":true,\"ready\":true}",
+    "pass": false
+  },
+  {
+    "scenario": "K1",
+    "run": 3,
+    "outcome": "lock holder pid=281740 (advisory 281740); after SIGKILL of the node process: orphan backend gone within 10s=false, advisory still held=true; B (blocker still held) refused 'Failed to get exclusive lock' (final code 1); lock freed after orphan finished=true; index after orphan={\"oid\":1025556,\"valid\":true,\"ready\":true}; M4 recorded=false; later rerun code=1 \", | constraint: undefined, | file: 'index.c', | line: '906', | routine: 'index_create' | }\" index={\"oid\":1025556,\"valid\":true,\"ready\":true}",
+    "pass": false
+  },
+  {
+    "scenario": "K1",
+    "run": 4,
+    "outcome": "lock holder pid=281867 (advisory 281867); after SIGKILL of the node process: orphan backend gone within 10s=false, advisory still held=true; B (blocker still held) refused 'Failed to get exclusive lock' (final code 1); lock freed after orphan finished=true; index after orphan={\"oid\":1027323,\"valid\":true,\"ready\":true}; M4 recorded=false; later rerun code=1 \", | constraint: undefined, | file: 'index.c', | line: '906', | routine: 'index_create' | }\" index={\"oid\":1027323,\"valid\":true,\"ready\":true}",
+    "pass": false
+  },
+  {
+    "scenario": "K1",
+    "run": 5,
+    "outcome": "lock holder pid=281992 (advisory 281992); after SIGKILL of the node process: orphan backend gone within 10s=false, advisory still held=true; B (blocker still held) refused 'Failed to get exclusive lock' (final code 1); lock freed after orphan finished=true; index after orphan={\"oid\":1029089,\"valid\":true,\"ready\":true}; M4 recorded=false; later rerun code=1 \", | constraint: undefined, | file: 'index.c', | line: '906', | routine: 'index_create' | }\" index={\"oid\":1029089,\"valid\":true,\"ready\":true}",
+    "pass": false
+  },
+  {
+    "scenario": "K2",
+    "run": 1,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1030855,\"valid\":false,\"ready\":false}; B code=0 \"ng migration '000004-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1030856,\"valid\":true,\"ready\":true}; M4 rows=1; third run code=0",
+    "pass": true
+  },
+  {
+    "scenario": "K2",
+    "run": 2,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1032622,\"valid\":false,\"ready\":false}; B code=0 \"ng migration '000004-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1032623,\"valid\":true,\"ready\":true}; M4 rows=1; third run code=0",
+    "pass": true
+  },
+  {
+    "scenario": "K2",
+    "run": 3,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1034390,\"valid\":false,\"ready\":false}; B code=0 \"ng migration '000004-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1034391,\"valid\":true,\"ready\":true}; M4 rows=1; third run code=0",
+    "pass": true
+  },
+  {
+    "scenario": "K2",
+    "run": 4,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1036157,\"valid\":false,\"ready\":false}; B code=0 \"ng migration '000004-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1036158,\"valid\":true,\"ready\":true}; M4 rows=1; third run code=0",
+    "pass": true
+  },
+  {
+    "scenario": "K2",
+    "run": 5,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1037925,\"valid\":false,\"ready\":false}; B code=0 \"ng migration '000004-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1037926,\"valid\":true,\"ready\":true}; M4 rows=1; third run code=0",
+    "pass": true
+  }
+]

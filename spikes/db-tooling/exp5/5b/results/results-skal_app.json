@@ -1,0 +1,139 @@
+{
+  "checkRole": "skal_app",
+  "variants": {
+    "ctl": {
+      "createMs": 74,
+      "migrateMs": 57,
+      "candidates": {
+        "c1": {
+          "ms": 1688,
+          "findings": [
+            "schema only: campaign.pk.campaign_pkey = id,tenant_id",
+            "schema only: claim_current.pk.claim_current_pkey = claim_id,tenant_id",
+            "schema only: claim_embedding.pk.claim_embedding_pkey = claim_id,tenant_id",
+            "schema only: claim_version",
+            "schema only: claim_version.ck.claim_version_version_check = version>0",
+            "schema only: claim_version.col.campaign_id = uuid not null default -",
+            "schema only: claim_version.col.claim_id = uuid not null default -",
+            "schema only: claim_version.col.object = jsonb not null default -",
+            "schema only: claim_version.col.predicate = text not null default -",
+            "schema only: claim_version.col.recorded_at = timestamp with time zone not null default now()",
+            "schema only: claim_version.col.subject_id = uuid not null default -",
+            "schema only: claim_version.col.tenant_id = uuid not null default -",
+            "schema only: claim_version.col.version = integer not null default -",
+            "schema only: claim_version.fk.claim_version_tenant_id_campaign_id_fkey = (tenant_id,campaign_id) -> campaign(tenant_id,id) del=no action upd=no action",
+            "schema only: claim_version.fk.claim_version_tenant_id_subject_id_fkey = (tenant_id,subject_id) -> entity(tenant_id,id) del=no action upd=no action",
+            "schema only: claim_version.pk.claim_version_pkey = claim_id,tenant_id,version",
+            "schema only: claim_version.policy.tenant_isolation = PERMISSIVE ALL to public using tenant_id=nullifcurrent_setting'app.tenant_id',true,''::uuid check tenant_id=nullifcurrent_setting'app.tenant_id',true,''::uuid",
+            "schema only: claim_version.rls = true",
+            "schema only: entity.pk.entity_pkey = id,tenant_id",
+            "schema only: field_definition.pk.field_definition_pkey = id,tenant_id",
+            "schema only: field_definition.uq.field_definition_tenant_id_campaign_id_key_key = campaign_id,key,tenant_id",
+            "schema only: import_record.pk.import_record_pkey = source,source_key,tenant_id",
+            "schema only: tenant.pk.tenant_pkey = id",
+            "schema only: transcript_segment.pk.transcript_segment_pkey = id,tenant_id"
+          ],
+          "newFindings": [],
+          "goneFindings": [],
+          "fires": true,
+          "detected": false
+        },
+        "c2": {
+          "ms": 1249,
+          "findings": [],
+          "facts": {},
+          "newFindings": [],
+          "goneFindings": [],
+          "fires": false,
+          "detected": false
+        },
+        "c2b": {
+          "ms": 1051,
+          "findings": [
+            "< policy campaign tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy claim_current tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy claim_embedding tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy claim_version tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy entity tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy field_definition tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy import_record tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy tenant tenant_isolation PERMISSIVE ALL roles={public} using=(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "< policy transcript_segment tenant_isolation PERMISSIVE ALL roles={public} using=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) check=(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)",
+            "> policy campaign tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy claim_current tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy claim_embedding tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy claim_version tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy entity tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy field_definition tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy import_record tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy tenant tenant_isolation PERMISSIVE ALL roles={public} using=- check=-",
+            "> policy transcript_segment tenant_isolation PERMISSIVE ALL roles={public} using=- check=-"
+          ],
+          "facts": {
+            "pushExit": 0
+          },
+          "newFindings": [],
+          "goneFindings": [],
+          "fires": true,
+          "detected": false
+        },
+        "c3": {
+          "ms": 965,
+          "findings": [],
+          "facts": {
+            "exit": 0,
+            "tests": 64,
+            "failed": 0
+          },
+          "newFindings": [],
+          "goneFindings": [],
+          "fires": false,
+          "detected": false
+        },
+        "c4": {
+          "ms": 874,
+          "findings": [
+            "\"campaign_id\" uuid NOT NULL,",
+            "\"claim_id\" uuid NOT NULL,",
+            "\"object\" jsonb NOT NULL,",
+            "\"predicate\" text NOT NULL,",
+            "\"recorded_at\" timestamp with time zone DEFAULT now() NOT NULL,",
+            "\"subject_id\" uuid NOT NULL,",
+            "\"tenant_id\" uuid NOT NULL,",
+            "\"version\" integer NOT NULL,",
+            ");",
+            "ALTER TABLE \"campaign\" ADD CONSTRAINT \"campaign_pkey\" PRIMARY KEY(\"tenant_id\",\"id\");",
+            "ALTER TABLE \"claim_current\" ADD CONSTRAINT \"claim_current_pkey\" PRIMARY KEY(\"tenant_id\",\"claim_id\");",
+            "ALTER TABLE \"claim_embedding\" ADD CONSTRAINT \"claim_embedding_pkey\" PRIMARY KEY(\"tenant_id\",\"claim_id\");",
+            "ALTER TABLE \"claim_version\" ADD CONSTRAINT \"claim_version_tenant_id_campaign_id_fkey\" FOREIGN KEY (\"tenant_id\",\"campaign_id\") REFERENCES \"public\".\"campaign\"(\"tenant_id\",\"id\") ON DELETE no action ON UPDATE no action;",
+            "ALTER TABLE \"claim_version\" ADD CONSTRAINT \"claim_version_tenant_id_subject_id_fkey\" FOREIGN KEY (\"tenant_id\",\"subject_id\") REFERENCES \"public\".\"entity\"(\"tenant_id\",\"id\") ON DELETE no action ON UPDATE no action;",
+            "ALTER TABLE \"claim_version\" ENABLE ROW LEVEL SECURITY;",
+            "ALTER TABLE \"entity\" ADD CONSTRAINT \"entity_pkey\" PRIMARY KEY(\"tenant_id\",\"id\");",
+            "ALTER TABLE \"field_definition\" ADD CONSTRAINT \"field_definition_pkey\" PRIMARY KEY(\"tenant_id\",\"id\");",
+            "ALTER TABLE \"field_definition\" ADD CONSTRAINT \"field_definition_tenant_id_campaign_id_key_key\" UNIQUE NULLS NOT DISTINCT(\"tenant_id\",\"campaign_id\",\"key\");",
+            "ALTER TABLE \"import_record\" ADD CONSTRAINT \"import_record_pkey\" PRIMARY KEY(\"tenant_id\",\"source\",\"source_key\");",
+            "ALTER TABLE \"tenant\" ADD CONSTRAINT \"tenant_pkey\" PRIMARY KEY(\"id\");",
+            "ALTER TABLE \"transcript_segment\" ADD CONSTRAINT \"transcript_segment_pkey\" PRIMARY KEY(\"tenant_id\",\"id\");",
+            "CONSTRAINT \"claim_version_pkey\" PRIMARY KEY(\"tenant_id\",\"claim_id\",\"version\"),",
+            "CONSTRAINT \"claim_version_version_check\" CHECK (version > 0)",
+            "CREATE INDEX \"claim_embedding_hnsw\" ON \"claim_embedding\" USING hnsw (\"embedding\" halfvec_cosine_ops) WITH (m=16,ef_construction=64);",
+            "CREATE POLICY \"tenant_isolation\" ON \"claim_version\" AS PERMISSIVE FOR ALL TO public;",
+            "CREATE TABLE \"claim_version\" (",
+            "DROP INDEX \"claim_embedding_hnsw\";"
+          ],
+          "facts": {
+            "exit": 0,
+            "unchanged": true,
+            "rawCount": 27,
+            "pkeyChurnRemoved": 0,
+            "stoppedAtPrompt": true
+          },
+          "newFindings": [],
+          "goneFindings": [],
+          "fires": true,
+          "detected": false
+        }
+      }
+    }
+  }
+}

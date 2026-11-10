@@ -1,0 +1,8 @@
+{
+  "name": "db-tooling-exp5a",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node node_modules/vitest/vitest.mjs run" },
+  "dependencies": { "pg": "8.23.1" },
+  "devDependencies": { "vitest": "4.1.11" }
+}
