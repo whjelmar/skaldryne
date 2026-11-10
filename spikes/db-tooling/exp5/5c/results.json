@@ -1,0 +1,282 @@
+[
+  {
+    "form": "F2a",
+    "scenario": "CLEAN",
+    "run": 1,
+    "pass": true,
+    "outcome": "code=0 index={\"oid\":1309347,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx1; rerun code=0 \"graphile-migrate: Already up to date\""
+  },
+  {
+    "form": "F2a",
+    "scenario": "R3",
+    "run": 1,
+    "pass": true,
+    "outcome": "A code=1; index after kill={\"oid\":1311114,\"valid\":false,\"ready\":false}; rerun code=0 index={\"oid\":1311115,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx1; third run code=0 index={\"oid\":1311115,\"valid\":true,\"ready\":true}"
+  },
+  {
+    "form": "F2a",
+    "scenario": "S2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A pid=309665 holds advisory=309665:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1312881,\"valid\":false,\"ready\":false} (oid before=1312881) dropped=false; A code=0; final index={\"oid\":1312881,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "S2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A pid=309697 holds advisory=309697:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1314643,\"valid\":false,\"ready\":false} (oid before=1314643) dropped=false; A code=0; final index={\"oid\":1314643,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "S2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A pid=309730 holds advisory=309730:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1316410,\"valid\":false,\"ready\":false} (oid before=1316410) dropped=false; A code=0; final index={\"oid\":1316410,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "S2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A pid=309762 holds advisory=309762:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1318176,\"valid\":false,\"ready\":false} (oid before=1318176) dropped=false; A code=0; final index={\"oid\":1318176,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "S2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A pid=309793 holds advisory=309793:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1319942,\"valid\":false,\"ready\":false} (oid before=1319942) dropped=false; A code=0; final index={\"oid\":1319942,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1321708,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1321709,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1323475,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1323476,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1325243,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1325244,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1327010,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1327011,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1328773,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1328779,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1",
+    "run": 1,
+    "pass": false,
+    "outcome": "orphan pid=310001 (advisory 310001) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2252 ms from kill to blocker release (test-controlled) + 65 ms to free; after orphan: index={\"oid\":1330545,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1330545,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1",
+    "run": 2,
+    "pass": false,
+    "outcome": "orphan pid=310044 (advisory 310044) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2248 ms from kill to blocker release (test-controlled) + 8 ms to free; after orphan: index={\"oid\":1332312,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1332312,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1",
+    "run": 3,
+    "pass": false,
+    "outcome": "orphan pid=310093 (advisory 310093) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2247 ms from kill to blocker release (test-controlled) + 66 ms to free; after orphan: index={\"oid\":1334078,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1334078,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1",
+    "run": 4,
+    "pass": false,
+    "outcome": "orphan pid=310144 (advisory 310144) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2257 ms from kill to blocker release (test-controlled) + 65 ms to free; after orphan: index={\"oid\":1335845,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1335845,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1",
+    "run": 5,
+    "pass": false,
+    "outcome": "orphan pid=310195 (advisory 310195) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2263 ms from kill to blocker release (test-controlled) + 67 ms to free; after orphan: index={\"oid\":1337611,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1337611,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1T",
+    "run": 1,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 310 ms after start; lock held at kill=true; lock freed 1850 ms after the kill (1856 ms after the invalid index appeared); B started 237 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1339378,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1T",
+    "run": 2,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 310 ms after start; lock held at kill=true; lock freed 1812 ms after the kill (1818 ms after the invalid index appeared); B started 245 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1341145,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2a",
+    "scenario": "K1T",
+    "run": 3,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 303 ms after start; lock held at kill=true; lock freed 1735 ms after the kill (1741 ms after the invalid index appeared); B started 236 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1342911,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "CLEAN",
+    "run": 1,
+    "pass": true,
+    "outcome": "code=0 index={\"oid\":1344677,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx1; rerun code=0 \"graphile-migrate: Already up to date\""
+  },
+  {
+    "form": "F2c",
+    "scenario": "R3",
+    "run": 1,
+    "pass": true,
+    "outcome": "A code=1; index after kill={\"oid\":1346443,\"valid\":false,\"ready\":false}; rerun code=0 index={\"oid\":1346444,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx1; third run code=0 index={\"oid\":1346444,\"valid\":true,\"ready\":true}"
+  },
+  {
+    "form": "F2c",
+    "scenario": "S2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A pid=310619 holds advisory=310619:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1348211,\"valid\":false,\"ready\":false} (oid before=1348211) dropped=false; A code=0; final index={\"oid\":1348211,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "S2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A pid=310650 holds advisory=310650:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1349977,\"valid\":false,\"ready\":false} (oid before=1349977) dropped=false; A code=0; final index={\"oid\":1349977,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "S2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A pid=310676 holds advisory=310676:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1351744,\"valid\":false,\"ready\":false} (oid before=1351744) dropped=false; A code=0; final index={\"oid\":1351744,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "S2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A pid=310708 holds advisory=310708:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1353510,\"valid\":false,\"ready\":false} (oid before=1353510) dropped=false; A code=0; final index={\"oid\":1353510,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "S2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A pid=310739 holds advisory=310739:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1355276,\"valid\":false,\"ready\":false} (oid before=1355276) dropped=false; A code=0; final index={\"oid\":1355276,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; rerun code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1357043,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1357044,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1358810,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1358811,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1360573,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1360579,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1362345,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1362346,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1364112,\"valid\":false,\"ready\":false}; B code=0 \"-m5.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1364113,\"valid\":true,\"ready\":true} count=1; recorded 000004.sqlx1,000005.sqlx1; third run code=0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1",
+    "run": 1,
+    "pass": false,
+    "outcome": "orphan pid=310949 (advisory 310949) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2250 ms from kill to blocker release (test-controlled) + 7 ms to free; after orphan: index={\"oid\":1365879,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1365879,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1",
+    "run": 2,
+    "pass": false,
+    "outcome": "orphan pid=310998 (advisory 310998) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2251 ms from kill to blocker release (test-controlled) + 69 ms to free; after orphan: index={\"oid\":1367645,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1367645,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1",
+    "run": 3,
+    "pass": false,
+    "outcome": "orphan pid=311049 (advisory 311049) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2259 ms from kill to blocker release (test-controlled) + 65 ms to free; after orphan: index={\"oid\":1369411,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1369411,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1",
+    "run": 4,
+    "pass": false,
+    "outcome": "orphan pid=311091 (advisory 311091) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2261 ms from kill to blocker release (test-controlled) + 66 ms to free; after orphan: index={\"oid\":1371173,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1371173,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1",
+    "run": 5,
+    "pass": false,
+    "outcome": "orphan pid=311142 (advisory 311142) alive 2s after SIGKILL=true, advisory still held=true; B refused=true, index during B same oid=true; lock held 2267 ms from kill to blocker release (test-controlled) + 67 ms to free; after orphan: index={\"oid\":1372944,\"valid\":true,\"ready\":true} recorded 000004.sqlx1,000005.sqlx0; next migrate code=1 already-exists-error=true (pg code 42P07=true) index={\"oid\":1372944,\"valid\":true,\"ready\":true} count=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1T",
+    "run": 1,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 308 ms after start; lock held at kill=true; lock freed 1840 ms after the kill (1846 ms after the invalid index appeared); B started 237 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1374711,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1T",
+    "run": 2,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 301 ms after start; lock held at kill=true; lock freed 1726 ms after the kill (1732 ms after the invalid index appeared); B started 243 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1376477,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  },
+  {
+    "form": "F2c",
+    "scenario": "K1T",
+    "run": 3,
+    "pass": true,
+    "outcome": "rows=1500000; invalid index visible 302 ms after start; lock held at kill=true; lock freed 1788 ms after the kill (1795 ms after the invalid index appeared); B started 243 ms after kill: refused=true lock still held when B ended=true; index after orphan={\"oid\":1378243,\"valid\":true,\"ready\":true}; next migrate code=1 recorded 000004.sqlx1,000005.sqlx0"
+  }
+]

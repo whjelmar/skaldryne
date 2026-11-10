@@ -620,3 +620,39 @@ Independent of `run.ts` and its drift builder: created `schema5_hand`, migrated 
 | 6 | 5a: source line numbers come from a WebFetch rendering and were not re-verified by me; behaviour supports the claim. | Low |
 
 **Overall:** every numeric claim in the 5a and 5b write-ups that I reran was reproduced, apart from the variant count. No evidence of bias, dropped cases, or criteria edits. K1 is reported fairly.
+
+## Experiment 5c verification (2026-11-10)
+
+Verifier: a separate agent, not an author of 5c. Reran `test/probe.test.ts` (6 of 6 passed) and `test/exp5c.test.ts` (40 of 40 passed, 197 s) from `exp5/5c/` against `db-tooling-db-1`, then compared with the author's saved logs. The reruns overwrote the logs and JSON in `exp5/5c/`; I restored the author's originals afterwards (copies were taken first). Databases used: the harness's `lock5c_*` plus my own `lock5c_vdblink_*`; all dropped, 0 `lock5c_` databases remain. Nothing was committed and nothing else was edited.
+
+| # | Claim | Verdict | Evidence |
+|---|---|---|---|
+| 1 | F1 refused with 25001; `COMMIT;` does not help; nothing recorded | CONFIRMED | Fresh `probe.log`: F1, F1b and F1c each exit 1, `DROP INDEX CONCURRENTLY cannot run inside a transaction block`, `recorded:[0]`, `index:null`. The "one query, implicit transaction" cause is inferred from behaviour and 5a's source reading; I did not read the runner source. |
+| 2 | `DO` block with `EXECUTE` of both is refused | CONFIRMED | Fresh F2b: exit 1, `DROP INDEX CONCURRENTLY cannot be executed from a function`, `recorded:[0]`. The DO block fails on the DROP, which comes first, so the CREATE is never reached. Round 3 P5 covers CREATE. |
+| 3 | F2a and F2c accepted; CLEAN, R3, S2 5/5, K2 5/5 for each | CONFIRMED | Fresh `exp5c.log`: for each of F2a and F2c, CLEAN 1/1, R3 1/1, S2 5/5, K2 5/5 true. Both probes exit 0, index valid, `recorded:[1,1]`. The pass/fail column of the 40 lines is identical to the author's log. |
+| 4 | K1 0/5 for both; drop file recorded, orphan finishes, create file unrecorded, next run fails 42P07 | CONFIRMED | Fresh log, 10 of 10 K1 lines: orphan alive 2 s after SIGKILL and advisory lock still held; index valid with one index; `000004.sqlx1,000005.sqlx0`; next migrate exit 1 with `already exists` and 42P07. The test asserts only the refusal, so Vitest shows K1 as passing while the criterion fails; the log lines carry the real verdict (same presentation point as finding 2 for 5a). |
+| 5 | Lock held about 1.7-2.0 s after SIGKILL on 1.5M rows; second run refused in all 16 runs before its hook ran; no in-progress index dropped | DISCREPANCY (minor) | Refusal: CONFIRMED, 16 of 16 (10 K1 + 6 K1T) show `refused=true` with `Failed to get exclusive lock`; in the 10 K1 runs the index OID is unchanged during B. Duration: in the author's retained log it is 1,726-1,850 ms, not the 1,739-1,974 ms written in section 5 (the write-up figures probably come from the first of the two battery runs, whose log was overwritten). In my rerun it was 1,794 / 1,930 / 3,014 ms (F2a) and 3,101 / 3,377 / 3,238 ms (F2c). So the figure is machine- and load-dependent and "about 1.7-2.0 s" understates what I saw; "about 2-3.4 s on this machine at 1.5M rows" is safer. Post-release free time was 7-123 ms in my run (write-up says 7-69 ms). Two weaker points: "before its hook ran" is not asserted directly; it is inferred from B's refusal message and the unchanged OID (a hook DROP would block behind the test's blocker anyway). K1T does not check the index OID at all, so "no index dropped" rests on the 10 K1 runs and the 5a S2 pattern. |
+| 6 | No missed plain-SQL form | CONFIRMED, with one caveat | See below. |
+| 7 | Bias: criteria unchanged, no dropped runs, counts match logs, 5a/5b/arms untouched | CONFIRMED | `git log -- EXPERIMENTS.md` last touched by 54f841b; no working-tree diff to it. `git diff --stat` is empty, so nothing tracked in 5a, 5b or the arms changed; the only untracked paths are `exp5/5c/` and `arm-drizzle-stable/.r3tmp/` (a round 3 leftover, not 5c). Log has 40 battery lines = 2 forms x (1 CLEAN + 1 R3 + 5 S2 + 5 K2 + 5 K1 + 3 K1T), 6 probe lines = 6 forms, matching the write-up. The pass condition in `exp5c.test.ts` matches the pre-registered K1 criterion (exit 0, one valid index, every file recorded once). |
+
+### Claim 6: could any form make K1 pass?
+
+Reasoning. graphile-migrate records a file only after its SQL ends, and a `--! no-transaction` file cannot hold two top-level statements. So with a plain drop-before-create, the drop is either in its own file, which is recorded before the create starts and is never rerun, or in the same file, which Postgres refuses. A killed client leaves the create unrecorded while the orphan completes it, so any rerun hits an existing index. No pure drop-before-create arrangement of files can pass K1. This agrees with the author's section 6.
+
+The one place the pre-registration's "plain SQL" wording leaves a gap is an extension-based form, which the author did not try. I tried it: `dblink` is available in the image (1.2). One `--! no-transaction` file with `SELECT dblink_exec(conn,'DROP INDEX CONCURRENTLY IF EXISTS x'), dblink_exec(conn,'CREATE INDEX CONCURRENTLY x ...')`, run by `skal_migrator` after `CREATE EXTENSION dblink` as postgres:
+- Connecting via `localhost` fails with `dblink_security_check` (container loopback is trust auth and non-superusers must use a password); connecting by the container IP works.
+- The form then **hangs even on a clean run with no blocker**: after 30 s the migrate process is still running, the dblink caller waits in `DblinkGetResult` and the remote CIC waits on `virtualxid`. The CIC waits for the caller's own transaction, which is waiting for the CIC, and Postgres cannot see that deadlock across a dblink connection.
+- In the K1 shape the migration never recorded, the index stayed invalid and the advisory lock was still held 60 s after the blocker was released.
+
+So the extension-based form does not work, for a different reason than F1. The author's omission is therefore not a missed passing form, but the write-up should say "extension-based forms (dblink) fail: CIC deadlocks on the caller's own snapshot" rather than "not tried". Related, still untested by anyone: `CREATE INDEX CONCURRENTLY IF NOT EXISTS` plus the existing hook would very likely pass K1 (the orphan leaves a valid index and the file then records), but it is not drop-before-create and reverses the 0017 rule; the author lists it correctly as a next step. I did not run it.
+
+### Other observations
+
+| # | Item | Severity |
+|---|---|---|
+| 1 | Section 5 lock-hold range (1,739-1,974 ms) is not in the retained log (1,726-1,850 ms); my rerun gave 1,794-3,377 ms. | Low, wording; the conclusion (lock lives as long as the backend and scales with table size) holds |
+| 2 | Vitest reports K1 and K1T as passing while the criterion fails; only the log and `results.json` carry the verdict. | Low, presentation |
+| 3 | The "not tried" note on extension forms in section 3 can be replaced by the dblink result above. | Low |
+| 4 | `reports/` keeps only the last battery run; the first run (mentioned in section 1) is not retained. | Low |
+
+**Overall:** the verdict (no form passes K1; F2a and F2c are valid but do not fix it) is reproduced. No evidence of bias, dropped runs or criteria edits. One minor numeric discrepancy (lock-hold duration) and one omission (dblink) that does not change the result.

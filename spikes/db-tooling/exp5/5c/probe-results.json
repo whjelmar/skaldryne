@@ -1,0 +1,84 @@
+[
+  {
+    "form": "F1",
+    "desc": "one no-transaction file: DROP INDEX CONCURRENTLY IF EXISTS; CREATE INDEX CONCURRENTLY",
+    "code": 1,
+    "index": null,
+    "recorded": [
+      0
+    ],
+    "accepted_and_ran_outside_tx": false,
+    "pg_message": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+    "output": "pgReal.js:92:20) { | length: 130, | severity: 'ERROR', | code: '25001', | detail: undefined, | hint: undefined, | position: undefined, | internalPosition: undefined, | internalQuery: undefined, | where: undefined, | schema: undefined, | table: undefined, | column: undefined, | dataType: undefined, | constraint: undefined, | file: 'xact.c', | line: '3654', | routine: 'PreventInTransactionBlock' | }"
+  },
+  {
+    "form": "F1b",
+    "desc": "one no-transaction file: DROP ... CONCURRENTLY; COMMIT; CREATE ... CONCURRENTLY",
+    "code": 1,
+    "index": null,
+    "recorded": [
+      0
+    ],
+    "accepted_and_ran_outside_tx": false,
+    "pg_message": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+    "output": "pgReal.js:92:20) { | length: 130, | severity: 'ERROR', | code: '25001', | detail: undefined, | hint: undefined, | position: undefined, | internalPosition: undefined, | internalQuery: undefined, | where: undefined, | schema: undefined, | table: undefined, | column: undefined, | dataType: undefined, | constraint: undefined, | file: 'xact.c', | line: '3654', | routine: 'PreventInTransactionBlock' | }"
+  },
+  {
+    "form": "F1c",
+    "desc": "one no-transaction file: COMMIT; DROP ... CONCURRENTLY; COMMIT; CREATE ... CONCURRENTLY",
+    "code": 1,
+    "index": null,
+    "recorded": [
+      0
+    ],
+    "accepted_and_ran_outside_tx": false,
+    "pg_message": "DROP INDEX CONCURRENTLY cannot run inside a transaction block",
+    "output": "pgReal.js:92:20) { | length: 130, | severity: 'ERROR', | code: '25001', | detail: undefined, | hint: undefined, | position: undefined, | internalPosition: undefined, | internalQuery: undefined, | where: undefined, | schema: undefined, | table: undefined, | column: undefined, | dataType: undefined, | constraint: undefined, | file: 'xact.c', | line: '3654', | routine: 'PreventInTransactionBlock' | }"
+  },
+  {
+    "form": "F2a",
+    "desc": "two no-transaction files: 000004 DROP INDEX CONCURRENTLY IF EXISTS, 000005 CREATE INDEX CONCURRENTLY",
+    "code": 0,
+    "index": {
+      "oid": 1233383,
+      "valid": true,
+      "ready": true
+    },
+    "recorded": [
+      1,
+      1
+    ],
+    "accepted_and_ran_outside_tx": true,
+    "pg_message": null,
+    "output": "graphile-migrate: Running migration '000004-m4.sql' | graphile-migrate: Running migration '000005-m5.sql' | graphile-migrate: 2 committed migrations executed"
+  },
+  {
+    "form": "F2b",
+    "desc": "one no-transaction file: DO block with EXECUTE of DROP ... CONCURRENTLY and CREATE ... CONCURRENTLY",
+    "code": 1,
+    "index": null,
+    "recorded": [
+      0
+    ],
+    "accepted_and_ran_outside_tx": false,
+    "pg_message": "DROP INDEX CONCURRENTLY cannot be executed from a function",
+    "output": "ndefined, | internalPosition: undefined, | internalQuery: undefined, | where: 'SQL statement \"DROP INDEX CONCURRENTLY IF EXISTS entity_kind_conc_idx\"\\n' + | 'PL/pgSQL function inline_code_block line 1 at EXECUTE', | schema: undefined, | table: undefined, | column: undefined, | dataType: undefined, | constraint: undefined, | file: 'xact.c', | line: '3674', | routine: 'PreventInTransactionBlock' | }"
+  },
+  {
+    "form": "F2c",
+    "desc": "two files: 000004 transactional DROP INDEX IF EXISTS, 000005 no-transaction CREATE INDEX CONCURRENTLY",
+    "code": 0,
+    "index": {
+      "oid": 1236914,
+      "valid": true,
+      "ready": true
+    },
+    "recorded": [
+      1,
+      1
+    ],
+    "accepted_and_ran_outside_tx": true,
+    "pg_message": null,
+    "output": "graphile-migrate: Running migration '000004-m4.sql' | graphile-migrate: Running migration '000005-m5.sql' | graphile-migrate: 2 committed migrations executed"
+  }
+]
