@@ -1,0 +1,145 @@
+[
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 19,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set lock_timeout` before potentially slow operations",
+    "help": "Configure a `lock_timeout` before this statement.",
+    "rule_name": "require-lock-timeout",
+    "column_end": 2,
+    "line_end": 24
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 19,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set statement_timeout` before potentially slow operations",
+    "help": "Configure a `statement_timeout` before this statement",
+    "rule_name": "require-statement-timeout",
+    "column_end": 2,
+    "line_end": 24
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 52,
+    "column": 14,
+    "level": "Warning",
+    "message": "Using 32-bit integer fields can result in hitting the max `int` limit.",
+    "help": "Use 64-bit integer values instead to prevent hitting this limit.",
+    "rule_name": "prefer-bigint-over-int",
+    "column_end": 21,
+    "line_end": 52
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 78,
+    "column": 14,
+    "level": "Warning",
+    "message": "Using 32-bit integer fields can result in hitting the max `int` limit.",
+    "help": "Use 64-bit integer values instead to prevent hitting this limit.",
+    "rule_name": "prefer-bigint-over-int",
+    "column_end": 21,
+    "line_end": 78
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 117,
+    "column": 15,
+    "level": "Warning",
+    "message": "Using 32-bit integer fields can result in hitting the max `int` limit.",
+    "help": "Use 64-bit integer values instead to prevent hitting this limit.",
+    "rule_name": "prefer-bigint-over-int",
+    "column_end": 22,
+    "line_end": 117
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 118,
+    "column": 15,
+    "level": "Warning",
+    "message": "Using 32-bit integer fields can result in hitting the max `int` limit.",
+    "help": "Use 64-bit integer values instead to prevent hitting this limit.",
+    "rule_name": "prefer-bigint-over-int",
+    "column_end": 22,
+    "line_end": 118
+  },
+  {
+    "file": "migrations\\committed\\000001-m1-reference-schema.sql",
+    "line": 119,
+    "column": 15,
+    "level": "Warning",
+    "message": "Using 32-bit integer fields can result in hitting the max `int` limit.",
+    "help": "Use 64-bit integer values instead to prevent hitting this limit.",
+    "rule_name": "prefer-bigint-over-int",
+    "column_end": 22,
+    "line_end": 119
+  },
+  {
+    "file": "migrations\\committed\\000002-m2-expand-display_name.sql",
+    "line": 5,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set lock_timeout` before potentially slow ACCESS EXCLUSIVE lock operations",
+    "help": "Configure a `lock_timeout` before this statement. Statement requires: ACCESS EXCLUSIVE lock; blocking: reads, writes, schema changes.",
+    "rule_name": "require-lock-timeout",
+    "column_end": 48,
+    "line_end": 5
+  },
+  {
+    "file": "migrations\\committed\\000002-m2-expand-display_name.sql",
+    "line": 5,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set statement_timeout` before potentially slow operations",
+    "help": "Configure a `statement_timeout` before this statement",
+    "rule_name": "require-statement-timeout",
+    "column_end": 48,
+    "line_end": 5
+  },
+  {
+    "file": "migrations\\committed\\000003-m3-contract-drop-name.sql",
+    "line": 5,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set lock_timeout` before potentially slow operations",
+    "help": "Configure a `lock_timeout` before this statement.",
+    "rule_name": "require-lock-timeout",
+    "column_end": 40,
+    "line_end": 5
+  },
+  {
+    "file": "migrations\\committed\\000003-m3-contract-drop-name.sql",
+    "line": 5,
+    "column": 0,
+    "level": "Warning",
+    "message": "Missing `set statement_timeout` before potentially slow operations",
+    "help": "Configure a `statement_timeout` before this statement",
+    "rule_name": "require-statement-timeout",
+    "column_end": 40,
+    "line_end": 5
+  },
+  {
+    "file": "migrations\\committed\\000003-m3-contract-drop-name.sql",
+    "line": 11,
+    "column": 45,
+    "level": "Warning",
+    "message": "Setting a column `NOT NULL` blocks reads while the table is scanned.",
+    "help": "Make the field nullable and use a `CHECK` constraint instead.",
+    "rule_name": "adding-not-nullable-field",
+    "column_end": 57,
+    "line_end": 11
+  },
+  {
+    "file": "migrations\\committed\\000003-m3-contract-drop-name.sql",
+    "line": 12,
+    "column": 19,
+    "level": "Warning",
+    "message": "Dropping a column may break existing clients.",
+    "help": null,
+    "rule_name": "ban-drop-column",
+    "column_end": 35,
+    "line_end": 12
+  }
+]

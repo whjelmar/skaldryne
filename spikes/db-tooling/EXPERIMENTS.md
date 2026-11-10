@@ -17,6 +17,10 @@ A first attempt on 2026-10-01 was interrupted after a few minutes, before any Ex
 
 One agent does each arm. It builds its migration experiment (2 or 3) first, then writes its Experiment 1 queries without seeing the other arm's Experiment 1 code.
 
+**Correction, 2026-11-09, after results:** the paragraph above misdescribes the interrupted attempt. The coordinator judged it from file modification times. The bias audit found that the attempt ran about 90 minutes and left Prisma 7 Experiment 1 code and Experiment 3 outputs. Neither agent in this round was given those files, and the audit found no sign that they leaked. This correction also discloses two more departures:
+- The coordinator told the Kysely agent to continue to Experiment 1 if a must-have failed, where Experiment 2 says to stop and report.
+- Only the Kysely arm was given T9 and T10. The Drizzle arm was not asked to build an index concurrently or to survive a killed migration, and the Kysely arm got no out-of-order merge test.
+
 ## Environment
 
 - **Postgres:** 18 with pgvector and pgTAP, container `db-tooling-db-1` on localhost:55432. Roles are as in [README.md](README.md).

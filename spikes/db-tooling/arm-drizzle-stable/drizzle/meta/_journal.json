@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794267999211,
+      "tag": "0000_m1_assert_extensions",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794267999650,
+      "tag": "0001_m1_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794268012140,
+      "tag": "0002_m1_partitions_triggers_grants",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794268012680,
+      "tag": "0003_m2_expand_add_display_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794268013134,
+      "tag": "0004_m2_expand_backfill_sync",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794268013629,
+      "tag": "0005_m3_contract_drop_sync",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794268014142,
+      "tag": "0006_m3_contract_drop_name",
+      "breakpoints": true
+    }
+  ]
+}
