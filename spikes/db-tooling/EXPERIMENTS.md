@@ -288,6 +288,83 @@ This test is independent of the tool, and is written in plain SQL. It runs alone
 
 **Pass:** some mode, achievable through settings or index design, gives recall@10 ≥ 0.95, returns 10 rows for every query, and has p95 under 100 ms on this machine. Report every mode either way. This test does not choose a tool, but it does decide what the query layer must be able to express.
 
+## Experiment 5: follow-ups to accepted 0017 (added 2026-11-10)
+
+Decision 0017 was accepted on 2026-11-10: Drizzle ORM 0.45 for queries, and graphile-migrate 1.4.1 with a `beforeAllMigrations` hook that drops invalid indexes. Its follow-ups 1 and 2 are tested here. Follow-ups 3 (Drizzle 1.0) and 4 (HNSW on real embeddings) wait until they are needed.
+
+The setup matches what the decision adopts:
+- **Migrations:** the hand-written graphile-migrate migrations in `arm-kysely-stable/migrations/`, plus the hook.
+- **Schema:** the Drizzle schema in `arm-drizzle-stable/src/`.
+
+Databases use only the prefixes `lock5_` and `schema5_` on the round 3 container at localhost:55432. The criteria below are fixed before anything is run. A change to them later must be committed with a message that says why.
+
+### 5a: one `migrate` at a time
+
+**Question.** Does graphile-migrate 1.4.1 stop two `migrate` runs against the same database from overlapping? Overlap matters for two reasons: it could apply a migration twice, and it lets one run's hook drop an index the other run is still building.
+
+**Method.**
+1. Read graphile-migrate's source for any locking, such as advisory locks or `LOCK TABLE` on its own tables. Record the file and line numbers.
+2. Run the scenarios below, each 5 times. Make the overlap happen for certain, for example with a `pg_sleep` in a migration or in the hook. Do not rely on timing.
+   - **S1:** two `migrate` processes start together on a database that has one pending transactional migration.
+   - **S2:** run A is part-way through a non-blocking (`CONCURRENTLY`) index build when run B starts, and B's hook runs.
+   - **S3:** as S2, except B is started by a second container, simulating two `migrate` steps from [0010].
+3. Record what happens each time. Possible outcomes: B waits, B refuses, both apply, the index is dropped, or the migration is applied twice.
+4. If 1.4.1 does not prevent overlap, prototype the smallest wrapper that does. Expected shape: one script that takes `pg_advisory_lock` on a dedicated session, runs `graphile-migrate migrate`, and then unlocks. Rerun S1–S3 through the wrapper, also with a run killed while it holds the lock.
+
+**Pass, for 1.4.1 alone or with the wrapper:**
+- in every run, no migration is applied twice;
+- no index under construction is dropped;
+- the second run either waits and then finds nothing pending, or refuses with a clear message;
+- a killed run does not leave the lock held.
+
+### 5b: CI check that the Drizzle schema matches the migrated database
+
+**Question.** Which way of comparing the Drizzle schema with the database the migrations build catches real drift with no false alarms, in CI time we can afford?
+
+**Candidates.** Each is evaluated on its own:
+- **C1:** introspect the migrated database with `drizzle-kit pull` into a temporary folder, then compare it with the committed schema. The comparison is a normalised diff of the two schema descriptions, or the snapshot JSON they produce.
+- **C2:** build a second database from the Drizzle schema (`drizzle-kit generate` into a temporary folder, or `push` to a scratch database). Then compare the catalogs of the two databases with a fixed SQL query covering columns, types, nullability, defaults, keys, indexes and checks.
+- **C3:** a Vitest test that reads the Drizzle table definitions (`getTableConfig`) and compares them with `information_schema` and `pg_catalog` on the migrated database.
+- **C4:** `drizzle-kit push` in dry-run or verbose mode against the migrated database, failing if it would issue any statement. Use it only if it can run without prompts and without changing the database.
+
+**Planted drift.** Each case is applied to one side only, alone, and then reverted.
+- **D1:** a column renamed in the migration and not in the schema.
+- **D2:** a column's nullability differs.
+- **D3:** a type differs, for example `text` against `varchar`, or `halfvec(768)` against `halfvec(384)`.
+- **D4:** a column default differs.
+- **D5:** an index exists on one side only.
+- **D6:** a foreign key exists on one side only.
+- **D7:** a check constraint exists on one side only.
+- **D8:** a whole table exists on one side only.
+- **D9:** an RLS policy differs.
+- **D10:** a column is added to a partition parent only.
+
+**Control.** The unchanged pair. Any difference a candidate reports here is a false alarm, but first record which differences are real. The two arms were written separately, so the unchanged pair may already differ.
+
+**Report for each candidate:**
+- which drift cases it detects;
+- false alarms on the control;
+- wall time on CI-like settings;
+- whether it needs a superuser, network access or interactive input;
+- how much glue code it needs, in lines.
+
+**Pass:**
+- detects D1–D8;
+- no unexplained false alarms on the control;
+- under 60 s;
+- no prompts.
+
+D9 and D10 are reported but not required, because pgTAP already checks policies.
+
+If no candidate passes, report the best combination.
+
+**Output.**
+- `EXP5.md`;
+- tests under `exp5/`;
+- no edits to the arms' existing tests or results.
+
+Do not commit.
+
 ## Verification and bias audit
 
 - **Verifier.** A separate agent, not one of the authors, reruns every arm's `pnpm test` from a clean database on local disk. It checks each result against this file, recomputes the raw SQL shares and appends its findings to `VERIFICATION.md`.
