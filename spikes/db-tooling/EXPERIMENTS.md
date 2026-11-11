@@ -400,6 +400,37 @@ Also report how long the lock stays held in K1, and whether a second run started
 
 Do not commit.
 
+### 5d: `IF NOT EXISTS` in non-blocking index files, with the hook (added 2026-11-10)
+
+**Why.** 5c showed that dropping the index before creating it cannot fix K1. The maintainer asked for a test of 5c's option 2: allow `CREATE INDEX CONCURRENTLY IF NOT EXISTS` in index files and keep the `beforeAllMigrations` hook that drops invalid indexes. This reverses a 0017 rule. The rule exists because `IF NOT EXISTS` skips an index that exists only by name: one left invalid by a failed build, or one with a different definition. The run would then report success without building the index. The hook should cover the invalid case; this experiment checks that it does, and reports the different-definition case.
+
+**Question.** With `IF NOT EXISTS` and the hook, does a rerun after K1 succeed, without losing what 5a, 5c and round 3 established?
+
+**Method.**
+1. Use 5c's harness and the hook unchanged. The index migration is one `--! no-transaction` file: `CREATE INDEX CONCURRENTLY IF NOT EXISTS x …;`.
+2. Run each scenario 5 times, except CLEAN and R3, which run once, as in 5c:
+   - **K1:** the Node client is hard-killed during the build; the next `migrate` starts after the orphaned build ends;
+   - **K1-early:** as K1, but the next `migrate` starts while the orphan is still building;
+   - **K1-fail:** as K1, but the orphaned backend is then terminated before its build ends, leaving an invalid index; the next `migrate` starts after that;
+   - **S2 and K2:** as in 5a;
+   - **R3:** the round 3 killed-index test;
+   - **CLEAN:** a fresh database, migrated once.
+3. Report, not required: **NAME:** an index with the same name but a different definition already exists before the file runs, for example created by hand. Record what `migrate` does, and whether the 5b checks C2 and C3 detect the result.
+
+**Pass:**
+- **K1:** in all 5 runs, the next `migrate` succeeds, leaves exactly one valid index with the migration's definition, and records the migration once.
+- **K1-early:** in all 5 runs, the second run is refused, as in 5a, and does not drop the index being built. A later run then passes as in K1.
+- **K1-fail:** in all 5 runs, the next `migrate` drops the invalid index through the hook, builds a valid one and records the migration once. No run reports success while the index is invalid.
+- **S2, K2, R3 and CLEAN** give the same outcomes as in 5a, 5c and round 3.
+
+**Output.**
+- `exp5/5d/EXP5D.md`;
+- tests under `exp5/5d/`;
+- databases prefixed `lock5d_`, dropped at the end;
+- no edits to 5a, 5b, 5c or the arms.
+
+Do not commit.
+
 ## Verification and bias audit
 
 - **Verifier.** A separate agent, not one of the authors, reruns every arm's `pnpm test` from a clean database on local disk. It checks each result against this file, recomputes the raw SQL shares and appends its findings to `VERIFICATION.md`.
