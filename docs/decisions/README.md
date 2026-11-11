@@ -33,7 +33,8 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0012](0012-web-interface.md) | Web interface framework (recommendation: React single-page app) | Open | — | 0a |
 | [0013](0013-local-language-model-server.md) | Local language model server (recommendation: llama.cpp server) | Open | — | 0a |
 | [0014](0014-local-speech-server.md) | Local speech server (recommendation: our own, on faster-whisper and pyannote) | Open | — | 0a |
-| [0017](0017-database-tooling.md) | Drizzle ORM for queries; graphile-migrate, with a hook that drops invalid indexes, for migrations | Accepted | — | 0a |
+| [0017](0017-database-tooling.md) | Drizzle ORM for queries; graphile-migrate, with a hook that drops invalid indexes, for migrations | Superseded by [0018](0018-database-tooling-after-follow-ups.md) | — | 0a |
+| [0018](0018-database-tooling-after-follow-ups.md) | Drizzle ORM for queries; graphile-migrate with `IF NOT EXISTS` index files and the invalid-index hook; two CI schema checks, with every index declared in the Drizzle schema | Accepted | — | 0a |
 
 ## Not yet decided
 

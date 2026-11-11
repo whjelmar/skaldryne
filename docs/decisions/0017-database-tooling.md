@@ -1,6 +1,6 @@
 # 0017 — Database client and migration tooling
 
-**Status:** Accepted · **Date:** 2026-10-01, revised 2026-11-09, decided 2026-11-10 · **Serves:** `MODEL-32`, `NFR-01`, `NFR-14`, `NFR-16`, `NFR-24`, `NFR-25`
+**Status:** Superseded by [0018](0018-database-tooling-after-follow-ups.md) · **Date:** 2026-10-01, revised 2026-11-09, decided 2026-11-10 · **Serves:** `MODEL-32`, `NFR-01`, `NFR-14`, `NFR-16`, `NFR-24`, `NFR-25`
 
 ## Context
 
