@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 C:/Users/walte/dev/skaldryne-spike/spikes/db-tooling/exp5/5d
+
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  21:08:33
+   Duration  97.46s (transform 63ms, setup 0ms, import 121ms, tests 97.15s, environment 0ms)
+

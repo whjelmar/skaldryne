@@ -1,0 +1,170 @@
+[
+  {
+    "scenario": "CLEAN",
+    "run": 1,
+    "pass": true,
+    "outcome": "code=0 index={\"oid\":1472137,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0 \"graphile-migrate: Already up to date\""
+  },
+  {
+    "scenario": "R3",
+    "run": 1,
+    "pass": true,
+    "outcome": "A code=1; index after kill={\"oid\":1473903,\"valid\":false,\"ready\":false}; rerun code=0 index={\"oid\":1473904,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; third run code=0 index={\"oid\":1473904,\"valid\":true,\"ready\":true}"
+  },
+  {
+    "scenario": "S2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A pid=512112 holds advisory=512112:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1475670,\"valid\":false,\"ready\":false} (oid before=1475670) dropped=false; A code=0; final index={\"oid\":1475670,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "S2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A pid=512149 holds advisory=512149:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1477432,\"valid\":false,\"ready\":false} (oid before=1477432) dropped=false; A code=0; final index={\"oid\":1477432,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "S2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A pid=512193 holds advisory=512193:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1479198,\"valid\":false,\"ready\":false} (oid before=1479198) dropped=false; A code=0; final index={\"oid\":1479198,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "S2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A pid=512227 holds advisory=512227:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1480964,\"valid\":false,\"ready\":false} (oid before=1480964) dropped=false; A code=0; final index={\"oid\":1480964,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "S2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A pid=512263 holds advisory=512263:true; B exited code=1 msg=\"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\"; index during B: {\"oid\":1482730,\"valid\":false,\"ready\":false} (oid before=1482730) dropped=false; A code=0; final index={\"oid\":1482730,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K2",
+    "run": 1,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1484496,\"valid\":false,\"ready\":false}; B code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1484497,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; third run code=0"
+  },
+  {
+    "scenario": "K2",
+    "run": 2,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1486263,\"valid\":false,\"ready\":false}; B code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1486264,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; third run code=0"
+  },
+  {
+    "scenario": "K2",
+    "run": 3,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1488030,\"valid\":false,\"ready\":false}; B code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1488031,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; third run code=0"
+  },
+  {
+    "scenario": "K2",
+    "run": 4,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1489797,\"valid\":false,\"ready\":false}; B code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1489798,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; third run code=0"
+  },
+  {
+    "scenario": "K2",
+    "run": 5,
+    "pass": true,
+    "outcome": "A exit code=1; advisory held after A died=false; index after kill={\"oid\":1491564,\"valid\":false,\"ready\":false}; B code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\"; index after B={\"oid\":1491565,\"valid\":true,\"ready\":true} def_ok=true count=1; recorded x1; third run code=0"
+  },
+  {
+    "scenario": "K1",
+    "run": 1,
+    "pass": true,
+    "outcome": "orphan pid=512491 alive 1s after SIGKILL=true, advisory held by orphan=true; lock freed 18 ms after blocker release; after orphan: index={\"oid\":1493331,\"valid\":true,\"ready\":true} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1493331,\"valid\":true,\"ready\":true} same oid as orphan's=true def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1",
+    "run": 2,
+    "pass": true,
+    "outcome": "orphan pid=512541 alive 1s after SIGKILL=true, advisory held by orphan=true; lock freed 84 ms after blocker release; after orphan: index={\"oid\":1495097,\"valid\":true,\"ready\":true} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1495097,\"valid\":true,\"ready\":true} same oid as orphan's=true def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1",
+    "run": 3,
+    "pass": true,
+    "outcome": "orphan pid=512593 alive 1s after SIGKILL=true, advisory held by orphan=true; lock freed 19 ms after blocker release; after orphan: index={\"oid\":1496863,\"valid\":true,\"ready\":true} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1496863,\"valid\":true,\"ready\":true} same oid as orphan's=true def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1",
+    "run": 4,
+    "pass": true,
+    "outcome": "orphan pid=512633 alive 1s after SIGKILL=true, advisory held by orphan=true; lock freed 84 ms after blocker release; after orphan: index={\"oid\":1498629,\"valid\":true,\"ready\":true} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1498629,\"valid\":true,\"ready\":true} same oid as orphan's=true def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1",
+    "run": 5,
+    "pass": true,
+    "outcome": "orphan pid=512685 alive 1s after SIGKILL=true, advisory held by orphan=true; lock freed 83 ms after blocker release; after orphan: index={\"oid\":1500395,\"valid\":true,\"ready\":true} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1500395,\"valid\":true,\"ready\":true} same oid as orphan's=true def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-early",
+    "run": 1,
+    "pass": true,
+    "outcome": "orphan pid=512736 alive=true, lock held by orphan=true; B code=1 \"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\" refused=true; index during B={\"oid\":1502161,\"valid\":false,\"ready\":false} (oid before=1502161) kept=true; orphan alive and lock held after B=true; recorded during x0; after orphan: index={\"oid\":1502161,\"valid\":true,\"ready\":true}; later migrate code=0 index={\"oid\":1502161,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-early",
+    "run": 2,
+    "pass": true,
+    "outcome": "orphan pid=512791 alive=true, lock held by orphan=true; B code=1 \"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\" refused=true; index during B={\"oid\":1503928,\"valid\":false,\"ready\":false} (oid before=1503928) kept=true; orphan alive and lock held after B=true; recorded during x0; after orphan: index={\"oid\":1503928,\"valid\":true,\"ready\":true}; later migrate code=0 index={\"oid\":1503928,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-early",
+    "run": 3,
+    "pass": true,
+    "outcome": "orphan pid=512846 alive=true, lock held by orphan=true; B code=1 \"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\" refused=true; index during B={\"oid\":1505695,\"valid\":false,\"ready\":false} (oid before=1505695) kept=true; orphan alive and lock held after B=true; recorded during x0; after orphan: index={\"oid\":1505695,\"valid\":true,\"ready\":true}; later migrate code=0 index={\"oid\":1505695,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-early",
+    "run": 4,
+    "pass": true,
+    "outcome": "orphan pid=512900 alive=true, lock held by orphan=true; B code=1 \"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\" refused=true; index during B={\"oid\":1507462,\"valid\":false,\"ready\":false} (oid before=1507462) kept=true; orphan alive and lock held after B=true; recorded during x0; after orphan: index={\"oid\":1507462,\"valid\":true,\"ready\":true}; later migrate code=0 index={\"oid\":1507462,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-early",
+    "run": 5,
+    "pass": true,
+    "outcome": "orphan pid=512956 alive=true, lock held by orphan=true; B code=1 \"sely-stable\\node_modules\\graphile-migrate\\dist\\cli.js:22:20)\" refused=true; index during B={\"oid\":1509228,\"valid\":false,\"ready\":false} (oid before=1509228) kept=true; orphan alive and lock held after B=true; recorded during x0; after orphan: index={\"oid\":1509228,\"valid\":true,\"ready\":true}; later migrate code=0 index={\"oid\":1509228,\"valid\":true,\"ready\":true} def_ok=true count=1 recorded x1; rerun code=0"
+  },
+  {
+    "scenario": "K1-fail",
+    "run": 1,
+    "pass": true,
+    "outcome": "orphan pid=513009 alive before terminate=true, lock held by orphan=true; after terminate: index={\"oid\":1510994,\"valid\":false,\"ready\":false} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1510995,\"valid\":true,\"ready\":true} (oid changed=true) def_ok=true count=1 recorded x1; reported success with invalid index=false; rerun code=0 same oid=true"
+  },
+  {
+    "scenario": "K1-fail",
+    "run": 2,
+    "pass": true,
+    "outcome": "orphan pid=513063 alive before terminate=true, lock held by orphan=true; after terminate: index={\"oid\":1512761,\"valid\":false,\"ready\":false} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1512762,\"valid\":true,\"ready\":true} (oid changed=true) def_ok=true count=1 recorded x1; reported success with invalid index=false; rerun code=0 same oid=true"
+  },
+  {
+    "scenario": "K1-fail",
+    "run": 3,
+    "pass": true,
+    "outcome": "orphan pid=513118 alive before terminate=true, lock held by orphan=true; after terminate: index={\"oid\":1514529,\"valid\":false,\"ready\":false} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1514530,\"valid\":true,\"ready\":true} (oid changed=true) def_ok=true count=1 recorded x1; reported success with invalid index=false; rerun code=0 same oid=true"
+  },
+  {
+    "scenario": "K1-fail",
+    "run": 4,
+    "pass": true,
+    "outcome": "orphan pid=513163 alive before terminate=true, lock held by orphan=true; after terminate: index={\"oid\":1516296,\"valid\":false,\"ready\":false} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1516297,\"valid\":true,\"ready\":true} (oid changed=true) def_ok=true count=1 recorded x1; reported success with invalid index=false; rerun code=0 same oid=true"
+  },
+  {
+    "scenario": "K1-fail",
+    "run": 5,
+    "pass": true,
+    "outcome": "orphan pid=513216 alive before terminate=true, lock held by orphan=true; after terminate: index={\"oid\":1518063,\"valid\":false,\"ready\":false} recorded x0; next migrate code=0 \" graphile-migrate: 1 committed migrations executed\" index={\"oid\":1518064,\"valid\":true,\"ready\":true} (oid changed=true) def_ok=true count=1 recorded x1; reported success with invalid index=false; rerun code=0 same oid=true"
+  },
+  {
+    "scenario": "NAME",
+    "run": 1,
+    "pass": null,
+    "outcome": "control migrate code=0 def=CREATE INDEX entity_kind_conc_idx ON public.entity USING btree (tenant_id, kind); NAME: preexisting def=CREATE INDEX entity_kind_conc_idx ON public.entity USING btree (tenant_id); migrate code=0 \"-m4.sql' | graphile-migrate: 1 committed migrations executed\" recorded x1 index={\"oid\":1521596,\"valid\":true,\"ready\":true} def after=CREATE INDEX entity_kind_conc_idx ON public.entity USING btree (tenant_id) (unchanged=true, equals migration's=false); rerun code=0; C2-equivalent catalog diff vs control (2 lines): [\"< index entity CREATE INDEX entity_kind_conc_idx ON entity USING btree (tenant_id)\",\"> index entity CREATE INDEX entity_kind_conc_idx ON entity USING btree (tenant_id, kind)\"]; C3 control: 1/64 failed [\"C3 schema vs database entity has matching indexes: Error: schema only: [] database only: [entity_kind_conc_idx: btree (tenant_id,kind) with()]\"]; C3 NAME: 1/64 failed, 1 findings not on control [\"C3 schema vs database entity has matching indexes: Error: schema only: [] database only: [entity_kind_conc_idx: btree (tenant_id) with()]\"]"
+  }
+]
