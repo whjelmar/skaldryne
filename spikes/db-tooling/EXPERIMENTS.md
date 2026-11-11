@@ -431,6 +431,144 @@ Do not commit.
 
 Do not commit.
 
+## Experiment 6: follow-ups to accepted 0018 (added 2026-11-11)
+
+Decision 0018 was accepted on 2026-11-10 and supersedes 0017. It keeps graphile-migrate 1.4.1 and the hook that drops every invalid index in `public`. Non-blocking index files use `CREATE INDEX CONCURRENTLY IF NOT EXISTS`, one index per `--! no-transaction` file. CI runs two schema checks: C2 (catalog comparison against a database built with `drizzle-kit generate`) and C3 (Vitest catalog test).
+
+Its first three follow-ups are tested here:
+- **6a** answers follow-up 1.
+- **6b** answers follow-up 2.
+- **6c** only measures what a check of deployed databases would cost and catch. Whether to run one (follow-up 3) is the maintainer's decision.
+
+Follow-ups 4 (Drizzle 1.0) and 5 (HNSW at scale) wait until they are needed.
+
+The setup matches 0018:
+- **Migrations:** `arm-kysely-stable/migrations/` plus 5d's index form and hook.
+- **Schema:** the Drizzle schema in `arm-drizzle-stable/src/`.
+
+Each part uses only its own database prefix on the round 3 container at localhost:55432: `exp6a_`, `exp6b_` or `exp6c_`. The criteria below are fixed before anything is run. A change to them later must be committed with a message that says why.
+
+### 6a: indexes on a partitioned table
+
+**Why.** Postgres cannot build an index on a partitioned parent with `CONCURRENTLY`. The usual pattern has three steps:
+1. Create the parent's index with `ON ONLY`. It starts out invalid.
+2. Build each partition's index with `CONCURRENTLY`.
+3. Attach each partition's index. The parent's index becomes valid once every partition's index is attached.
+
+Between steps 1 and 3, the parent's index is invalid and its migration is already recorded, so the 0018 hook would drop it.
+
+**Question.** Can a non-blocking index on `claim_version`, which has 4 hash partitions, be migrated under graphile-migrate 1.4.1 so that a run interrupted at any point completes on the next run without manual SQL?
+
+**Method.**
+1. Use 5d's harness. Load the partitions with enough rows that a partition build can be interrupted, as in 5d.
+2. Test these forms, using only plain SQL and no change to the runner:
+   - **PA:** the 0018 hook, unchanged, with these files:
+     - file 1, transactional: `CREATE INDEX IF NOT EXISTS … ON ONLY claim_version …`;
+     - files 2–5, `--! no-transaction`: one `CREATE INDEX CONCURRENTLY IF NOT EXISTS` per partition;
+     - file 6, transactional: `ALTER INDEX … ATTACH PARTITION …` for each of the four.
+   - **PB:** PA's files. The hook drops only invalid indexes on ordinary tables (`relkind = 'i'`), never partitioned ones (`relkind = 'I'`).
+   - **PC (report only):** one transactional file, `CREATE INDEX IF NOT EXISTS … ON claim_version …`. Record how long it blocks writes to the partitions.
+   - If PA and PB both fail, any other form that keeps to plain SQL and the hook; record why.
+3. For PA and PB, run each interruption 5 times, then let the next `migrate` run:
+   - **I1:** stop after file 1 is recorded and before file 2 starts.
+   - **I2:** hard-kill the Node client during a partition build, as 5d's K1. The next run starts after the orphaned build ends.
+   - **I3:** as I2, but terminate the orphaned backend before its build ends, leaving the partition's index invalid, as 5d's K1-fail.
+   - **I4:** stop after files 2–5 and before file 6.
+4. Run CLEAN once and S2 once for each form, as in 5d.
+5. For PB, also rerun 5d's K1-fail 5 times on an ordinary table, to show the narrowed hook still repairs it.
+6. Report only: whether C2 and C3 see the partitioned index. The Drizzle schema declares `claim_version` without partitions.
+
+**Pass, for a form:**
+- after each interruption, the next `migrate` succeeds without manual SQL;
+- it ends with the parent's index valid and all four partition indexes valid and attached;
+- each migration is recorded once;
+- no run that reports all six files applied leaves any of those indexes invalid;
+- **PB** also passes 5d's K1-fail on an ordinary table in 5 of 5 runs.
+
+### 6b: tests for partitions, triggers and grants
+
+**Why.** Neither 0018 schema check compares partitions, triggers or grants, because the Drizzle schema cannot express them. The existing pgTAP file `test/pgtap/rls.sql` already checks that the application role has no privileges on partitions.
+
+**Question.** Which way of testing partitions, triggers and grants catches drift with no false alarms, in CI time we can afford?
+
+**Candidates.**
+- **T1: hand-written pgTAP assertions** under `exp6/6b/`. They cover:
+  - each partitioned table's partitions and their bounds;
+  - each trigger, with its table, timing, events and function;
+  - each role's privileges on each table and partition.
+- **T2: a committed catalog snapshot.** One fixed query reads the partitions with their bounds, the triggers, and the table and partition privileges from a database built from the migrations. A normalised copy of the output is committed, and CI fails if a fresh run differs from it. An intended change regenerates the snapshot with one command and shows up in the diff.
+
+**Planted drift.** Each case changes the migrations only. It is applied alone, then reverted.
+- **E1:** a partition is missing.
+- **E2:** a partition's bound differs.
+- **E3:** a trigger is missing.
+- **E4:** a trigger's timing or events differ.
+- **E5 (report only):** a trigger function's body differs.
+- **E6:** the application role gains a privilege on a partition, because the `REVOKE` is removed.
+- **E7:** the application role loses a privilege on a table.
+- **E8 (report only):** a table added in a later migration gets no grant for the application role.
+
+**Control.** The unchanged migrations.
+
+**Report for each candidate:**
+- which drift cases it detects;
+- false alarms on the control;
+- wall time;
+- glue code, in lines;
+- what a developer must change for an intended schema change.
+
+**Pass:**
+- detects E1–E4, E6 and E7;
+- no unexplained false alarms on the control;
+- under 60 s;
+- no prompts;
+- needs no superuser beyond what CI already has for pgvector.
+
+### 6c: what a check of deployed databases would cost and catch
+
+**Why.** CI builds fresh databases, so it never sees an index or column changed by hand in a deployed database. This applies, for example, to 5d's NAME case. 0018 left open whether to run the catalog comparison against deployed databases. This part only measures; it decides nothing.
+
+**Question.** If C2's catalog query ran against a deployed database and the result were compared with a freshly migrated one, what would it catch, what would it flag falsely, and what would it need?
+
+**Method.**
+1. **Deployed-like database:** applies the migrations one release at a time as `skal_migrator`:
+   - m1, then seed data;
+   - m2, then m3;
+   - then 5d's index file.
+
+   **Reference database:** a fresh database migrated in one run.
+2. Run C2's catalog query against both and compare. Do it first as `skal_migrator`, then as `skal_app`.
+3. Cases, each applied alone to the deployed-like database and then reverted:
+   - **N0:** control, no change.
+   - **N1:** 5d's NAME case. An index with the same name but a different definition is created by hand before the index file runs.
+   - **N2:** an extra index, created by hand.
+   - **N3:** an index dropped by hand.
+   - **N4:** a column default changed by hand.
+   - **N5:** an invalid index left by a cancelled `CREATE INDEX CONCURRENTLY` run by hand.
+
+**Report:**
+- which cases are detected;
+- every difference on N0, and why it arises, for example constraint names or column order after expand and contract;
+- the least-privileged role that sees everything the query needs;
+- wall time;
+- whether the query takes any lock that blocks application writes.
+
+**Would be fit for a deployed check if:**
+- it detects N1–N4;
+- it has no unexplained difference on N0;
+- it runs as a non-superuser role;
+- it takes no lock that blocks application writes.
+
+This is reported, not decided.
+
+**Output, for 6a to 6c.**
+- `exp6/6a/EXP6A.md`, `exp6/6b/EXP6B.md`, `exp6/6c/EXP6C.md`;
+- tests under each folder;
+- databases dropped at the end;
+- no edits to earlier experiments or the arms.
+
+Do not commit.
+
 ## Verification and bias audit
 
 - **Verifier.** A separate agent, not one of the authors, reruns every arm's `pnpm test` from a clean database on local disk. It checks each result against this file, recomputes the raw SQL shares and appends its findings to `VERIFICATION.md`.
