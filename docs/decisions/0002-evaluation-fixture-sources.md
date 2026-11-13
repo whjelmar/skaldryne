@@ -1,6 +1,6 @@
 # 0002 — Evaluation fixtures come from five sources, reported separately
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 3 · **Serves:** `PIPE-12`, `PIPE-13`, `OUT-09`, `QRY-03`, `SAFE-10`, `INF-07`
+**Status:** Accepted · **Date:** 2026-11-12 · **Answers:** PRD open decision 3 · **Serves:** `PIPE-12`, `PIPE-13`, `OUT-09`, `QRY-03`, `SAFE-10`, `INF-07`
 
 ## Context
 
@@ -69,5 +69,5 @@ Milestone 0a cannot exit without fixtures, and many Phase 0 story scenarios run 
 - Write the fixture label format as part of the first evaluation work.
 - Find performers for the scripted sessions, or recruit volunteers, and draft their release.
 - Draft the participant release for real sessions, including withdrawal, before collecting any.
-- Shortlist openly licensed meeting-recording sets and check each licence.
+- Shortlist openly licensed meeting-recording sets and check each licence. The AMI meeting corpus is the first: its recordings and annotations are licensed CC BY 4.0. At least one more set is needed.
 - Draft the permission request for broadcast recordings, and decide which productions to approach.

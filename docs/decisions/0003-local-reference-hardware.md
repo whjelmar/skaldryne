@@ -1,6 +1,6 @@
 # 0003 — One reference machine with a 16 GB GPU, and two unpromised profiles
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
+**Status:** Accepted · **Date:** 2026-11-12 · **Answers:** PRD open decision 4 · **Serves:** `INF-02`, `INF-07`, `NFR-05`, `OWN-03`
 
 ## Context
 
@@ -29,15 +29,15 @@ Graphics memory sets how large a local model can be, and so caps local extractio
 Two more profiles are documented and measured, but carry no performance promise. The pipeline must complete on them, and their processing times are published, not targeted.
 
 - **CPU only**, on the same composition, with smaller or more heavily quantized models.
-- **Apple silicon Macs with 32 GB or more of unified memory.** Containers on macOS generally cannot use the Apple GPU, so the standard composition runs its model servers on the CPU there. Running the model servers natively, outside the containers, is documented as an advanced setup, not a supported install path.
+- **Apple silicon Macs with 32 GB or more of unified memory.** Containers on macOS generally cannot use the Apple GPU, so the standard composition runs its model servers on the CPU there. Running the model servers natively, outside the containers, is documented as an advanced setup, not a supported install path. Experimental GPU access for containers on macOS exists (Podman with krunkit, through Vulkan), but it is not supported here.
 
 Promoting either profile to a promised reference is a new decision record.
 
 ## Consequences
 
 - Operators can tell before installing whether their machine will meet the targets, and setup can tell them too.
-- 16 GB of video memory limits the local default to models of roughly 14 billion parameters at 4 to 5 bits. That ceiling is the honest version of "local is first-class".
-- Many existing gaming PCs have 8 to 12 GB of video memory. They fall below the reference and get setup's hosted-provider suggestion, though they may still run the pipeline locally.
+- 16 GB of video memory limits dense local models to roughly 14 billion parameters at 4 to 5 bits. Mixture-of-experts models of about 20 to 35 billion total parameters also run on 16 GB, some with part of the model offloaded to system memory, so they are candidates for the evaluation suite as well; with offloading, the reference's 32 GB of system memory matters too. These limits are the honest version of "local is first-class".
+- Many existing gaming PCs have 8 to 12 GB of video memory, though 16 GB cards are now about as common as 8 GB ones. They fall below the reference and get setup's hosted-provider suggestion, though they may still run the pipeline locally.
 - Mac owners can run Skaldryne, but slowly by default. If many operators are on Macs, a native install path becomes the next decision.
 - The project needs access to a reference machine for every release, and measures the two unpromised profiles as well, which is an ongoing cost.
 
