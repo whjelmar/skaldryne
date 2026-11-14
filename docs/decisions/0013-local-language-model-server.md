@@ -1,6 +1,6 @@
-# 0013 — Local language model server
+# 0013 — llama.cpp server as the bundled local model server
 
-**Status:** Open · **Date:** 2026-09-30 · **Serves:** `INF-01`, `INF-02`, `INF-07`, `PIPE-01`, `PIPE-12`, `NFR-01`, `NFR-05`, `NFR-15`, `OWN-03`
+**Status:** Accepted · **Date:** 2026-11-12 · **Serves:** `INF-01`, `INF-02`, `INF-07`, `PIPE-01`, `PIPE-12`, `NFR-01`, `NFR-05`, `NFR-15`, `OWN-03`
 
 ## Context
 
@@ -8,9 +8,9 @@ The `local` profile ([0010](0010-deployment.md)) must run a language model and a
 
 Operators are mostly hobbyists: installing and updating models must be simple, and GPUs from more than one vendor should work.
 
-## Recommendation
+## Decision
 
-**Recommended, not decided:** Run llama.cpp's HTTP server in the `local` profile, as two services: one for the language model and one for the embedding model. The points below describe what adopting it would mean.
+Run llama.cpp's HTTP server in the `local` profile, as two services: one for the language model and one for the embedding model.
 
 - **Why this server:**
   - MIT-licensed and very actively maintained.
@@ -21,28 +21,25 @@ Operators are mostly hobbyists: installing and updating models must be simple, a
 - **Image variants** for CUDA, Vulkan (which covers AMD and Intel GPUs), and CPU, selected by a composition profile at install.
 - **Configuration per profile:** context size matched to the extraction window, one or two parallel slots, flash attention, and a quantized attention cache to fit long windows in 16 GB. Any "thinking" mode of the chosen model is turned off for extraction, so output arrives as the schema rather than as reasoning text.
 - **Models are quantized weight files** named in configuration with their checksum ([0001](0001-default-inference-configuration.md)). Install downloads them from the documented source, verifies the checksum, and stores them in the model volume. Updating a model is a configuration change plus a download, never an image change.
-- **The default models are chosen by the evaluation suite** (`PIPE-12`), within the reference machine's memory: in 2026 that means a language model of roughly 14 billion parameters at 4 to 5 bits, and a small multilingual embedding model that also runs acceptably on CPU.
+- **The default models are chosen by the evaluation suite** (`PIPE-12`), within the reference machine's memory: in 2026 that means a dense language model of roughly 14 billion parameters at 4 to 5 bits, or a mixture-of-experts model that fits with part of it offloaded to system memory, and a small multilingual embedding model that also runs acceptably on CPU.
 - **Validation still happens in the application** ([0008](0008-inference-backend-interface.md)). Constrained generation guarantees shape, not content.
 - **A conformance test** runs a schema-extraction fixture against every server the documentation lists as supported. A server that fails it is not documented as supported (`INF-07`).
 - **Documented alternatives** that operators may point the adapter at instead, provided they pass the conformance test:
-  - **Ollama**, for its easier model management. Its context size must be set explicitly, because its default is far smaller than our extraction windows.
+  - **Ollama**, for its easier model management. Its context size must be set explicitly, with `num_ctx` in the model file: its default on a 16 GB card is 4,096 tokens, far smaller than our extraction windows, and the chat-completions endpoint cannot change it.
   - **vLLM**, for operators with larger GPUs serving several campaigns at once.
 
-## Consequences if adopted
+## Consequences
 
 - One server covers every GPU vendor and the CPU-only profile, so the local path behaves the same everywhere and is tested once.
 - Model management is ours to provide: named models, checksums, download, and upgrade. That is extra work, but it keeps the download sources and sizes documented, as [0001](0001-default-inference-configuration.md) requires.
 - Throughput with many simultaneous requests is lower than a datacenter-oriented server's. A single table's pipeline does not need more.
 - Schema enforcement has edge cases with some models' chat templates. The conformance test and the application's own validation catch them.
+- llama.cpp builds its GPU images in its own CI but does not test them there. Our release pipeline runs the conformance test on the exact images we ship.
 
-## Options considered
+## Alternatives considered
 
-- **Ollama as the default.** The easiest model management for hobbyists, with good Apple and AMD support. Not the default because schema enforcement through its chat-completions endpoint has been unreliable in reports, and its small default context silently truncates transcript windows unless changed. Kept as a documented alternative.
-- **vLLM.** The best throughput and strong schema enforcement. Not recommended as the default: large images, fragile on a 16 GB consumer card, and weak on CPU and Apple hardware. Kept as a documented alternative for larger installs.
+- **Ollama as the default.** The easiest model management for hobbyists, with good Apple and AMD support. Not the default because schema enforcement through its chat-completions endpoint is not well documented (the conformance test decides whether it works), and its small default context silently truncates transcript windows unless changed. Kept as a documented alternative.
+- **vLLM.** The best throughput and strong schema enforcement. Not recommended as the default: large images and fragile on a 16 GB consumer card. It now has CPU images and an Apple silicon backend, but it is built for datacenter GPUs. Kept as a documented alternative for larger installs.
 - **Datacenter-oriented servers.** Excellent throughput with no realistic CPU-only path.
 - **All-in-one local model platforms.** Broad API coverage, but more moving parts, with the same underlying engine for our use.
 - **Proprietary desktop model runners.** Cannot be redistributed in an open container composition.
-
-## To decide
-
-llama.cpp server as the bundled default, with Ollama and vLLM documented, or a different default? When a maintainer decides, this record becomes Proposed or Accepted with the chosen option, or is replaced by a record that states it.

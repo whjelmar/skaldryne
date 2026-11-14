@@ -1,6 +1,6 @@
 # 0001 — Local models by default, with setup suggesting a hosted provider on weak hardware
 
-**Status:** Proposed · **Date:** 2026-09-30 · **Answers:** PRD open decision 1 · **Serves:** `INF-01`, `INF-02`, `NFR-01`, `NFR-15`, `OWN-03`
+**Status:** Accepted · **Date:** 2026-11-12 · **Answers:** PRD open decision 1 · **Serves:** `INF-01`, `INF-02`, `NFR-01`, `NFR-15`, `OWN-03`
 
 ## Context
 

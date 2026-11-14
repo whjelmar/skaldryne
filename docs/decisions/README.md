@@ -19,9 +19,9 @@ Each file here records one decision: what was decided, why, what else was consid
 
 | # | Decision | Status | Answers | Needed by |
 | --- | --- | --- | --- | --- |
-| [0001](0001-default-inference-configuration.md) | Local models by default, with setup suggesting a hosted provider on weak hardware | Proposed | Open decision 1 | 0a |
-| [0002](0002-evaluation-fixture-sources.md) | Evaluation fixtures come from five sources, reported separately | Proposed | Open decision 3 | 0a |
-| [0003](0003-local-reference-hardware.md) | One reference machine with a 16 GB GPU, and two unpromised profiles | Proposed | Open decision 4 | 0a |
+| [0001](0001-default-inference-configuration.md) | Local models by default, with setup suggesting a hosted provider on weak hardware | Accepted | Open decision 1 | 0a |
+| [0002](0002-evaluation-fixture-sources.md) | Evaluation fixtures come from five sources, reported separately | Accepted | Open decision 3 | 0a |
+| [0003](0003-local-reference-hardware.md) | One reference machine with a 16 GB GPU, and two unpromised profiles | Accepted | Open decision 4 | 0a |
 | [0004](0004-language-runtime-and-repository.md) | TypeScript on Node.js, in one repository | Accepted | — | 0a |
 | [0005](0005-record-storage.md) | PostgreSQL holds the record, the search indexes, and the job queue | Accepted | — | 0a |
 | [0006](0006-record-model.md) | Append-only claim versions, evidence anchored to stable source blocks, redaction as the one erasure | Accepted | — | 0a |
@@ -29,10 +29,10 @@ Each file here records one decision: what was decided, why, what else was consid
 | [0008](0008-inference-backend-interface.md) | One interface per model capability, with our own adapters chosen per stage by configuration | Accepted | — | 0a |
 | [0009](0009-pipeline-execution.md) | Sessions and documents run as chains of durable, resumable jobs on the database queue, limited per backend | Accepted | — | 0a |
 | [0010](0010-deployment.md) | One-command container composition, with migrations as their own step and `local` and `external` model profiles | Accepted | — | 0a |
-| [0011](0011-http-framework.md) | HTTP framework (recommendation: Hono) | Open | — | 0a |
-| [0012](0012-web-interface.md) | Web interface framework (recommendation: React single-page app) | Open | — | 0a |
-| [0013](0013-local-language-model-server.md) | Local language model server (recommendation: llama.cpp server) | Open | — | 0a |
-| [0014](0014-local-speech-server.md) | Local speech server (recommendation: our own, on faster-whisper and pyannote) | Open | — | 0a |
+| [0011](0011-http-framework.md) | Hono on Node.js for the HTTP server | Accepted | — | 0a |
+| [0012](0012-web-interface.md) | A React single-page app on Vite, served by the API server | Accepted | — | 0a |
+| [0013](0013-local-language-model-server.md) | llama.cpp server as the bundled local model server | Accepted | — | 0a |
+| [0014](0014-local-speech-server.md) | Our own speech server, on faster-whisper and pyannote | Accepted | — | 0a |
 | [0017](0017-database-tooling.md) | Drizzle ORM for queries; graphile-migrate, with a hook that drops invalid indexes, for migrations | Superseded by [0018](0018-database-tooling-after-follow-ups.md) | — | 0a |
 | [0018](0018-database-tooling-after-follow-ups.md) | Drizzle ORM for queries; graphile-migrate with `IF NOT EXISTS` index files and the invalid-index hook; two CI schema checks, with every index declared in the Drizzle schema | Accepted | — | 0a |
 
